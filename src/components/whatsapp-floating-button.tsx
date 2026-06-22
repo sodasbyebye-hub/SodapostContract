@@ -5,7 +5,7 @@ import { MessageCircle } from "lucide-react";
 export function WhatsAppFloatingButton() {
   return (
     <a
-      href="https://wa.me/8613800000000?text=Hi%20SodaPost%2C%20I%20need%20help%20with%20a%20China%20sourcing%20request."
+      href="https://wa.me/8618743131857"
       target="_blank"
       rel="noreferrer"
       aria-label="Contact SodaPost on WhatsApp"

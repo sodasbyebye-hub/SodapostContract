@@ -1,6 +1,6 @@
 # SodaPost
 
-SodaPost is a multilingual B2B sourcing website for global e-commerce sellers. Buyers can submit private sourcing requests, including reference images, while an authenticated admin dashboard supports review, filtering, status updates, internal notes, and CSV export.
+SodaPost is a multilingual B2B sourcing website for global retailers, wholesalers, brands, and online sellers. Buyers can submit private sourcing requests, including reference images, while an authenticated admin dashboard supports review, filtering, status updates, internal notes, and CSV export.
 
 ## Stack
 

@@ -21,6 +21,9 @@ export default function PricingPage() {
             title={t.pages.pricingSectionTitle}
             description={t.pages.pricingSectionDescription}
           />
+          <p className="mt-4 max-w-2xl text-sm font-medium text-[#d95e17]">
+            {t.pages.pricingContactNote}
+          </p>
           <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {t.pricingPlans.map((plan, index) => (
               <Reveal key={plan.name} delay={index * 0.04}>

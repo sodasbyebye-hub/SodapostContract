@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
-
 import { CategoryCard } from "@/components/category-card";
+import { CategoryImageGallery } from "@/components/category-image-gallery";
 import { Reveal } from "@/components/reveal";
 import { CtaBand, PageHeader, SectionHeading } from "@/components/section";
 import { useI18n } from "@/lib/i18n";
@@ -24,14 +23,8 @@ export default function ProductCategoriesPage() {
               title={t.pages.categoriesSectionTitle}
               description={t.pages.categoriesSectionDescription}
             />
-            <div className="mt-8 overflow-hidden rounded-lg border border-white/80 bg-white/70 p-3 shadow-xl shadow-slate-950/8 backdrop-blur-xl">
-              <Image
-                src="/images/category-samples.png"
-                alt="Abstract category samples"
-                width={1400}
-                height={900}
-                className="rounded-md object-cover"
-              />
+            <div className="mt-8 rounded-2xl border border-white/80 bg-white/70 p-3 shadow-xl shadow-slate-950/8 backdrop-blur-xl">
+              <CategoryImageGallery categories={t.categories} />
             </div>
           </Reveal>
           <div className="grid gap-5 sm:grid-cols-2">
