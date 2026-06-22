@@ -84,7 +84,7 @@ export const services: Service[] = [
   {
     title: "Private Label & Packaging",
     description:
-      "Develop logo placement, packaging options, inserts, barcodes, and e-commerce-ready presentation.",
+      "Develop logo placement, retail-ready packaging, inserts, barcodes, and channel-specific presentation.",
     icon: Sparkles,
   },
   {
@@ -148,7 +148,7 @@ export const processSteps = [
   {
     title: "Submit your request",
     description:
-      "Share your product idea, target market, quantity, price range, platform, and reference images.",
+      "Share your product idea, target market, quantity, price range, sales channel, and reference images.",
   },
   {
     title: "Review qualified options",
@@ -177,7 +177,7 @@ export const pricingPlans: PricingPlan[] = [
   {
     name: "Supplier Matching",
     price: "from $49",
-    description: "Best for sellers who need vetted supplier options quickly.",
+    description: "Best for buyers who need vetted supplier options quickly.",
     features: ["Supplier shortlist", "Basic requirement matching", "Buyer-ready summary"],
     highlighted: true,
   },
@@ -197,21 +197,21 @@ export const pricingPlans: PricingPlan[] = [
 
 export const caseStudies: CaseStudy[] = [
   {
-    company: "Shopify outdoor brand",
+    company: "Outdoor retail brand",
     category: "Sun protection clothing",
     result: "3 sample rounds completed before summer launch",
     summary:
       "SodaPost helped compare fabric, UPF claims, logo placement, and packaging options across multiple qualified factories.",
   },
   {
-    company: "TikTok Shop beauty seller",
+    company: "Beauty products wholesaler",
     category: "Beauty tools",
     result: "Private label packaging prepared for first bulk order",
     summary:
-      "The seller received supplier matching, sample consolidation, insert-card guidance, and inspection checkpoints.",
+      "The buyer received supplier matching, sample consolidation, insert-card guidance, and inspection checkpoints.",
   },
   {
-    company: "Amazon pet accessories seller",
+    company: "Pet accessories retailer",
     category: "Pet supplies",
     result: "Supplier risk reduced before re-order",
     summary:
@@ -220,6 +220,10 @@ export const caseStudies: CaseStudy[] = [
 ];
 
 export const platformOptions = [
+  "Retail Store",
+  "Wholesale Distribution",
+  "Chain Store",
+  "Brand / Private Label",
   "Shopify",
   "TikTok Shop",
   "Amazon",

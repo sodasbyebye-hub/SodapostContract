@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SodaPost | China Sourcing Partner for Global E-commerce Sellers",
+  title: "SodaPost | China Sourcing Partner for Retailers, Wholesalers & Brands",
   description:
-    "Source reliable products from China with SodaPost. We help Shopify, TikTok Shop, Amazon and Etsy sellers find suppliers, arrange samples, customize packaging, inspect quality and coordinate shipping.",
+    "Source reliable products from China with SodaPost. We help retailers, wholesalers, brands, and online sellers find suppliers, arrange samples, customize packaging, inspect quality, and coordinate shipping.",
 };
 
 export default function RootLayout({

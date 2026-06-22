@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { CaseStudyCard } from "@/components/case-study-card";
 import { CategoryCard } from "@/components/category-card";
+import { CategoryImageGallery } from "@/components/category-image-gallery";
 import { HeroSection } from "@/components/hero-section";
+import { ManufacturingIntroSection } from "@/components/manufacturing-intro-section";
 import { Reveal } from "@/components/reveal";
 import { CtaBand, SectionHeading } from "@/components/section";
 import { ServiceCard } from "@/components/service-card";
@@ -25,10 +26,18 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative overflow-hidden bg-[#fbfaf7] px-4 py-20 sm:px-6 lg:px-8">
+        <Image
+          src="/images/china-sourcing-map-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          className="pointer-events-none select-none object-cover object-center opacity-90"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#fbfaf7]/92 via-[#fbfaf7]/55 to-transparent" />
+        <div className="relative z-10 mx-auto max-w-7xl">
           <SectionHeading
-            eyebrow={t.common.services}
+            eyebrow={t.pages.homeServicesEyebrow}
             title={t.pages.homeServicesTitle}
             description={t.pages.homeServicesDescription}
           />
@@ -41,6 +50,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <ManufacturingIntroSection />
       <section className="soft-grid bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <Reveal>
@@ -58,14 +68,8 @@ export default function Home() {
             </Link>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="overflow-hidden rounded-lg border border-white/80 bg-white/65 p-3 shadow-xl shadow-slate-950/8 backdrop-blur-xl">
-              <Image
-                src="/images/category-samples.png"
-                alt="Abstract product category sample cards"
-                width={1400}
-                height={900}
-                className="rounded-md object-cover"
-              />
+            <div className="rounded-2xl border border-white/80 bg-white/65 p-3 shadow-xl shadow-slate-950/8 backdrop-blur-xl">
+              <CategoryImageGallery categories={t.categories} />
             </div>
           </Reveal>
         </div>
@@ -97,35 +101,6 @@ export default function Home() {
                 </article>
               </Reveal>
             ))}
-          </div>
-        </div>
-      </section>
-      <section className="bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-          <Reveal>
-            <div className="overflow-hidden rounded-lg border border-white/15 bg-white/10 p-3 shadow-2xl shadow-black/20 backdrop-blur-xl">
-              <Image
-                src="/images/case-logistics.png"
-                alt="Abstract sourcing case study workflow"
-                width={1400}
-                height={900}
-                className="rounded-md object-cover"
-              />
-            </div>
-          </Reveal>
-          <div>
-            <SectionHeading
-              eyebrow={t.common.caseStudies}
-              title={t.pages.homeCaseTitle}
-              description={t.pages.homeCaseDescription}
-            />
-            <div className="mt-8 grid gap-5">
-              {t.caseStudies.slice(0, 2).map((study, index) => (
-                <Reveal key={study.company} delay={index * 0.05}>
-                  <CaseStudyCard study={study} />
-                </Reveal>
-              ))}
-            </div>
           </div>
         </div>
       </section>

@@ -59,16 +59,19 @@ export function HeroSection() {
         <Reveal delay={0.15}>
           <div className="relative">
             <div className="absolute -inset-5 rounded-lg bg-orange-200/30 blur-3xl" />
-            <div className="relative overflow-hidden rounded-lg border border-white/80 bg-white/60 p-3 shadow-2xl shadow-slate-950/12 backdrop-blur-xl">
+            <figure className="relative overflow-hidden rounded-xl border border-white/80 bg-white/85 p-3 shadow-2xl shadow-slate-950/12 backdrop-blur-xl">
               <Image
-                src="/images/hero-sourcing.png"
-                alt="Abstract sourcing workflow with samples, packaging, inspection and logistics"
-                width={1800}
-                height={1100}
+                src="/images/sodapost-brand-hero-16x9.png"
+                alt="SodaPost orange brand image"
+                width={1672}
+                height={940}
                 priority
-                className="aspect-[1.55] rounded-md object-cover"
+                className="aspect-video w-full rounded-lg object-cover"
               />
-            </div>
+              <figcaption className="px-3 pb-2 pt-4 text-center text-sm font-medium leading-6 text-slate-600">
+                {t.pages.heroImageCaption}
+              </figcaption>
+            </figure>
           </div>
         </Reveal>
       </div>
