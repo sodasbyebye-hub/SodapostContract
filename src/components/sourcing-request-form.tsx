@@ -2,7 +2,15 @@
 
 import { upload } from "@vercel/blob/client";
 import { FormEvent, useState } from "react";
-import { AlertCircle, CheckCircle2, LoaderCircle, Upload } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  CircleDollarSign,
+  LoaderCircle,
+  Store,
+  Upload,
+  type LucideIcon,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,16 +22,24 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
 import { createSourcingRequestId } from "@/lib/leads";
-import { categories, platformOptions } from "@/lib/site-data";
+import { categories, platformOptions, pricingPlans, type PricingPlanValue } from "@/lib/site-data";
 import { getReferenceImagePath, MAX_REFERENCE_IMAGE_SIZE } from "@/lib/sourcing-upload";
 
-export function SourcingRequestForm() {
+export function SourcingRequestForm({ initialServicePlan = "" }: { initialServicePlan?: PricingPlanValue | "" }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sellingPlatform, setSellingPlatform] = useState("");
+  const [servicePlan, setServicePlan] = useState<string>(initialServicePlan);
   const { labelCategory, labelPlatform, t } = useI18n();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -74,6 +90,8 @@ export function SourcingRequestForm() {
       }
 
       form.reset();
+      setSellingPlatform("");
+      setServicePlan("");
       setSuccess(true);
     } catch (submitError) {
       console.error("Unable to submit sourcing request:", submitError);
@@ -100,8 +118,9 @@ export function SourcingRequestForm() {
         </DialogContent>
       </Dialog>
       <form
+        id="sourcing-request-form"
         onSubmit={handleSubmit}
-        className="rounded-lg border border-white/80 bg-white/78 p-5 shadow-xl shadow-slate-950/8 backdrop-blur-xl sm:p-8"
+        className="scroll-mt-24 rounded-lg border border-white/80 bg-white/78 p-5 shadow-xl shadow-slate-950/8 backdrop-blur-xl sm:p-8"
       >
       {error ? (
         <div className="mb-6 flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
@@ -115,14 +134,17 @@ export function SourcingRequestForm() {
         <Field id="email" label={t.form.email} type="email" required />
         <Field id="whatsapp" label={t.form.whatsapp} required />
         <Field id="countryMarket" label={t.form.countryMarket} required />
-        <SelectField
+        <EnhancedSelectField
           id="sellingPlatform"
           label={t.form.sellingPlatform}
           options={platformOptions.map((value) => ({ value, label: labelPlatform(value) }))}
           placeholder={t.form.selectOption}
+          icon={Store}
+          value={sellingPlatform}
+          onValueChange={setSellingPlatform}
           required
         />
-        <SelectField
+        <NativeSelectField
           id="productCategory"
           label={t.form.productCategory}
           options={categories.map((category) => ({ value: category.title, label: labelCategory(category.title) }))}
@@ -171,6 +193,23 @@ export function SourcingRequestForm() {
             placeholder={t.form.messagePlaceholder}
           />
         </div>
+        <EnhancedSelectField
+          id="servicePlan"
+          label={t.form.servicePlan}
+          options={pricingPlans.map((plan, index) => {
+            const translatedPlan = t.pricingPlans[index] ?? plan;
+            return {
+              value: plan.value,
+              label: translatedPlan.name,
+              meta: translatedPlan.price,
+            };
+          })}
+          placeholder={t.form.selectOption}
+          icon={CircleDollarSign}
+          value={servicePlan}
+          onValueChange={setServicePlan}
+          required
+        />
         </div>
         <button
           type="submit"
@@ -204,17 +243,21 @@ function Field({
   );
 }
 
-function SelectField({
+function NativeSelectField({
   id,
   label,
   options,
   placeholder,
+  value,
+  onValueChange,
   required = false,
 }: {
   id: string;
   label: string;
   options: { value: string; label: string }[];
   placeholder: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   required?: boolean;
 }) {
   return (
@@ -224,7 +267,8 @@ function SelectField({
         id={id}
         name={id}
         required={required}
-        defaultValue=""
+        {...(value === undefined ? { defaultValue: "" } : { value })}
+        onChange={onValueChange ? (event) => onValueChange(event.target.value) : undefined}
         className="h-10 rounded-lg border border-input bg-white px-3 text-sm text-slate-800 outline-none transition focus:border-ring focus:ring-3 focus:ring-ring/30"
       >
         <option value="" disabled>
@@ -236,6 +280,89 @@ function SelectField({
           </option>
         ))}
       </select>
+    </div>
+  );
+}
+
+type EnhancedSelectOption = {
+  value: string;
+  label: string;
+  meta?: string;
+};
+
+function EnhancedSelectField({
+  id,
+  label,
+  options,
+  placeholder,
+  icon: Icon,
+  value,
+  onValueChange,
+  required = false,
+}: {
+  id: string;
+  label: string;
+  options: EnhancedSelectOption[];
+  placeholder: string;
+  icon: LucideIcon;
+  value: string;
+  onValueChange: (value: string) => void;
+  required?: boolean;
+}) {
+  const selectedOption = options.find((option) => option.value === value);
+
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Select
+        name={id}
+        value={value || null}
+        onValueChange={(nextValue) => onValueChange(nextValue ?? "")}
+        required={required}
+      >
+        <SelectTrigger
+          id={id}
+          aria-required={required}
+          className="h-10 w-full border-slate-200 bg-white px-3 text-slate-800 shadow-sm transition-[border-color,box-shadow,background-color] duration-200 hover:border-orange-200 hover:bg-orange-50/20 focus-visible:border-orange-300 focus-visible:ring-orange-200/60 data-popup-open:border-orange-300 data-popup-open:ring-3 data-popup-open:ring-orange-200/50"
+        >
+          <span className="flex min-w-0 flex-1 items-center gap-2.5">
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-orange-50 text-[#e7651b] ring-1 ring-orange-100">
+              <Icon className="size-3.5" />
+            </span>
+            <span className={selectedOption ? "truncate font-medium" : "truncate text-slate-500"}>
+              {selectedOption?.label ?? placeholder}
+            </span>
+            {selectedOption?.meta ? (
+              <span className="ml-auto shrink-0 rounded-md bg-orange-50 px-2 py-0.5 text-xs font-semibold text-[#d95e17] ring-1 ring-orange-100">
+                {selectedOption.meta}
+              </span>
+            ) : null}
+          </span>
+        </SelectTrigger>
+        <SelectContent
+          align="start"
+          alignItemWithTrigger={false}
+          sideOffset={7}
+          className="max-h-80 rounded-xl border border-slate-200/80 bg-white/98 p-1.5 shadow-2xl shadow-slate-950/12 ring-1 ring-slate-950/5 backdrop-blur-xl"
+        >
+          {options.map((option) => (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="min-h-10 rounded-lg px-2.5 py-2 pr-9 text-slate-700 transition-colors duration-150 focus:bg-orange-50 focus:text-orange-950 data-selected:bg-orange-50/80 data-selected:text-orange-950"
+            >
+              <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
+                <span className="truncate font-medium">{option.label}</span>
+                {option.meta ? (
+                  <span className="shrink-0 rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
+                    {option.meta}
+                  </span>
+                ) : null}
+              </span>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

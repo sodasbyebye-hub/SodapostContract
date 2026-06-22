@@ -1,7 +1,7 @@
 import { del, head, type HeadBlobResult } from "@vercel/blob";
 
 import { isSourcingRequestId } from "@/lib/leads";
-import { categories, platformOptions } from "@/lib/site-data";
+import { categories, isPricingPlanValue, platformOptions } from "@/lib/site-data";
 import { createSourcingRequest } from "@/lib/sourcing-requests";
 import {
   isReferenceImagePath,
@@ -23,6 +23,7 @@ const requiredFields = [
   "productDescription",
   "targetQuantity",
   "targetPrice",
+  "servicePlan",
 ] as const;
 
 function getText(formData: FormData, key: string) {
@@ -96,6 +97,10 @@ export async function POST(request: Request) {
 
     if (!categories.some((category) => category.title === values.productCategory)) {
       throw new RequestValidationError("Invalid product category.");
+    }
+
+    if (!isPricingPlanValue(values.servicePlan)) {
+      throw new RequestValidationError("Invalid service plan.");
     }
 
     await createSourcingRequest({

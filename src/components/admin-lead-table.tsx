@@ -18,7 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
 import type { LeadStatus, SourcingLead } from "@/lib/leads";
-import { statusOptions } from "@/lib/site-data";
+import { pricingPlans, statusOptions } from "@/lib/site-data";
 
 const statusTone: Record<LeadStatus, string> = {
   New: "bg-orange-100 text-orange-800",
@@ -40,6 +40,12 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
   const savedNotes = useRef(new Map(initialLeads.map((lead) => [lead.id, lead.notes])));
   const { labelCategory, labelPlatform, labelStatus, t } = useI18n();
 
+  function labelServicePlan(value: string) {
+    const index = pricingPlans.findIndex((plan) => plan.value === value);
+    const plan = index >= 0 ? t.pricingPlans[index] : undefined;
+    return plan ? `${plan.name} · ${plan.price}` : value || t.admin.notSelected;
+  }
+
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return leads.filter((lead) => {
@@ -54,6 +60,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
           lead.sellingPlatform,
           lead.productCategory,
           lead.productDescription,
+          lead.servicePlan,
         ]
           .join(" ")
           .toLowerCase()
@@ -113,6 +120,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
       t.admin.productDescription,
       t.admin.targetQuantity,
       t.admin.targetPrice,
+      t.admin.servicePlan,
       t.admin.customLogo,
       t.admin.customPackaging,
       t.admin.samples,
@@ -134,6 +142,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
       lead.productDescription,
       lead.targetQuantity,
       lead.targetPrice,
+      labelServicePlan(lead.servicePlan),
       lead.needCustomLogo ? t.admin.yes : t.admin.no,
       lead.needCustomPackaging ? t.admin.yes : t.admin.no,
       lead.needSamples ? t.admin.yes : t.admin.no,
@@ -279,6 +288,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
                 <Detail label={t.admin.productCategory} value={labelCategory(selected.productCategory)} />
                 <Detail label={t.admin.targetQuantity} value={selected.targetQuantity} />
                 <Detail label={t.admin.targetPrice} value={selected.targetPrice} />
+                <Detail label={t.admin.servicePlan} value={labelServicePlan(selected.servicePlan)} />
                 <div>
                   <p className="text-xs font-semibold uppercase text-slate-500">{t.admin.status}</p>
                   <Badge className={statusTone[selected.status]}>{labelStatus(selected.status)}</Badge>

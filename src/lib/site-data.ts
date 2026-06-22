@@ -32,6 +32,19 @@ export type PricingPlan = {
   highlighted?: boolean;
 };
 
+export const pricingPlanValues = [
+  "free-request",
+  "supplier-matching",
+  "sourcing-report",
+  "custom-sourcing-project",
+] as const;
+
+export type PricingPlanValue = (typeof pricingPlanValues)[number];
+
+export type PricingPlanDefinition = PricingPlan & {
+  value: PricingPlanValue;
+};
+
 export type CaseStudy = {
   company: string;
   category: string;
@@ -167,14 +180,16 @@ export const processSteps = [
   },
 ];
 
-export const pricingPlans: PricingPlan[] = [
+export const pricingPlans: PricingPlanDefinition[] = [
   {
+    value: "free-request",
     name: "Free Request",
     price: "$0",
     description: "Best for first conversations and quick feasibility checks.",
     features: ["Submit product details", "Initial review", "Recommended next step"],
   },
   {
+    value: "supplier-matching",
     name: "Supplier Matching",
     price: "from $49",
     description: "Best for buyers who need vetted supplier options quickly.",
@@ -182,18 +197,24 @@ export const pricingPlans: PricingPlan[] = [
     highlighted: true,
   },
   {
+    value: "sourcing-report",
     name: "Sourcing Report",
     price: "from $99",
     description: "Best for comparing product options before samples or negotiation.",
     features: ["Category research", "Supplier comparison", "Pricing and MOQ notes"],
   },
   {
+    value: "custom-sourcing-project",
     name: "Custom Sourcing Project",
     price: "custom price",
     description: "Best for private label, complex packaging, or multi-SKU sourcing.",
     features: ["Dedicated sourcing workflow", "Sampling support", "Inspection and shipping coordination"],
   },
 ];
+
+export function isPricingPlanValue(value: string): value is PricingPlanValue {
+  return pricingPlanValues.includes(value as PricingPlanValue);
+}
 
 export const caseStudies: CaseStudy[] = [
   {

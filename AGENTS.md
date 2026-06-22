@@ -66,13 +66,15 @@ README.md                        产品与部署概述
 
 ### 询盘提交
 
+`/pricing` 的四个方案使用稳定值跳转到 `/sourcing-request?plan=<value>`；完整采购需求页会校验该参数并自动预选对应的服务方案和价格。方案值入库时保持英文稳定值，展示时使用当前语言的 `pricingPlans` 文案。
+
 1. `SourcingRequestForm` 在浏览器校验图片，并通过 `/api/sourcing-requests/upload` 获取短期令牌后直传 Vercel Blob，绕过 Vercel Function 4.5 MB 请求体限制。
 2. 图片只允许 image MIME，最大 8 MB，保存到公开访问的 `sourcing-requests/<request-id>/...` 路径。
 3. 表单删除文件本体后，用小型 `FormData` POST 到 `/api/sourcing-requests`；Route Handler 重新校验必填字段、邮箱、稳定选项和 Blob metadata。
 4. 询盘写入 Postgres 的 `sourcing_requests` 表；首次读写会执行 `CREATE TABLE IF NOT EXISTS`。入库失败时会清理已验证的 Blob。
 5. 编号格式为 `SP-<timestamp>-<8位UUID片段>`。
 
-修改表单字段时必须同步检查：表单控件、API 必填字段、`SourcingLead` 类型、建表 SQL、INSERT、行映射和后台详情/CSV。当前实现只有建表，没有正式 migration 系统；已存在的表不会因修改 `CREATE TABLE IF NOT EXISTS` 自动增加新列。
+修改表单字段时必须同步检查：表单控件、API 必填字段、`SourcingLead` 类型、建表 SQL、INSERT、行映射和后台详情/CSV。当前实现没有正式 migration 系统；新增列必须像 `service_plan` 一样显式执行幂等 `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`，不能只修改 `CREATE TABLE IF NOT EXISTS`。
 
 ### 后台与鉴权
 

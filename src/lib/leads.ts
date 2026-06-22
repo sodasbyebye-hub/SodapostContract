@@ -16,6 +16,7 @@ export type SourcingLead = {
   productDescription: string;
   targetQuantity: string;
   targetPrice: string;
+  servicePlan: string;
   needCustomLogo: boolean;
   needCustomPackaging: boolean;
   needSamples: boolean;

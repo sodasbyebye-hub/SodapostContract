@@ -5,10 +5,10 @@ import { Check } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
-import type { PricingPlan } from "@/lib/site-data";
+import type { PricingPlan, PricingPlanValue } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
-export function PricingCard({ plan }: { plan: PricingPlan }) {
+export function PricingCard({ plan, planValue }: { plan: PricingPlan; planValue: PricingPlanValue }) {
   const { t } = useI18n();
 
   return (
@@ -35,7 +35,7 @@ export function PricingCard({ plan }: { plan: PricingPlan }) {
         ))}
       </ul>
       <Link
-        href="/sourcing-request"
+        href={`/sourcing-request?plan=${planValue}#sourcing-request-form`}
         className={cn(
           buttonVariants({ size: "lg", variant: plan.highlighted ? "default" : "outline" }),
           "mt-7",

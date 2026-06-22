@@ -41,10 +41,11 @@ The public content pages can build without live storage access. Submitting a req
 
 ## Sourcing request flow
 
-1. The browser validates an optional reference image and uploads it directly to Vercel Blob using a short-lived, path-restricted token. Images must use an image MIME type and be no larger than 8 MB.
-2. The form sends the remaining fields and Blob metadata to `/api/sourcing-requests`.
-3. The server validates the fields and Blob metadata, creates the table if needed, and inserts the request into Neon/Postgres.
-4. If persistence fails after a verified upload, the server deletes that Blob.
+1. Pricing cards link to `/sourcing-request?plan=<stable-plan-value>` so the matching service plan and price option is preselected in the form.
+2. The browser validates an optional reference image and uploads it directly to Vercel Blob using a short-lived, path-restricted token. Images must use an image MIME type and be no larger than 8 MB.
+3. The form sends the remaining fields, the required service plan, and Blob metadata to `/api/sourcing-requests`.
+4. The server validates the fields and Blob metadata, creates or extends the table if needed, and inserts the request into Neon/Postgres.
+5. If persistence fails after a verified upload, the server deletes that Blob.
 
 ## Admin
 

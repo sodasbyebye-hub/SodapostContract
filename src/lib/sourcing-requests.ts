@@ -46,6 +46,7 @@ async function ensureSchema() {
           product_description TEXT NOT NULL,
           target_quantity TEXT NOT NULL,
           target_price TEXT NOT NULL,
+          service_plan TEXT NOT NULL DEFAULT '',
           need_custom_logo BOOLEAN NOT NULL DEFAULT FALSE,
           need_custom_packaging BOOLEAN NOT NULL DEFAULT FALSE,
           need_samples BOOLEAN NOT NULL DEFAULT FALSE,
@@ -56,6 +57,7 @@ async function ensureSchema() {
           notes TEXT NOT NULL DEFAULT ''
         )
       `;
+      await sql`ALTER TABLE sourcing_requests ADD COLUMN IF NOT EXISTS service_plan TEXT NOT NULL DEFAULT ''`;
       await sql`CREATE INDEX IF NOT EXISTS sourcing_requests_created_at_idx ON sourcing_requests (created_at DESC)`;
       await sql`CREATE INDEX IF NOT EXISTS sourcing_requests_status_idx ON sourcing_requests (status)`;
     })().catch((error) => {
@@ -82,6 +84,7 @@ function mapRow(row: DatabaseRow): SourcingLead {
     productDescription: String(row.product_description),
     targetQuantity: String(row.target_quantity),
     targetPrice: String(row.target_price),
+    servicePlan: String(row.service_plan ?? ""),
     needCustomLogo: Boolean(row.need_custom_logo),
     needCustomPackaging: Boolean(row.need_custom_packaging),
     needSamples: Boolean(row.need_samples),
@@ -109,6 +112,7 @@ export async function createSourcingRequest(input: CreateSourcingRequestInput) {
       product_description,
       target_quantity,
       target_price,
+      service_plan,
       need_custom_logo,
       need_custom_packaging,
       need_samples,
@@ -127,6 +131,7 @@ export async function createSourcingRequest(input: CreateSourcingRequestInput) {
       ${input.productDescription},
       ${input.targetQuantity},
       ${input.targetPrice},
+      ${input.servicePlan},
       ${input.needCustomLogo},
       ${input.needCustomPackaging},
       ${input.needSamples},
