@@ -4,6 +4,14 @@ import { upload } from "@vercel/blob/client";
 import { FormEvent, useState } from "react";
 import { AlertCircle, CheckCircle2, LoaderCircle, Upload } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -76,23 +84,32 @@ export function SourcingRequestForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-lg border border-white/80 bg-white/78 p-5 shadow-xl shadow-slate-950/8 backdrop-blur-xl sm:p-8"
-    >
-      {success ? (
-        <div className="mb-6 flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-          <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
-          <p>{t.form.success}</p>
-        </div>
-      ) : null}
+    <>
+      <Dialog open={success} onOpenChange={setSuccess}>
+        <DialogContent className="bg-white p-6 text-center sm:max-w-md sm:p-8">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+            <CheckCircle2 className="size-7" />
+          </div>
+          <DialogHeader className="items-center text-center">
+            <DialogTitle className="text-xl font-semibold text-slate-950">{t.form.successTitle}</DialogTitle>
+            <DialogDescription className="text-base leading-7 text-slate-600">{t.form.success}</DialogDescription>
+          </DialogHeader>
+          <Button type="button" onClick={() => setSuccess(false)} className="mt-2 w-full bg-[#f26f21] text-white hover:bg-[#d95e17]">
+            OK
+          </Button>
+        </DialogContent>
+      </Dialog>
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-lg border border-white/80 bg-white/78 p-5 shadow-xl shadow-slate-950/8 backdrop-blur-xl sm:p-8"
+      >
       {error ? (
         <div className="mb-6 flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
           <AlertCircle className="mt-0.5 size-5 shrink-0" />
           <p>{error}</p>
         </div>
       ) : null}
-      <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
         <Field id="name" label={t.form.name} required />
         <Field id="companyName" label={t.form.companyName} required />
         <Field id="email" label={t.form.email} type="email" required />
@@ -126,8 +143,8 @@ export function SourcingRequestForm() {
           <input name="needSamples" type="checkbox" className="size-4 accent-[#f26f21]" />
           {t.form.needSamples}
         </label>
-      </div>
-      <div className="mt-5 grid gap-5">
+        </div>
+        <div className="mt-5 grid gap-5">
         <div className="grid gap-2">
           <Label htmlFor="productDescription">{t.form.productDescription}</Label>
           <Textarea
@@ -154,16 +171,17 @@ export function SourcingRequestForm() {
             placeholder={t.form.messagePlaceholder}
           />
         </div>
-      </div>
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#f26f21] px-5 text-sm font-semibold text-white transition hover:bg-[#d95e17] disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : null}
-        {isSubmitting ? t.form.submitting : t.common.submitSourcingRequest}
-      </button>
-    </form>
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#f26f21] px-5 text-sm font-semibold text-white transition hover:bg-[#d95e17] disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : null}
+          {isSubmitting ? t.form.submitting : t.common.submitSourcingRequest}
+        </button>
+      </form>
+    </>
   );
 }
 
