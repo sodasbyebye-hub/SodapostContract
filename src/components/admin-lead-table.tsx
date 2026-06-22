@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { Download, Eye, Search } from "lucide-react";
+import { useMemo, useRef, useState, useTransition } from "react";
+import { AlertCircle, Download, ExternalLink, LoaderCircle, Eye, Search } from "lucide-react";
 
+import { updateLeadNotes, updateLeadStatus } from "@/app/admin/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
-import { LOCAL_LEADS_KEY, mockLeads, type LeadStatus, type SourcingLead } from "@/lib/leads";
+import type { LeadStatus, SourcingLead } from "@/lib/leads";
 import { statusOptions } from "@/lib/site-data";
 
 const statusTone: Record<LeadStatus, string> = {
@@ -29,28 +30,15 @@ const statusTone: Record<LeadStatus, string> = {
   Lost: "bg-slate-100 text-slate-700",
 };
 
-function readLocalLeads() {
-  try {
-    return JSON.parse(window.localStorage.getItem(LOCAL_LEADS_KEY) || "[]") as SourcingLead[];
-  } catch {
-    return [];
-  }
-}
-
-export function AdminLeadTable() {
-  const [leads, setLeads] = useState<SourcingLead[]>(mockLeads);
+export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] }) {
+  const [leads, setLeads] = useState(initialLeads);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"All" | LeadStatus>("All");
-  const [selected, setSelected] = useState<SourcingLead | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const savedNotes = useRef(new Map(initialLeads.map((lead) => [lead.id, lead.notes])));
   const { labelCategory, labelPlatform, labelStatus, t } = useI18n();
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setLeads([...readLocalLeads(), ...mockLeads]);
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, []);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -74,15 +62,41 @@ export function AdminLeadTable() {
     });
   }, [leads, query, status]);
 
-  function updateLead(id: string, patch: Partial<SourcingLead>) {
-    setLeads((current) => {
-      const next = current.map((lead) => (lead.id === id ? { ...lead, ...patch } : lead));
-      const localIds = new Set(readLocalLeads().map((lead) => lead.id));
-      const local = next.filter((lead) => localIds.has(lead.id) || lead.id.startsWith("SP-17"));
-      window.localStorage.setItem(LOCAL_LEADS_KEY, JSON.stringify(local));
-      return next;
+  const selected = selectedId ? leads.find((lead) => lead.id === selectedId) ?? null : null;
+
+  function applyLocalPatch(id: string, patch: Partial<SourcingLead>) {
+    setLeads((current) => current.map((lead) => (lead.id === id ? { ...lead, ...patch } : lead)));
+  }
+
+  function changeStatus(lead: SourcingLead, nextStatus: LeadStatus) {
+    if (lead.status === nextStatus) return;
+
+    const previousStatus = lead.status;
+    setSaveError(false);
+    applyLocalPatch(lead.id, { status: nextStatus });
+    startTransition(async () => {
+      const result = await updateLeadStatus(lead.id, nextStatus);
+      if (!result.ok) {
+        applyLocalPatch(lead.id, { status: previousStatus });
+        setSaveError(true);
+      }
     });
-    setSelected((current) => (current?.id === id ? { ...current, ...patch } : current));
+  }
+
+  function saveNotes(id: string, notes: string) {
+    const previousNotes = savedNotes.current.get(id) ?? "";
+    if (notes === previousNotes) return;
+
+    setSaveError(false);
+    startTransition(async () => {
+      const result = await updateLeadNotes(id, notes);
+      if (result.ok) {
+        savedNotes.current.set(id, notes);
+      } else {
+        applyLocalPatch(id, { notes: previousNotes });
+        setSaveError(true);
+      }
+    });
   }
 
   function exportCsv() {
@@ -96,8 +110,14 @@ export function AdminLeadTable() {
       t.admin.market,
       t.admin.sellingPlatform,
       t.admin.category,
+      t.admin.productDescription,
       t.admin.targetQuantity,
       t.admin.targetPrice,
+      t.admin.customLogo,
+      t.admin.customPackaging,
+      t.admin.samples,
+      t.admin.referenceImage,
+      t.admin.message,
       t.admin.status,
       t.admin.notes,
     ];
@@ -111,15 +131,21 @@ export function AdminLeadTable() {
       lead.countryMarket,
       labelPlatform(lead.sellingPlatform),
       labelCategory(lead.productCategory),
+      lead.productDescription,
       lead.targetQuantity,
       lead.targetPrice,
+      lead.needCustomLogo ? t.admin.yes : t.admin.no,
+      lead.needCustomPackaging ? t.admin.yes : t.admin.no,
+      lead.needSamples ? t.admin.yes : t.admin.no,
+      lead.referenceImageUrl ?? "",
+      lead.message,
       labelStatus(lead.status),
       lead.notes,
     ]);
     const csv = [headers, ...rows]
       .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
       .join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -130,6 +156,12 @@ export function AdminLeadTable() {
 
   return (
     <div className="space-y-6">
+      {saveError ? (
+        <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
+          <AlertCircle className="mt-0.5 size-5 shrink-0" />
+          <p>{t.admin.saveError}</p>
+        </div>
+      ) : null}
       <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_220px_auto]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
@@ -157,6 +189,12 @@ export function AdminLeadTable() {
           {t.admin.exportCsv}
         </Button>
       </div>
+      {isPending ? (
+        <div className="flex items-center gap-2 text-xs text-slate-500" aria-live="polite">
+          <LoaderCircle className="size-3.5 animate-spin" />
+          {t.admin.saving}
+        </div>
+      ) : null}
       <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
           <Table>
@@ -187,7 +225,7 @@ export function AdminLeadTable() {
                   <TableCell>
                     <select
                       value={lead.status}
-                      onChange={(event) => updateLead(lead.id, { status: event.target.value as LeadStatus })}
+                      onChange={(event) => changeStatus(lead, event.target.value as LeadStatus)}
                       className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-xs font-medium text-slate-700"
                     >
                       {statusOptions.map((option) => (
@@ -200,14 +238,16 @@ export function AdminLeadTable() {
                   <TableCell className="min-w-56">
                     <Textarea
                       value={lead.notes}
-                      onChange={(event) => updateLead(lead.id, { notes: event.target.value })}
+                      onChange={(event) => applyLocalPatch(lead.id, { notes: event.target.value })}
+                      onBlur={(event) => saveNotes(lead.id, event.currentTarget.value)}
+                      maxLength={10_000}
                       rows={2}
                       className="text-xs"
                       placeholder={t.admin.addNotes}
                     />
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="outline" size="sm" onClick={() => setSelected(lead)}>
+                    <Button variant="outline" size="sm" onClick={() => setSelectedId(lead.id)}>
                       <Eye />
                       {t.admin.view}
                     </Button>
@@ -221,7 +261,7 @@ export function AdminLeadTable() {
           <div className="px-6 py-12 text-center text-sm text-slate-500">{t.admin.noLeads}</div>
         ) : null}
       </div>
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
+      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelectedId(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto bg-white sm:max-w-2xl">
           {selected ? (
             <>
@@ -247,21 +287,33 @@ export function AdminLeadTable() {
               <Detail label={t.admin.productDescription} value={selected.productDescription} wide />
               <div className="grid gap-3 sm:grid-cols-3">
                 <Flag label={t.admin.customLogo} value={selected.needCustomLogo} yes={t.admin.yes} no={t.admin.no} />
-                <Flag
-                  label={t.admin.customPackaging}
-                  value={selected.needCustomPackaging}
-                  yes={t.admin.yes}
-                  no={t.admin.no}
-                />
+                <Flag label={t.admin.customPackaging} value={selected.needCustomPackaging} yes={t.admin.yes} no={t.admin.no} />
                 <Flag label={t.admin.samples} value={selected.needSamples} yes={t.admin.yes} no={t.admin.no} />
               </div>
-              <Detail label={t.admin.referenceImage} value={selected.referenceImageName || t.admin.notUploaded} wide />
+              <div>
+                <p className="text-xs font-semibold uppercase text-slate-500">{t.admin.referenceImage}</p>
+                {selected.referenceImageUrl ? (
+                  <a
+                    href={selected.referenceImageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-[#d95e17] hover:underline"
+                  >
+                    {selected.referenceImageName || t.admin.viewImage}
+                    <ExternalLink className="size-3.5" />
+                  </a>
+                ) : (
+                  <p className="mt-1 text-sm text-slate-800">{t.admin.notUploaded}</p>
+                )}
+              </div>
               <Detail label={t.admin.message} value={selected.message || t.admin.noMessage} wide />
               <div className="grid gap-2">
                 <p className="text-xs font-semibold uppercase text-slate-500">{t.admin.internalNotes}</p>
                 <Textarea
                   value={selected.notes}
-                  onChange={(event) => updateLead(selected.id, { notes: event.target.value })}
+                  onChange={(event) => applyLocalPatch(selected.id, { notes: event.target.value })}
+                  onBlur={(event) => saveNotes(selected.id, event.currentTarget.value)}
+                  maxLength={10_000}
                   rows={4}
                 />
               </div>
@@ -277,7 +329,7 @@ function Detail({ label, value, wide = false }: { label: string; value: string; 
   return (
     <div className={wide ? "sm:col-span-2" : ""}>
       <p className="text-xs font-semibold uppercase text-slate-500">{label}</p>
-      <p className="mt-1 text-slate-800">{value}</p>
+      <p className="mt-1 whitespace-pre-wrap text-slate-800">{value}</p>
     </div>
   );
 }

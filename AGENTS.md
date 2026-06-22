@@ -66,10 +66,10 @@ README.md                        产品与部署概述
 
 ### 询盘提交
 
-1. `SourcingRequestForm` 用 `FormData` POST 到 `/api/sourcing-requests`。
-2. Route Handler 校验必填字段和邮箱；图片只允许 image MIME，最大 8 MB。
-3. 图片上传至公开访问的 Vercel Blob 路径 `sourcing-requests/<request-id>/...`。
-4. 询盘写入 Postgres 的 `sourcing_requests` 表；首次读写会执行 `CREATE TABLE IF NOT EXISTS`。
+1. `SourcingRequestForm` 在浏览器校验图片，并通过 `/api/sourcing-requests/upload` 获取短期令牌后直传 Vercel Blob，绕过 Vercel Function 4.5 MB 请求体限制。
+2. 图片只允许 image MIME，最大 8 MB，保存到公开访问的 `sourcing-requests/<request-id>/...` 路径。
+3. 表单删除文件本体后，用小型 `FormData` POST 到 `/api/sourcing-requests`；Route Handler 重新校验必填字段、邮箱、稳定选项和 Blob metadata。
+4. 询盘写入 Postgres 的 `sourcing_requests` 表；首次读写会执行 `CREATE TABLE IF NOT EXISTS`。入库失败时会清理已验证的 Blob。
 5. 编号格式为 `SP-<timestamp>-<8位UUID片段>`。
 
 修改表单字段时必须同步检查：表单控件、API 必填字段、`SourcingLead` 类型、建表 SQL、INSERT、行映射和后台详情/CSV。当前实现只有建表，没有正式 migration 系统；已存在的表不会因修改 `CREATE TABLE IF NOT EXISTS` 自动增加新列。

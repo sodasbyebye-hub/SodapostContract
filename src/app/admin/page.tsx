@@ -1,24 +1,25 @@
-"use client";
+import { redirect } from "next/navigation";
 
+import { AdminDashboardHeader } from "@/components/admin-dashboard-header";
 import { AdminLeadTable } from "@/components/admin-lead-table";
-import { PageHeader } from "@/components/section";
-import { useI18n } from "@/lib/i18n";
+import { hasAdminSession } from "@/lib/admin-auth";
+import { listSourcingRequests } from "@/lib/sourcing-requests";
 
-export default function AdminPage() {
-  const { t } = useI18n();
+export const dynamic = "force-dynamic";
+
+export default async function AdminPage() {
+  if (!(await hasAdminSession())) {
+    redirect("/admin/login");
+  }
+
+  const leads = await listSourcingRequests();
 
   return (
-    <>
-      <PageHeader
-        eyebrow={t.footer.adminDemo}
-        title={t.pages.adminTitle}
-        description={t.pages.adminDescription}
-      />
-      <section className="px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <AdminLeadTable />
-        </div>
-      </section>
-    </>
+    <section className="px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <AdminDashboardHeader />
+        <AdminLeadTable initialLeads={leads} />
+      </div>
+    </section>
   );
 }
