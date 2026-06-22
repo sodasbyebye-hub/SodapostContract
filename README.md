@@ -1,65 +1,60 @@
 # SodaPost
 
-Premium B2B sourcing agency website for SodaPost, a China sourcing partner for global e-commerce sellers.
+SodaPost is a multilingual B2B sourcing website for global e-commerce sellers. Buyers can submit private sourcing requests, including reference images, while an authenticated admin dashboard supports review, filtering, status updates, internal notes, and CSV export.
 
 ## Stack
 
-- Next.js App Router
-- TypeScript
-- Tailwind CSS
-- shadcn/ui primitives
-- Framer Motion
-- Local mock data and browser localStorage for demo lead capture
+- Next.js 16 App Router, React 19, TypeScript
+- Tailwind CSS 4 and shadcn/ui
+- Neon/Postgres for sourcing requests
+- Vercel Blob for public reference-image storage
+- Signed httpOnly cookie authentication for the shared admin account
 
-## Pages
-
-- `/`
-- `/services`
-- `/how-it-works`
-- `/product-categories`
-- `/pricing`
-- `/case-studies`
-- `/about`
-- `/contact`
-- `/sourcing-request`
-- `/admin`
-
-## Local Development
+## Local development
 
 ```bash
 pnpm install
+cp .env.local.example .env.local
 pnpm dev
 ```
 
-Build and lint:
+Required environment variables:
+
+```dotenv
+DATABASE_URL="postgresql://..."
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_..."
+ADMIN_PASSWORD="..."
+ADMIN_SESSION_SECRET="..."
+```
+
+`ADMIN_SESSION_SECRET` should be a long random value. Never commit `.env.local`.
+
+## Verification
 
 ```bash
 pnpm lint
 pnpm build
+pnpm start
 ```
 
-## Demo Behavior
+The public content pages can build without live storage access. Submitting a request and opening `/admin` require the corresponding Neon, Blob, and admin environment variables.
 
-The sourcing request form validates required buyer and product fields, shows:
+## Sourcing request flow
 
-> Thank you. Our sourcing team will review your request and contact you within 24 hours.
+1. The browser validates an optional reference image and uploads it directly to Vercel Blob using a short-lived, path-restricted token. Images must use an image MIME type and be no larger than 8 MB.
+2. The form sends the remaining fields and Blob metadata to `/api/sourcing-requests`.
+3. The server validates the fields and Blob metadata, creates the table if needed, and inserts the request into Neon/Postgres.
+4. If persistence fails after a verified upload, the server deletes that Blob.
 
-Submitted leads are stored in browser `localStorage` under `sodapost_sourcing_requests`. The `/admin` page combines those local submissions with seeded mock leads.
+## Admin
 
-The admin dashboard is intentionally open for demo purposes. It is not production authentication.
+- Visit `/admin/login` and sign in with `ADMIN_PASSWORD`.
+- Successful login creates the signed `sodapost_admin_session` cookie for seven days.
+- `/admin` reads live requests dynamically; status and note mutations re-check the signed session on the server.
+- Reference-image Blob URLs are public. Anyone with the original URL can access an uploaded image.
 
-## Production Notes
+The project does not currently include email/CRM notifications, multiple admin accounts, audit history, a supplier portal, rate limiting, or a formal migration system.
 
-This demo does not include a real database, email delivery, CRM sync, file upload storage, supplier portal, or authentication. A production version should add:
+## WhatsApp placeholder
 
-- Server-side lead persistence
-- Secure admin authentication
-- Email or CRM notifications
-- Real file storage for reference images
-- Audit/history for status and notes changes
-
-The site is buyer-facing and does not publicly list supplier contact information.
-
-## WhatsApp Placeholder
-
-The floating WhatsApp button currently uses a placeholder `wa.me` link. Replace it with the official SodaPost number before production use.
+The floating WhatsApp button still uses a placeholder `wa.me` number. Replace it in `src/components/whatsapp-floating-button.tsx` before production launch.

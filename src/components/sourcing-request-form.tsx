@@ -1,59 +1,78 @@
 "use client";
 
+import { upload } from "@vercel/blob/client";
 import { FormEvent, useState } from "react";
-import { CheckCircle2, Upload } from "lucide-react";
+import { AlertCircle, CheckCircle2, LoaderCircle, Upload } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
-import { LOCAL_LEADS_KEY, type SourcingLead } from "@/lib/leads";
+import { createSourcingRequestId } from "@/lib/leads";
 import { categories, platformOptions } from "@/lib/site-data";
-
-function readLeads(): SourcingLead[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(window.localStorage.getItem(LOCAL_LEADS_KEY) || "[]") as SourcingLead[];
-  } catch {
-    return [];
-  }
-}
+import { getReferenceImagePath, MAX_REFERENCE_IMAGE_SIZE } from "@/lib/sourcing-upload";
 
 export function SourcingRequestForm() {
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { labelCategory, labelPlatform, t } = useI18n();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isSubmitting) return;
+
     const form = event.currentTarget;
-    const data = new FormData(form);
-    const file = data.get("referenceImage");
+    const formData = new FormData(form);
+    const fileValue = formData.get("referenceImage");
+    const file = fileValue instanceof File && fileValue.size > 0 ? fileValue : null;
 
-    const lead: SourcingLead = {
-      id: `SP-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      name: String(data.get("name") || ""),
-      companyName: String(data.get("companyName") || ""),
-      email: String(data.get("email") || ""),
-      whatsapp: String(data.get("whatsapp") || ""),
-      countryMarket: String(data.get("countryMarket") || ""),
-      sellingPlatform: String(data.get("sellingPlatform") || ""),
-      productCategory: String(data.get("productCategory") || ""),
-      productDescription: String(data.get("productDescription") || ""),
-      targetQuantity: String(data.get("targetQuantity") || ""),
-      targetPrice: String(data.get("targetPrice") || ""),
-      needCustomLogo: data.get("needCustomLogo") === "on",
-      needCustomPackaging: data.get("needCustomPackaging") === "on",
-      needSamples: data.get("needSamples") === "on",
-      referenceImageName: file instanceof File && file.name ? file.name : "",
-      message: String(data.get("message") || ""),
-      status: "New",
-      notes: "",
-    };
+    setSuccess(false);
+    setError("");
 
-    window.localStorage.setItem(LOCAL_LEADS_KEY, JSON.stringify([lead, ...readLeads()]));
-    form.reset();
-    setSuccess(true);
+    if (file && !file.type.startsWith("image/")) {
+      setError(t.form.invalidImageType);
+      return;
+    }
+
+    if (file && file.size > MAX_REFERENCE_IMAGE_SIZE) {
+      setError(t.form.imageTooLarge);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const requestId = createSourcingRequestId();
+      formData.delete("referenceImage");
+      formData.set("id", requestId);
+
+      if (file) {
+        const blob = await upload(getReferenceImagePath(requestId, file.name), file, {
+          access: "public",
+          handleUploadUrl: "/api/sourcing-requests/upload",
+        });
+        formData.set("referenceImageName", file.name);
+        formData.set("referenceImageUrl", blob.url);
+      }
+
+      const response = await fetch("/api/sourcing-requests", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Request submission failed.");
+      }
+
+      form.reset();
+      setSuccess(true);
+    } catch (submitError) {
+      console.error("Unable to submit sourcing request:", submitError);
+      setError(t.form.submitError);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -65,6 +84,12 @@ export function SourcingRequestForm() {
         <div className="mb-6 flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
           <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
           <p>{t.form.success}</p>
+        </div>
+      ) : null}
+      {error ? (
+        <div className="mb-6 flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
+          <AlertCircle className="mt-0.5 size-5 shrink-0" />
+          <p>{error}</p>
         </div>
       ) : null}
       <div className="grid gap-5 md:grid-cols-2">
@@ -132,9 +157,11 @@ export function SourcingRequestForm() {
       </div>
       <button
         type="submit"
-        className="mt-7 h-12 w-full rounded-lg bg-[#f26f21] px-5 text-sm font-semibold text-white transition hover:bg-[#d95e17]"
+        disabled={isSubmitting}
+        className="mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#f26f21] px-5 text-sm font-semibold text-white transition hover:bg-[#d95e17] disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {t.common.submitSourcingRequest}
+        {isSubmitting ? <LoaderCircle className="size-4 animate-spin" /> : null}
+        {isSubmitting ? t.form.submitting : t.common.submitSourcingRequest}
       </button>
     </form>
   );
