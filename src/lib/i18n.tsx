@@ -1,0 +1,936 @@
+"use client";
+
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+
+export const locales = ["en", "zh", "vi", "ms", "fil", "th"] as const;
+export type Locale = (typeof locales)[number];
+
+const STORAGE_KEY = "sodapost_locale";
+
+export const localeLabels: Record<Locale, string> = {
+  en: "English",
+  zh: "中文",
+  vi: "Tiếng Việt",
+  ms: "Bahasa Melayu",
+  fil: "Filipino",
+  th: "ภาษาไทย",
+};
+
+const en = {
+  brandSubtitle: "China sourcing partner",
+  nav: {
+    services: "Services",
+    howItWorks: "How It Works",
+    categories: "Categories",
+    pricing: "Pricing",
+    caseStudies: "Case Studies",
+    about: "About",
+    contact: "Contact",
+    submitRequest: "Submit Request",
+    submitSourcingRequest: "Submit Sourcing Request",
+    mobileDescription: "Buyer-focused sourcing support from request to shipment.",
+    openNavigation: "Open navigation",
+    language: "Language",
+  },
+  footer: {
+    intro:
+      "SodaPost helps global e-commerce sellers source reliable products from China without turning your sourcing process into a public supplier directory.",
+    pages: "Pages",
+    buyerActions: "Buyer actions",
+    getQuote: "Get a Free Quote",
+    adminDemo: "Admin Demo",
+    copyright: "© 2026 SodaPost.",
+  },
+  common: {
+    services: "Services",
+    productCategories: "Product Categories",
+    howItWorks: "How It Works",
+    caseStudies: "Case Studies",
+    submitSourcingRequest: "Submit Sourcing Request",
+    getQuote: "Get a Free Quote",
+    exploreCategories: "Explore categories",
+    startOption: "Start with this option",
+    popular: "Popular starting point",
+    readyTitle: "Ready to source your next product from China?",
+    readyDescription:
+      "Send SodaPost your product requirements and our sourcing team will review the opportunity within 24 hours.",
+  },
+  hero: {
+    eyebrow: "Private sourcing support for overseas buyers",
+    title: "Source Reliable Products from China for Your E-commerce Business",
+    subtitle:
+      "SodaPost helps global online sellers find verified Chinese suppliers, arrange samples, customize packaging, inspect quality, and coordinate shipping.",
+  },
+  trustHighlights: [
+    "Verified supplier shortlists",
+    "Sample and packaging coordination",
+    "Pre-shipment inspection support",
+    "Shipping-ready documentation",
+  ],
+  metrics: [
+    { label: "Core sourcing stages", value: "7" },
+    { label: "Buyer markets supported", value: "Global" },
+    { label: "Response window", value: "24h" },
+  ],
+  services: [
+    {
+      title: "Product Sourcing",
+      description:
+        "Turn product ideas, screenshots, or competitor references into qualified sourcing options from China.",
+    },
+    {
+      title: "Supplier Matching",
+      description: "Get matched with factories and trading partners suited to your category, quantity, and market.",
+    },
+    {
+      title: "Supplier Verification",
+      description: "Review business scope, export experience, product fit, and operational signals before you commit.",
+    },
+    {
+      title: "Sample Arrangement",
+      description:
+        "Coordinate samples, compare quality, collect feedback, and refine product requirements before bulk orders.",
+    },
+    {
+      title: "Private Label & Packaging",
+      description:
+        "Develop logo placement, packaging options, inserts, barcodes, and e-commerce-ready presentation.",
+    },
+    {
+      title: "Quality Inspection",
+      description:
+        "Set inspection checkpoints for materials, workmanship, packaging, cartons, and pre-shipment readiness.",
+    },
+    {
+      title: "Shipping Coordination",
+      description: "Coordinate pickup, consolidation, documentation, and freight options with your forwarder or ours.",
+    },
+  ],
+  categories: [
+    { title: "Apparel & Fashion", description: "Seasonal basics, activewear, accessories, and custom apparel programs." },
+    {
+      title: "Sun Protection Clothing",
+      description: "UPF styles, lightweight outdoor layers, hats, sleeves, and beach-market products.",
+    },
+    { title: "Beauty Tools", description: "Brushes, organizers, skincare tools, mirrors, and salon-ready accessories." },
+    { title: "Pet Supplies", description: "Pet travel, grooming, toys, feeders, carriers, and private label accessories." },
+    { title: "Home & Kitchen", description: "Kitchen gadgets, storage, decor, cleaning tools, and lifestyle essentials." },
+    { title: "Outdoor & Travel", description: "Travel organizers, camping accessories, bags, bottles, and portable gear." },
+    { title: "Car Accessories", description: "Interior organizers, cleaning tools, phone mounts, and comfort accessories." },
+    { title: "Phone Accessories", description: "Cases, stands, chargers, lens kits, cables, and social commerce bundles." },
+    { title: "Fitness Products", description: "Resistance bands, recovery tools, home workout accessories, and gym add-ons." },
+    {
+      title: "TikTok Viral Products",
+      description: "Fast-moving trend products with packaging, sample, and shipping coordination.",
+    },
+  ],
+  processSteps: [
+    {
+      title: "Submit your request",
+      description: "Share your product idea, target market, quantity, price range, platform, and reference images.",
+    },
+    {
+      title: "Review qualified options",
+      description: "We research matching suppliers, compare fit, and prepare a shortlist or sourcing report.",
+    },
+    {
+      title: "Validate samples and packaging",
+      description: "We coordinate samples, logo requirements, packaging details, and quality expectations.",
+    },
+    {
+      title: "Move into production and shipping",
+      description: "We help track production, inspection, cartons, documents, and shipping coordination.",
+    },
+  ],
+  pricingPlans: [
+    {
+      name: "Free Request",
+      price: "$0",
+      description: "Best for first conversations and quick feasibility checks.",
+      features: ["Submit product details", "Initial review", "Recommended next step"],
+    },
+    {
+      name: "Supplier Matching",
+      price: "from $49",
+      description: "Best for sellers who need vetted supplier options quickly.",
+      features: ["Supplier shortlist", "Basic requirement matching", "Buyer-ready summary"],
+      highlighted: true,
+    },
+    {
+      name: "Sourcing Report",
+      price: "from $99",
+      description: "Best for comparing product options before samples or negotiation.",
+      features: ["Category research", "Supplier comparison", "Pricing and MOQ notes"],
+    },
+    {
+      name: "Custom Sourcing Project",
+      price: "custom price",
+      description: "Best for private label, complex packaging, or multi-SKU sourcing.",
+      features: ["Dedicated sourcing workflow", "Sampling support", "Inspection and shipping coordination"],
+    },
+  ],
+  caseStudies: [
+    {
+      company: "Shopify outdoor brand",
+      category: "Sun protection clothing",
+      result: "3 sample rounds completed before summer launch",
+      summary:
+        "SodaPost helped compare fabric, UPF claims, logo placement, and packaging options across multiple qualified factories.",
+    },
+    {
+      company: "TikTok Shop beauty seller",
+      category: "Beauty tools",
+      result: "Private label packaging prepared for first bulk order",
+      summary:
+        "The seller received supplier matching, sample consolidation, insert-card guidance, and inspection checkpoints.",
+    },
+    {
+      company: "Amazon pet accessories seller",
+      category: "Pet supplies",
+      result: "Supplier risk reduced before re-order",
+      summary:
+        "We reviewed supplier fit, sample quality, carton requirements, and freight coordination for an upgraded product line.",
+    },
+  ],
+  pages: {
+    homeServicesTitle: "A sourcing team between your product idea and your China supply chain",
+    homeServicesDescription:
+      "SodaPost coordinates the details that matter to global e-commerce sellers: supplier fit, samples, private label packaging, inspection checkpoints, and shipping handoff.",
+    homeCategoriesTitle: "Built for product categories that move in e-commerce",
+    homeCategoriesDescription:
+      "From apparel and beauty tools to pet supplies and TikTok viral products, SodaPost focuses on buyer requirements rather than publishing supplier lists.",
+    homeProcessTitle: "A clear 4-step process from request to shipment",
+    homeProcessDescription: "Every project starts with buyer requirements, not a public supplier directory.",
+    homeCaseTitle: "Representative sourcing wins for online sellers",
+    homeCaseDescription:
+      "Mock case studies show the type of sourcing problems SodaPost helps solve, from sample validation to private label packaging.",
+    servicesTitle: "China sourcing services for serious e-commerce operators",
+    servicesDescription:
+      "SodaPost supports the sourcing work that happens before and after a supplier quote: matching, verification, samples, packaging, inspection, and shipping coordination.",
+    servicesSectionTitle: "Services designed around buyer decisions",
+    servicesSectionDescription:
+      "We do not publish supplier contact lists. We help buyers make better sourcing decisions and manage the operational details.",
+    howTitle: "From product brief to sample validation and shipping handoff",
+    howDescription:
+      "A structured workflow helps overseas sellers compare options, reduce supplier risk, and keep product requirements organized.",
+    howSectionTitle: "The SodaPost sourcing process",
+    howSectionDescription:
+      "Each step keeps the buyer in control while SodaPost coordinates the supplier-side details.",
+    categoriesTitle: "Sourcing support for fast-moving e-commerce product categories",
+    categoriesDescription:
+      "Share the product you want to source, your target quantity, and your market. SodaPost will review supplier fit privately.",
+    categoriesSectionTitle: "Category coverage",
+    categoriesSectionDescription:
+      "These are common starting points. If your product is outside this list, submit a request and we will review feasibility.",
+    pricingTitle: "Start with a free request, then choose the right sourcing depth",
+    pricingDescription:
+      "Pricing depends on how much research, comparison, sampling, packaging, and coordination your product needs.",
+    pricingSectionTitle: "Simple entry points for sourcing work",
+    pricingSectionDescription:
+      "A first request is free. Paid options help cover deeper supplier matching, reports, and custom project coordination.",
+    caseTitle: "Representative sourcing outcomes for e-commerce sellers",
+    caseDescription:
+      "These mock case studies show the kinds of operational problems SodaPost helps solve without exposing supplier contacts.",
+    caseSectionTitle: "Sample, packaging, inspection, and freight coordination",
+    caseSectionDescription:
+      "SodaPost focuses on the middle work between idea and delivery, where most sourcing projects either get organized or fall apart.",
+    aboutTitle: "A sourcing agency built for overseas e-commerce buyers",
+    aboutDescription:
+      "SodaPost helps sellers navigate China sourcing with a private, requirement-led process instead of a public supplier directory.",
+    aboutSectionTitle: "We coordinate the details buyers cannot afford to miss",
+    aboutSectionDescription:
+      "The goal is not to hand you a list of names. The goal is to understand your product, compare qualified options, coordinate samples, and keep production and shipping details visible.",
+    contactTitle: "Talk to SodaPost about your next sourcing project",
+    contactDescription:
+      "Send your product brief, target market, quantity, and packaging needs. The fastest path is the sourcing request form.",
+    contactSectionTitle: "Buyer contact channels",
+    contactSectionDescription:
+      "Use these channels for SodaPost agency contact only. Supplier contact information is not publicly listed.",
+    openFullRequest: "Open full sourcing request",
+    whatsappNote: "Placeholder demo link in the floating button.",
+    requestTitle: "Submit your product requirements privately",
+    requestDescription:
+      "Tell SodaPost what you want to source, how you sell, and what support you need. Our sourcing team will review your request within 24 hours.",
+    requestSectionTitle: "What to include",
+    requestSectionDescription:
+      "Add target quantity, target price, platform, packaging needs, and any image or link references. More context helps us find better-fit options.",
+    requestNotice:
+      "Your request is for SodaPost review only. This demo stores submissions in your browser so the mock admin dashboard can display them.",
+    adminTitle: "Sourcing request dashboard",
+    adminDescription:
+      "View mock leads, search and filter requests, update status, edit notes, open lead details, and export visible rows to CSV.",
+  },
+  aboutVisuals: [
+    "Global buyer context",
+    "Product and packaging review",
+    "Supplier fit checks",
+    "Shipping coordination",
+  ],
+  aboutVisualDescription: "A practical checkpoint in the SodaPost sourcing workflow.",
+  contact: {
+    email: "Email",
+    whatsapp: "WhatsApp",
+  },
+  form: {
+    success: "Thank you. Our sourcing team will review your request and contact you within 24 hours.",
+    name: "Name",
+    companyName: "Company Name",
+    email: "Email",
+    whatsapp: "WhatsApp",
+    countryMarket: "Country / Market",
+    sellingPlatform: "Selling Platform",
+    productCategory: "Product Category",
+    targetQuantity: "Target Quantity",
+    targetPrice: "Target Price",
+    needCustomLogo: "Need Custom Logo",
+    needCustomPackaging: "Need Custom Packaging",
+    needSamples: "Need Samples",
+    productDescription: "Product Description",
+    productDescriptionPlaceholder:
+      "Describe the product, materials, size, reference links, quality level, or competitors.",
+    uploadReferenceImage: "Upload Reference Image",
+    message: "Message",
+    messagePlaceholder: "Anything else our sourcing team should know?",
+    selectOption: "Select an option",
+  },
+  admin: {
+    searchPlaceholder: "Search leads, markets, platforms, or categories",
+    allStatuses: "All statuses",
+    exportCsv: "Export CSV",
+    lead: "Lead",
+    market: "Market",
+    category: "Category",
+    status: "Status",
+    notes: "Notes",
+    details: "Details",
+    view: "View",
+    noLeads: "No leads match the current filters.",
+    addNotes: "Add internal notes",
+    leadId: "Lead ID",
+    created: "Created",
+    countryMarket: "Country / Market",
+    sellingPlatform: "Selling Platform",
+    productCategory: "Product Category",
+    targetQuantity: "Target Quantity",
+    targetPrice: "Target Price",
+    productDescription: "Product Description",
+    customLogo: "Custom Logo",
+    customPackaging: "Custom Packaging",
+    samples: "Samples",
+    referenceImage: "Reference Image",
+    notUploaded: "Not uploaded",
+    message: "Message",
+    noMessage: "No extra message",
+    internalNotes: "Internal Notes",
+    yes: "Yes",
+    no: "No",
+  },
+  categoryLabels: {
+    "Apparel & Fashion": "Apparel & Fashion",
+    "Sun Protection Clothing": "Sun Protection Clothing",
+    "Beauty Tools": "Beauty Tools",
+    "Pet Supplies": "Pet Supplies",
+    "Home & Kitchen": "Home & Kitchen",
+    "Outdoor & Travel": "Outdoor & Travel",
+    "Car Accessories": "Car Accessories",
+    "Phone Accessories": "Phone Accessories",
+    "Fitness Products": "Fitness Products",
+    "TikTok Viral Products": "TikTok Viral Products",
+  },
+  platformLabels: {
+    Shopify: "Shopify",
+    "TikTok Shop": "TikTok Shop",
+    Amazon: "Amazon",
+    Etsy: "Etsy",
+    eBay: "eBay",
+    "Walmart Marketplace": "Walmart Marketplace",
+    Other: "Other",
+  },
+  statusLabels: {
+    New: "New",
+    Contacted: "Contacted",
+    Quoting: "Quoting",
+    "Sample Stage": "Sample Stage",
+    "In Production": "In Production",
+    Completed: "Completed",
+    Lost: "Lost",
+  },
+};
+
+type Dictionary = typeof en;
+
+export const dictionaries: Record<Locale, Dictionary> = {
+  en,
+  zh: {
+    ...en,
+    brandSubtitle: "中国采购合作伙伴",
+    nav: {
+      services: "服务",
+      howItWorks: "流程",
+      categories: "产品品类",
+      pricing: "价格",
+      caseStudies: "案例",
+      about: "关于",
+      contact: "联系",
+      submitRequest: "提交需求",
+      submitSourcingRequest: "提交采购需求",
+      mobileDescription: "从需求提交到出货交接，为海外买家提供采购支持。",
+      openNavigation: "打开导航",
+      language: "语言",
+    },
+    footer: {
+      intro: "SodaPost 帮助全球电商卖家从中国采购可靠产品，同时不会把采购流程变成公开供应商目录。",
+      pages: "页面",
+      buyerActions: "买家操作",
+      getQuote: "获取免费报价",
+      adminDemo: "后台演示",
+      copyright: "© 2026 SodaPost。",
+    },
+    common: {
+      services: "服务",
+      productCategories: "产品品类",
+      howItWorks: "流程",
+      caseStudies: "案例",
+      submitSourcingRequest: "提交采购需求",
+      getQuote: "获取免费报价",
+      exploreCategories: "查看品类",
+      startOption: "选择此方案",
+      popular: "热门入门方案",
+      readyTitle: "准备好从中国采购下一款产品了吗？",
+      readyDescription: "发送你的产品需求，SodaPost 采购团队将在 24 小时内 review 并联系你。",
+    },
+    hero: {
+      eyebrow: "面向海外买家的私域采购支持",
+      title: "为你的电商业务从中国采购可靠产品",
+      subtitle:
+        "SodaPost 帮助全球线上卖家寻找经过验证的中国供应商、安排样品、定制包装、检查质量并协调运输。",
+    },
+    trustHighlights: ["验证供应商 shortlist", "样品与包装协调", "出货前质检支持", "运输文件交接"],
+    metrics: [
+      { label: "核心采购阶段", value: "7" },
+      { label: "支持买家市场", value: "全球" },
+      { label: "响应时间", value: "24h" },
+    ],
+    services: [
+      { title: "产品采购", description: "把产品想法、截图或竞品参考转化为来自中国的合格采购选项。" },
+      { title: "供应商匹配", description: "根据品类、数量和目标市场匹配合适的工厂或贸易伙伴。" },
+      { title: "供应商验证", description: "在承诺合作前 review 经营范围、出口经验、产品匹配度和运营信号。" },
+      { title: "样品安排", description: "协调样品、比较质量、收集反馈，并在大货前细化产品要求。" },
+      { title: "私标与包装", description: "推进 logo、包装方案、说明卡、条码和电商就绪的产品呈现。" },
+      { title: "质量检验", description: "设置材料、做工、包装、外箱和出货准备等质检节点。" },
+      { title: "运输协调", description: "与你的货代或我们的合作方协调提货、集货、单证和运输方案。" },
+    ],
+    categories: [
+      { title: "服装与时尚", description: "季节基础款、运动服、配饰和定制服装项目。" },
+      { title: "防晒服饰", description: "UPF 款式、轻量户外层、帽子、袖套和海滩市场产品。" },
+      { title: "美妆工具", description: "刷具、收纳、护肤工具、镜子和沙龙配件。" },
+      { title: "宠物用品", description: "宠物出行、美容、玩具、喂食器、背包和私标配件。" },
+      { title: "家居厨房", description: "厨房小工具、收纳、装饰、清洁工具和生活用品。" },
+      { title: "户外旅行", description: "旅行收纳、露营配件、包袋、水杯和便携装备。" },
+      { title: "汽车配件", description: "车内收纳、清洁工具、手机支架和舒适配件。" },
+      { title: "手机配件", description: "手机壳、支架、充电器、镜头套件、线材和社媒套装。" },
+      { title: "健身产品", description: "弹力带、恢复工具、居家健身配件和健身房小件。" },
+      { title: "TikTok 爆品", description: "快速变化的趋势产品，支持包装、样品和运输协调。" },
+    ],
+    processSteps: [
+      { title: "提交需求", description: "分享产品想法、目标市场、数量、价格区间、平台和参考图片。" },
+      { title: "review 合格选项", description: "我们调研匹配供应商、比较适配度，并准备 shortlist 或采购报告。" },
+      { title: "验证样品与包装", description: "我们协调样品、logo 要求、包装细节和质量预期。" },
+      { title: "进入生产与运输", description: "我们协助跟进生产、质检、外箱、单证和运输协调。" },
+    ],
+    pricingPlans: [
+      { name: "免费需求提交", price: "$0", description: "适合首次沟通和快速可行性判断。", features: ["提交产品信息", "初步 review", "推荐下一步"] },
+      { name: "供应商匹配", price: "from $49", description: "适合需要快速获得已筛选供应商选项的卖家。", features: ["供应商 shortlist", "基础需求匹配", "买家可读摘要"], highlighted: true },
+      { name: "采购报告", price: "from $99", description: "适合在打样或议价前比较产品选项。", features: ["品类调研", "供应商比较", "价格和 MOQ 备注"] },
+      { name: "定制采购项目", price: "custom price", description: "适合私标、复杂包装或多 SKU 采购。", features: ["专属采购流程", "打样支持", "质检与运输协调"] },
+    ],
+    caseStudies: [
+      { company: "Shopify 户外品牌", category: "防晒服饰", result: "夏季上线前完成 3 轮样品", summary: "SodaPost 协助比较面料、UPF 声明、logo 位置和多家合格工厂的包装方案。" },
+      { company: "TikTok Shop 美妆卖家", category: "美妆工具", result: "首批大货前完成私标包装", summary: "卖家获得供应商匹配、样品合并、说明卡建议和质检节点支持。" },
+      { company: "Amazon 宠物配件卖家", category: "宠物用品", result: "复购前降低供应商风险", summary: "我们 review 供应商适配、样品质量、外箱要求和升级产品线的运输协调。" },
+    ],
+    pages: {
+      ...en.pages,
+      homeServicesTitle: "连接产品想法与中国供应链的采购团队",
+      homeServicesDescription: "SodaPost 协调电商卖家真正关心的细节：供应商匹配、样品、私标包装、质检节点和运输交接。",
+      homeCategoriesTitle: "为电商高流动品类而建",
+      homeCategoriesDescription: "从服装、美妆工具到宠物用品和 TikTok 爆品，SodaPost 关注买家需求，而不是公开供应商名单。",
+      homeProcessTitle: "从需求到出货的清晰 4 步流程",
+      homeProcessDescription: "每个项目都从买家需求开始，而不是从公开供应商目录开始。",
+      homeCaseTitle: "线上卖家的代表性采购成果",
+      homeCaseDescription: "演示案例展示 SodaPost 如何解决从样品验证到私标包装的采购问题。",
+      servicesTitle: "面向成熟电商运营者的中国采购服务",
+      servicesDescription: "SodaPost 支持供应商报价前后的采购工作：匹配、验证、样品、包装、质检和运输协调。",
+      servicesSectionTitle: "围绕买家决策设计的服务",
+      servicesSectionDescription: "我们不发布供应商联系方式列表，而是帮助买家做更好的采购判断并管理运营细节。",
+      howTitle: "从产品 brief 到样品验证和出货交接",
+      howDescription: "结构化流程帮助海外卖家比较选项、降低供应商风险，并保持产品要求清晰。",
+      howSectionTitle: "SodaPost 采购流程",
+      howSectionDescription: "每一步都让买家保持控制，同时由 SodaPost 协调供应商侧细节。",
+      categoriesTitle: "为快速变化的电商品类提供采购支持",
+      categoriesDescription: "告诉我们你要采购的产品、目标数量和市场，SodaPost 将私下 review 供应商匹配度。",
+      categoriesSectionTitle: "品类覆盖",
+      categoriesSectionDescription: "这些是常见起点。即使产品不在列表中，也可以提交需求让我们 review 可行性。",
+      pricingTitle: "从免费需求开始，再选择合适的采购深度",
+      pricingDescription: "价格取决于你的产品需要多少调研、比较、打样、包装和协调工作。",
+      pricingSectionTitle: "简单清晰的采购入口",
+      pricingSectionDescription: "首次需求免费。付费选项覆盖更深入的供应商匹配、报告和定制项目协调。",
+      caseTitle: "电商卖家的代表性采购结果",
+      caseDescription: "这些演示案例展示 SodaPost 帮助解决的运营问题，同时不暴露供应商联系方式。",
+      caseSectionTitle: "样品、包装、质检和货运协调",
+      caseSectionDescription: "SodaPost 专注于从想法到交付之间最容易失控的中间环节。",
+      aboutTitle: "为海外电商买家打造的采购代理",
+      aboutDescription: "SodaPost 通过私密、需求驱动的流程帮助卖家进行中国采购，而不是提供公开供应商目录。",
+      aboutSectionTitle: "我们协调买家不能忽视的细节",
+      aboutSectionDescription: "目标不是给你一串名字，而是理解产品、比较合格选项、协调样品，并保持生产和运输细节透明。",
+      contactTitle: "与 SodaPost 沟通你的下一个采购项目",
+      contactDescription: "发送产品 brief、目标市场、数量和包装需求。最快方式是填写采购需求表。",
+      contactSectionTitle: "买家联系渠道",
+      contactSectionDescription: "这些渠道仅用于联系 SodaPost 代理服务。供应商联系方式不会公开展示。",
+      openFullRequest: "打开完整采购需求表",
+      whatsappNote: "浮动按钮中使用的是演示 WhatsApp 链接。",
+      requestTitle: "私密提交你的产品需求",
+      requestDescription: "告诉 SodaPost 你想采购什么、在哪里销售、需要哪些支持。我们的团队将在 24 小时内 review。",
+      requestSectionTitle: "建议包含的信息",
+      requestSectionDescription: "添加目标数量、目标价格、平台、包装需求和图片或链接参考。信息越完整，匹配越准确。",
+      requestNotice: "你的需求仅供 SodaPost review。本演示会把提交内容存到浏览器，以便后台演示显示。",
+      adminTitle: "采购需求后台",
+      adminDescription: "查看 mock leads、搜索筛选、更新状态、编辑备注、打开详情并导出 CSV。",
+    },
+    aboutVisuals: ["全球买家背景", "产品与包装 review", "供应商适配检查", "运输协调"],
+    aboutVisualDescription: "SodaPost 采购流程中的一个实用检查点。",
+    contact: { email: "邮箱", whatsapp: "WhatsApp" },
+    form: {
+      success: "谢谢。我们的采购团队将在 24 小时内 review 你的需求并联系你。",
+      name: "姓名",
+      companyName: "公司名称",
+      email: "邮箱",
+      whatsapp: "WhatsApp",
+      countryMarket: "国家 / 市场",
+      sellingPlatform: "销售平台",
+      productCategory: "产品品类",
+      targetQuantity: "目标数量",
+      targetPrice: "目标价格",
+      needCustomLogo: "需要定制 Logo",
+      needCustomPackaging: "需要定制包装",
+      needSamples: "需要样品",
+      productDescription: "产品描述",
+      productDescriptionPlaceholder: "描述产品、材料、尺寸、参考链接、质量等级或竞品。",
+      uploadReferenceImage: "上传参考图片",
+      message: "留言",
+      messagePlaceholder: "还有什么需要采购团队了解？",
+      selectOption: "请选择",
+    },
+    admin: {
+      ...en.admin,
+      searchPlaceholder: "搜索线索、市场、平台或品类",
+      allStatuses: "全部状态",
+      exportCsv: "导出 CSV",
+      lead: "线索",
+      market: "市场",
+      category: "品类",
+      status: "状态",
+      notes: "备注",
+      details: "详情",
+      view: "查看",
+      noLeads: "没有符合当前筛选的线索。",
+      addNotes: "添加内部备注",
+      leadId: "线索 ID",
+      created: "创建时间",
+      countryMarket: "国家 / 市场",
+      sellingPlatform: "销售平台",
+      productCategory: "产品品类",
+      targetQuantity: "目标数量",
+      targetPrice: "目标价格",
+      productDescription: "产品描述",
+      customLogo: "定制 Logo",
+      customPackaging: "定制包装",
+      samples: "样品",
+      referenceImage: "参考图片",
+      notUploaded: "未上传",
+      message: "留言",
+      noMessage: "无额外留言",
+      internalNotes: "内部备注",
+      yes: "是",
+      no: "否",
+    },
+    categoryLabels: {
+      "Apparel & Fashion": "服装与时尚",
+      "Sun Protection Clothing": "防晒服饰",
+      "Beauty Tools": "美妆工具",
+      "Pet Supplies": "宠物用品",
+      "Home & Kitchen": "家居厨房",
+      "Outdoor & Travel": "户外旅行",
+      "Car Accessories": "汽车配件",
+      "Phone Accessories": "手机配件",
+      "Fitness Products": "健身产品",
+      "TikTok Viral Products": "TikTok 爆品",
+    },
+    platformLabels: { ...en.platformLabels, Other: "其他" },
+    statusLabels: {
+      New: "新线索",
+      Contacted: "已联系",
+      Quoting: "报价中",
+      "Sample Stage": "样品阶段",
+      "In Production": "生产中",
+      Completed: "已完成",
+      Lost: "丢失",
+    },
+  },
+  vi: {
+    ...en,
+    brandSubtitle: "Đối tác sourcing tại Trung Quốc",
+    nav: {
+      services: "Dịch vụ",
+      howItWorks: "Quy trình",
+      categories: "Danh mục",
+      pricing: "Bảng giá",
+      caseStudies: "Case study",
+      about: "Giới thiệu",
+      contact: "Liên hệ",
+      submitRequest: "Gửi yêu cầu",
+      submitSourcingRequest: "Gửi yêu cầu sourcing",
+      mobileDescription: "Hỗ trợ buyer từ yêu cầu đến bàn giao vận chuyển.",
+      openNavigation: "Mở menu",
+      language: "Ngôn ngữ",
+    },
+    footer: {
+      intro:
+        "SodaPost giúp seller thương mại điện tử toàn cầu sourcing sản phẩm đáng tin cậy từ Trung Quốc mà không biến quy trình thành danh bạ nhà cung cấp công khai.",
+      pages: "Trang",
+      buyerActions: "Hành động buyer",
+      getQuote: "Nhận báo giá miễn phí",
+      adminDemo: "Admin demo",
+      copyright: "© 2026 SodaPost.",
+    },
+    common: {
+      services: "Dịch vụ",
+      productCategories: "Danh mục sản phẩm",
+      howItWorks: "Quy trình",
+      caseStudies: "Case study",
+      submitSourcingRequest: "Gửi yêu cầu sourcing",
+      getQuote: "Nhận báo giá miễn phí",
+      exploreCategories: "Xem danh mục",
+      startOption: "Chọn gói này",
+      popular: "Điểm bắt đầu phổ biến",
+      readyTitle: "Sẵn sàng sourcing sản phẩm tiếp theo từ Trung Quốc?",
+      readyDescription: "Gửi yêu cầu sản phẩm, đội sourcing SodaPost sẽ review trong vòng 24 giờ.",
+    },
+    hero: {
+      eyebrow: "Hỗ trợ sourcing riêng cho buyer quốc tế",
+      title: "Tìm nguồn sản phẩm đáng tin cậy từ Trung Quốc cho doanh nghiệp e-commerce của bạn",
+      subtitle:
+        "SodaPost giúp seller online toàn cầu tìm nhà cung cấp Trung Quốc đã kiểm tra, sắp xếp mẫu, tùy chỉnh bao bì, kiểm tra chất lượng và điều phối vận chuyển.",
+    },
+    trustHighlights: ["Shortlist nhà cung cấp đã kiểm tra", "Điều phối mẫu và bao bì", "Hỗ trợ kiểm tra trước khi xuất hàng", "Hồ sơ sẵn sàng vận chuyển"],
+    metrics: [
+      { label: "Giai đoạn sourcing chính", value: "7" },
+      { label: "Thị trường buyer hỗ trợ", value: "Toàn cầu" },
+      { label: "Thời gian phản hồi", value: "24h" },
+    ],
+    services: [
+      { title: "Sourcing sản phẩm", description: "Biến ý tưởng, ảnh chụp hoặc tham chiếu đối thủ thành lựa chọn sourcing phù hợp từ Trung Quốc." },
+      { title: "Ghép nhà cung cấp", description: "Ghép với factory hoặc trading partner phù hợp theo danh mục, số lượng và thị trường." },
+      { title: "Xác minh nhà cung cấp", description: "Review phạm vi kinh doanh, kinh nghiệm xuất khẩu, độ phù hợp sản phẩm và tín hiệu vận hành." },
+      { title: "Sắp xếp mẫu", description: "Điều phối mẫu, so sánh chất lượng, thu thập feedback và tinh chỉnh yêu cầu trước đơn bulk." },
+      { title: "Private label & bao bì", description: "Phát triển vị trí logo, lựa chọn bao bì, insert, barcode và trình bày sẵn sàng bán online." },
+      { title: "Kiểm tra chất lượng", description: "Thiết lập checkpoint cho vật liệu, tay nghề, bao bì, carton và sẵn sàng xuất hàng." },
+      { title: "Điều phối vận chuyển", description: "Điều phối pickup, gom hàng, chứng từ và phương án freight với forwarder của bạn hoặc của chúng tôi." },
+    ],
+    categories: en.categories.map((item) => ({ ...item })),
+    processSteps: [
+      { title: "Gửi yêu cầu", description: "Chia sẻ ý tưởng sản phẩm, thị trường, số lượng, khoảng giá, platform và ảnh tham chiếu." },
+      { title: "Review lựa chọn phù hợp", description: "Chúng tôi nghiên cứu nhà cung cấp, so sánh độ phù hợp và chuẩn bị shortlist hoặc report." },
+      { title: "Xác nhận mẫu và bao bì", description: "Chúng tôi điều phối mẫu, yêu cầu logo, chi tiết bao bì và kỳ vọng chất lượng." },
+      { title: "Sản xuất và vận chuyển", description: "Chúng tôi hỗ trợ theo dõi sản xuất, kiểm tra, carton, chứng từ và vận chuyển." },
+    ],
+    pages: {
+      ...en.pages,
+      homeServicesTitle: "Đội sourcing kết nối ý tưởng sản phẩm với chuỗi cung ứng Trung Quốc",
+      homeServicesDescription: "SodaPost điều phối supplier fit, mẫu, bao bì private label, checkpoint chất lượng và bàn giao vận chuyển.",
+      homeCategoriesTitle: "Dành cho các danh mục e-commerce chuyển động nhanh",
+      homeCategoriesDescription: "Từ apparel, beauty tools đến pet supplies và TikTok viral products, SodaPost tập trung vào yêu cầu buyer.",
+      homeProcessTitle: "Quy trình 4 bước rõ ràng từ yêu cầu đến shipment",
+      homeProcessDescription: "Mỗi dự án bắt đầu từ yêu cầu buyer, không phải danh bạ nhà cung cấp công khai.",
+      homeCaseTitle: "Kết quả sourcing tiêu biểu cho seller online",
+      homeCaseDescription: "Case study demo cho thấy SodaPost hỗ trợ từ xác nhận mẫu đến bao bì private label.",
+      servicesTitle: "Dịch vụ sourcing Trung Quốc cho e-commerce operator nghiêm túc",
+      servicesDescription: "SodaPost hỗ trợ matching, verification, samples, packaging, inspection và shipping coordination.",
+      servicesSectionTitle: "Dịch vụ xoay quanh quyết định của buyer",
+      servicesSectionDescription: "Chúng tôi không công khai danh sách supplier contact; chúng tôi giúp buyer ra quyết định sourcing tốt hơn.",
+      howTitle: "Từ product brief đến xác nhận mẫu và bàn giao vận chuyển",
+      howDescription: "Quy trình có cấu trúc giúp seller quốc tế so sánh lựa chọn và giảm rủi ro supplier.",
+      howSectionTitle: "Quy trình sourcing SodaPost",
+      howSectionDescription: "Buyer vẫn kiểm soát từng bước, SodaPost điều phối phần supplier-side.",
+      categoriesTitle: "Hỗ trợ sourcing cho danh mục e-commerce tăng trưởng nhanh",
+      categoriesDescription: "Chia sẻ sản phẩm, số lượng và thị trường mục tiêu; SodaPost sẽ review supplier fit riêng tư.",
+      categoriesSectionTitle: "Danh mục hỗ trợ",
+      categoriesSectionDescription: "Nếu sản phẩm ngoài danh sách, hãy gửi yêu cầu để chúng tôi review tính khả thi.",
+      pricingTitle: "Bắt đầu miễn phí, sau đó chọn độ sâu sourcing phù hợp",
+      pricingDescription: "Giá phụ thuộc vào mức nghiên cứu, so sánh, sampling, packaging và coordination.",
+      pricingSectionTitle: "Các điểm bắt đầu đơn giản",
+      pricingSectionDescription: "Yêu cầu đầu tiên miễn phí. Gói trả phí hỗ trợ matching, report và custom project sâu hơn.",
+      caseTitle: "Kết quả sourcing tiêu biểu cho seller e-commerce",
+      caseDescription: "Case demo cho thấy vấn đề vận hành SodaPost xử lý mà không lộ supplier contact.",
+      caseSectionTitle: "Mẫu, bao bì, kiểm tra và freight coordination",
+      caseSectionDescription: "SodaPost tập trung vào phần giữa ý tưởng và delivery, nơi nhiều dự án dễ mất kiểm soát.",
+      aboutTitle: "Agency sourcing dành cho buyer e-commerce quốc tế",
+      aboutDescription: "SodaPost giúp seller sourcing từ Trung Quốc bằng quy trình riêng tư, dựa trên yêu cầu.",
+      aboutSectionTitle: "Chúng tôi điều phối những chi tiết buyer không thể bỏ lỡ",
+      aboutSectionDescription: "Mục tiêu không phải đưa danh sách tên, mà là hiểu sản phẩm, so sánh option và điều phối mẫu.",
+      contactTitle: "Trao đổi với SodaPost về dự án sourcing tiếp theo",
+      contactDescription: "Gửi product brief, thị trường, số lượng và nhu cầu bao bì. Form sourcing là cách nhanh nhất.",
+      contactSectionTitle: "Kênh liên hệ buyer",
+      contactSectionDescription: "Các kênh này chỉ dùng để liên hệ SodaPost. Không công khai supplier contact.",
+      openFullRequest: "Mở form sourcing đầy đủ",
+      whatsappNote: "Link WhatsApp trong nút nổi là placeholder demo.",
+      requestTitle: "Gửi yêu cầu sản phẩm riêng tư",
+      requestDescription: "Cho SodaPost biết bạn muốn source gì, bán ở đâu và cần hỗ trợ nào. Chúng tôi review trong 24 giờ.",
+      requestSectionTitle: "Nên bao gồm",
+      requestSectionDescription: "Thêm số lượng, giá mục tiêu, platform, nhu cầu bao bì và ảnh/link tham chiếu.",
+      requestNotice: "Yêu cầu chỉ để SodaPost review. Demo này lưu trong browser để admin mock hiển thị.",
+      adminTitle: "Dashboard yêu cầu sourcing",
+      adminDescription: "Xem lead mock, search/filter, cập nhật status, ghi notes, mở detail và export CSV.",
+    },
+    form: {
+      ...en.form,
+      success: "Cảm ơn bạn. Đội sourcing của chúng tôi sẽ review yêu cầu và liên hệ trong vòng 24 giờ.",
+      name: "Tên",
+      companyName: "Tên công ty",
+      countryMarket: "Quốc gia / thị trường",
+      sellingPlatform: "Nền tảng bán hàng",
+      productCategory: "Danh mục sản phẩm",
+      targetQuantity: "Số lượng mục tiêu",
+      targetPrice: "Giá mục tiêu",
+      needCustomLogo: "Cần logo riêng",
+      needCustomPackaging: "Cần bao bì riêng",
+      needSamples: "Cần mẫu",
+      productDescription: "Mô tả sản phẩm",
+      productDescriptionPlaceholder: "Mô tả sản phẩm, vật liệu, kích thước, link tham chiếu, chất lượng hoặc đối thủ.",
+      uploadReferenceImage: "Tải ảnh tham chiếu",
+      message: "Tin nhắn",
+      messagePlaceholder: "Thông tin nào khác đội sourcing nên biết?",
+      selectOption: "Chọn một tùy chọn",
+    },
+    admin: {
+      ...en.admin,
+      searchPlaceholder: "Tìm lead, thị trường, platform hoặc danh mục",
+      allStatuses: "Tất cả trạng thái",
+      exportCsv: "Xuất CSV",
+      lead: "Lead",
+      market: "Thị trường",
+      category: "Danh mục",
+      status: "Trạng thái",
+      notes: "Ghi chú",
+      details: "Chi tiết",
+      view: "Xem",
+      noLeads: "Không có lead phù hợp bộ lọc.",
+      addNotes: "Thêm ghi chú nội bộ",
+      created: "Ngày tạo",
+      countryMarket: "Quốc gia / thị trường",
+      sellingPlatform: "Nền tảng bán hàng",
+      productCategory: "Danh mục sản phẩm",
+      targetQuantity: "Số lượng mục tiêu",
+      targetPrice: "Giá mục tiêu",
+      productDescription: "Mô tả sản phẩm",
+      customLogo: "Logo riêng",
+      customPackaging: "Bao bì riêng",
+      referenceImage: "Ảnh tham chiếu",
+      notUploaded: "Chưa tải lên",
+      message: "Tin nhắn",
+      noMessage: "Không có tin nhắn thêm",
+      internalNotes: "Ghi chú nội bộ",
+      yes: "Có",
+      no: "Không",
+    },
+    categoryLabels: {
+      "Apparel & Fashion": "Thời trang & may mặc",
+      "Sun Protection Clothing": "Trang phục chống nắng",
+      "Beauty Tools": "Dụng cụ làm đẹp",
+      "Pet Supplies": "Đồ thú cưng",
+      "Home & Kitchen": "Nhà cửa & bếp",
+      "Outdoor & Travel": "Ngoài trời & du lịch",
+      "Car Accessories": "Phụ kiện xe hơi",
+      "Phone Accessories": "Phụ kiện điện thoại",
+      "Fitness Products": "Sản phẩm fitness",
+      "TikTok Viral Products": "Sản phẩm viral TikTok",
+    },
+    platformLabels: { ...en.platformLabels, Other: "Khác" },
+    statusLabels: {
+      New: "Mới",
+      Contacted: "Đã liên hệ",
+      Quoting: "Đang báo giá",
+      "Sample Stage": "Giai đoạn mẫu",
+      "In Production": "Đang sản xuất",
+      Completed: "Hoàn tất",
+      Lost: "Mất lead",
+    },
+  },
+  ms: {
+    ...en,
+    brandSubtitle: "Rakan sourcing China",
+    nav: { ...en.nav, services: "Servis", howItWorks: "Cara Kerja", categories: "Kategori", pricing: "Harga", caseStudies: "Kajian Kes", about: "Tentang", contact: "Hubungi", submitRequest: "Hantar Permintaan", submitSourcingRequest: "Hantar Permintaan Sourcing", mobileDescription: "Sokongan sourcing untuk pembeli dari permintaan hingga penghantaran.", openNavigation: "Buka navigasi", language: "Bahasa" },
+    footer: { ...en.footer, intro: "SodaPost membantu penjual e-dagang global mendapatkan produk boleh dipercayai dari China tanpa menjadikan proses sourcing sebagai direktori supplier awam.", pages: "Halaman", buyerActions: "Tindakan pembeli", getQuote: "Dapatkan Sebut Harga Percuma", adminDemo: "Demo Admin", copyright: "© 2026 SodaPost." },
+    common: { ...en.common, services: "Servis", productCategories: "Kategori Produk", howItWorks: "Cara Kerja", caseStudies: "Kajian Kes", submitSourcingRequest: "Hantar Permintaan Sourcing", getQuote: "Dapatkan Sebut Harga Percuma", exploreCategories: "Lihat kategori", startOption: "Mulakan dengan pilihan ini", popular: "Pilihan mula popular", readyTitle: "Sedia sourcing produk seterusnya dari China?", readyDescription: "Hantar keperluan produk anda dan pasukan SodaPost akan review dalam 24 jam." },
+    hero: { eyebrow: "Sokongan sourcing peribadi untuk pembeli luar negara", title: "Dapatkan produk yang boleh dipercayai dari China untuk bisnes e-commerce anda", subtitle: "SodaPost membantu penjual online global mencari supplier China yang disahkan, mengurus sampel, menyesuaikan pembungkusan, memeriksa kualiti dan menyelaras penghantaran." },
+    trustHighlights: ["Shortlist supplier disahkan", "Koordinasi sampel dan pembungkusan", "Sokongan pemeriksaan pra-penghantaran", "Dokumentasi sedia hantar"],
+    metrics: [{ label: "Peringkat sourcing utama", value: "7" }, { label: "Pasaran pembeli disokong", value: "Global" }, { label: "Masa respons", value: "24h" }],
+    services: [
+      { title: "Sourcing Produk", description: "Tukar idea produk, screenshot atau rujukan pesaing kepada pilihan sourcing berkualiti dari China." },
+      { title: "Padanan Supplier", description: "Dipadankan dengan factory dan trading partner sesuai mengikut kategori, kuantiti dan pasaran." },
+      { title: "Pengesahan Supplier", description: "Review skop perniagaan, pengalaman eksport, kesesuaian produk dan isyarat operasi." },
+      { title: "Pengurusan Sampel", description: "Selaras sampel, banding kualiti, kumpul maklum balas dan perhalus requirement sebelum bulk order." },
+      { title: "Private Label & Pembungkusan", description: "Bangunkan logo placement, pilihan packaging, insert, barcode dan persembahan e-commerce-ready." },
+      { title: "Pemeriksaan Kualiti", description: "Tetapkan checkpoint bahan, workmanship, packaging, carton dan readiness pra-penghantaran." },
+      { title: "Koordinasi Penghantaran", description: "Selaras pickup, konsolidasi, dokumen dan freight dengan forwarder anda atau kami." },
+    ],
+    categories: en.categories,
+    processSteps: [
+      { title: "Hantar permintaan", description: "Kongsi idea produk, pasaran, kuantiti, julat harga, platform dan imej rujukan." },
+      { title: "Review pilihan layak", description: "Kami kaji supplier sepadan, banding kesesuaian dan sediakan shortlist atau report." },
+      { title: "Sahkan sampel dan packaging", description: "Kami selaras sampel, requirement logo, detail packaging dan jangkaan kualiti." },
+      { title: "Masuk produksi dan shipping", description: "Kami bantu track produksi, inspection, carton, dokumen dan koordinasi shipping." },
+    ],
+    pages: { ...en.pages, servicesTitle: "Servis sourcing China untuk operator e-commerce serius", servicesSectionTitle: "Servis direka sekitar keputusan pembeli", categoriesSectionTitle: "Liputan kategori", adminTitle: "Dashboard permintaan sourcing", requestTitle: "Hantar requirement produk secara peribadi", contactTitle: "Bincang projek sourcing seterusnya dengan SodaPost" },
+    form: { ...en.form, success: "Terima kasih. Pasukan sourcing kami akan review permintaan anda dan menghubungi dalam 24 jam.", name: "Nama", companyName: "Nama Syarikat", countryMarket: "Negara / Pasaran", sellingPlatform: "Platform Jualan", productCategory: "Kategori Produk", targetQuantity: "Kuantiti Sasaran", targetPrice: "Harga Sasaran", needCustomLogo: "Perlu Logo Custom", needCustomPackaging: "Perlu Packaging Custom", needSamples: "Perlu Sampel", productDescription: "Deskripsi Produk", uploadReferenceImage: "Muat Naik Imej Rujukan", message: "Mesej", selectOption: "Pilih pilihan" },
+    admin: { ...en.admin, searchPlaceholder: "Cari lead, pasaran, platform atau kategori", allStatuses: "Semua status", exportCsv: "Eksport CSV", market: "Pasaran", category: "Kategori", status: "Status", notes: "Nota", details: "Butiran", view: "Lihat", noLeads: "Tiada lead sepadan dengan filter.", yes: "Ya", no: "Tidak" },
+    categoryLabels: en.categoryLabels,
+    platformLabels: { ...en.platformLabels, Other: "Lain" },
+    statusLabels: { New: "Baru", Contacted: "Dihubungi", Quoting: "Sebutharga", "Sample Stage": "Peringkat Sampel", "In Production": "Dalam Produksi", Completed: "Selesai", Lost: "Hilang" },
+  },
+  fil: {
+    ...en,
+    brandSubtitle: "China sourcing partner",
+    nav: { ...en.nav, services: "Mga Serbisyo", howItWorks: "Proseso", categories: "Kategorya", pricing: "Presyo", caseStudies: "Case Studies", about: "Tungkol", contact: "Contact", submitRequest: "Mag-submit", submitSourcingRequest: "Submit Sourcing Request", mobileDescription: "Sourcing support para sa buyers mula request hanggang shipment.", openNavigation: "Buksan ang navigation", language: "Wika" },
+    footer: { ...en.footer, intro: "Tinutulungan ng SodaPost ang global e-commerce sellers na mag-source ng reliable products mula China nang hindi ginagawang public supplier directory ang proseso.", pages: "Mga Pahina", buyerActions: "Buyer actions", getQuote: "Kumuha ng Libreng Quote", adminDemo: "Admin Demo", copyright: "© 2026 SodaPost." },
+    common: { ...en.common, services: "Mga Serbisyo", productCategories: "Product Categories", howItWorks: "Proseso", caseStudies: "Case Studies", submitSourcingRequest: "Submit Sourcing Request", getQuote: "Kumuha ng Libreng Quote", exploreCategories: "Tingnan ang categories", startOption: "Piliin ang option na ito", popular: "Popular na simula", readyTitle: "Ready ka na bang mag-source ng susunod na product mula China?", readyDescription: "Ipadala ang requirements at rerepasuhin ng SodaPost sourcing team sa loob ng 24 oras." },
+    hero: { eyebrow: "Private sourcing support para sa overseas buyers", title: "Mag-source ng reliable products mula China para sa iyong e-commerce business", subtitle: "Tinutulungan ng SodaPost ang online sellers na makahanap ng verified Chinese suppliers, mag-arrange ng samples, gumawa ng custom packaging, mag-inspect ng quality at mag-coordinate ng shipping." },
+    trustHighlights: ["Verified supplier shortlists", "Sample at packaging coordination", "Pre-shipment inspection support", "Shipping-ready documentation"],
+    metrics: [{ label: "Core sourcing stages", value: "7" }, { label: "Buyer markets supported", value: "Global" }, { label: "Response window", value: "24h" }],
+    services: [
+      { title: "Product Sourcing", description: "Gawing qualified sourcing options mula China ang product ideas, screenshots o competitor references." },
+      { title: "Supplier Matching", description: "I-match sa factories at trading partners na bagay sa category, quantity at market mo." },
+      { title: "Supplier Verification", description: "I-review ang business scope, export experience, product fit at operational signals bago mag-commit." },
+      { title: "Sample Arrangement", description: "I-coordinate ang samples, quality comparison, feedback at requirements bago bulk order." },
+      { title: "Private Label & Packaging", description: "Ayusin ang logo placement, packaging options, inserts, barcodes at e-commerce-ready presentation." },
+      { title: "Quality Inspection", description: "Mag-set ng checkpoints para materials, workmanship, packaging, cartons at pre-shipment readiness." },
+      { title: "Shipping Coordination", description: "I-coordinate ang pickup, consolidation, documentation at freight options." },
+    ],
+    categories: en.categories,
+    processSteps: [
+      { title: "Submit your request", description: "I-share ang product idea, market, quantity, price range, platform at reference images." },
+      { title: "Review qualified options", description: "Magre-research kami ng matching suppliers at maghahanda ng shortlist o sourcing report." },
+      { title: "Validate samples and packaging", description: "I-coordinate namin ang samples, logo requirements, packaging details at quality expectations." },
+      { title: "Move into production and shipping", description: "Tumutulong kami sa production tracking, inspection, cartons, documents at shipping coordination." },
+    ],
+    pages: { ...en.pages, servicesTitle: "China sourcing services para sa seryosong e-commerce operators", categoriesSectionTitle: "Category coverage", adminTitle: "Sourcing request dashboard", requestTitle: "I-submit nang private ang product requirements", contactTitle: "Makipag-usap sa SodaPost tungkol sa next sourcing project" },
+    form: { ...en.form, success: "Salamat. Rerepasuhin ng sourcing team ang request mo at kokontakin ka sa loob ng 24 oras.", name: "Pangalan", companyName: "Pangalan ng Kumpanya", countryMarket: "Bansa / Market", sellingPlatform: "Selling Platform", productCategory: "Product Category", targetQuantity: "Target Quantity", targetPrice: "Target Price", needCustomLogo: "Kailangan ng Custom Logo", needCustomPackaging: "Kailangan ng Custom Packaging", needSamples: "Kailangan ng Samples", productDescription: "Product Description", uploadReferenceImage: "Mag-upload ng Reference Image", message: "Message", selectOption: "Pumili ng option" },
+    admin: { ...en.admin, searchPlaceholder: "Maghanap ng leads, markets, platforms o categories", allStatuses: "Lahat ng status", exportCsv: "Export CSV", market: "Market", category: "Category", status: "Status", notes: "Notes", details: "Details", view: "View", noLeads: "Walang lead na tugma sa filters.", yes: "Oo", no: "Hindi" },
+    categoryLabels: en.categoryLabels,
+    platformLabels: { ...en.platformLabels, Other: "Iba pa" },
+    statusLabels: { New: "Bago", Contacted: "Na-contact", Quoting: "Nag-quote", "Sample Stage": "Sample Stage", "In Production": "In Production", Completed: "Completed", Lost: "Lost" },
+  },
+  th: {
+    ...en,
+    brandSubtitle: "พาร์ทเนอร์จัดหาสินค้าจากจีน",
+    nav: { ...en.nav, services: "บริการ", howItWorks: "ขั้นตอน", categories: "หมวดหมู่", pricing: "ราคา", caseStudies: "เคสศึกษา", about: "เกี่ยวกับ", contact: "ติดต่อ", submitRequest: "ส่งคำขอ", submitSourcingRequest: "ส่งคำขอจัดหา", mobileDescription: "ช่วยผู้ซื้อจากการส่งคำขอจนถึงการจัดส่ง", openNavigation: "เปิดเมนู", language: "ภาษา" },
+    footer: { ...en.footer, intro: "SodaPost ช่วยผู้ขายอีคอมเมิร์ซทั่วโลกจัดหาสินค้าที่เชื่อถือได้จากจีน โดยไม่เปิดข้อมูลซัพพลายเออร์เป็นสาธารณะ", pages: "หน้า", buyerActions: "การดำเนินการของผู้ซื้อ", getQuote: "ขอใบเสนอราคาฟรี", adminDemo: "เดโมแอดมิน", copyright: "© 2026 SodaPost." },
+    common: { ...en.common, services: "บริการ", productCategories: "หมวดหมู่สินค้า", howItWorks: "ขั้นตอน", caseStudies: "เคสศึกษา", submitSourcingRequest: "ส่งคำขอจัดหา", getQuote: "ขอใบเสนอราคาฟรี", exploreCategories: "ดูหมวดหมู่", startOption: "เริ่มด้วยตัวเลือกนี้", popular: "ตัวเลือกเริ่มต้นยอดนิยม", readyTitle: "พร้อมจัดหาสินค้าชิ้นต่อไปจากจีนแล้วหรือยัง?", readyDescription: "ส่งรายละเอียดสินค้าให้ SodaPost ทีมงานจะ review ภายใน 24 ชั่วโมง" },
+    hero: { eyebrow: "บริการจัดหาสินค้าส่วนตัวสำหรับผู้ซื้อต่างประเทศ", title: "จัดหาสินค้าที่เชื่อถือได้จากจีนสำหรับธุรกิจอีคอมเมิร์ซของคุณ", subtitle: "SodaPost ช่วยผู้ขายออนไลน์ทั่วโลกค้นหาซัพพลายเออร์จีนที่ตรวจสอบแล้ว จัดการตัวอย่าง ปรับแต่งแพ็กเกจ ตรวจคุณภาพ และประสานงานขนส่ง" },
+    trustHighlights: ["รายชื่อซัพพลายเออร์ที่ตรวจสอบแล้ว", "ประสานงานตัวอย่างและแพ็กเกจ", "สนับสนุนการตรวจสินค้าก่อนส่ง", "เอกสารพร้อมจัดส่ง"],
+    metrics: [{ label: "ขั้นตอน sourcing หลัก", value: "7" }, { label: "ตลาดผู้ซื้อที่รองรับ", value: "ทั่วโลก" }, { label: "เวลาตอบกลับ", value: "24h" }],
+    services: [
+      { title: "จัดหาสินค้า", description: "เปลี่ยนไอเดียสินค้า ภาพตัวอย่าง หรือสินค้าคู่แข่งให้เป็นตัวเลือก sourcing จากจีน" },
+      { title: "จับคู่ซัพพลายเออร์", description: "จับคู่กับโรงงานหรือพาร์ทเนอร์ที่เหมาะกับหมวดหมู่ จำนวน และตลาดของคุณ" },
+      { title: "ตรวจสอบซัพพลายเออร์", description: "review ขอบเขตธุรกิจ ประสบการณ์ส่งออก ความเหมาะสมของสินค้า และสัญญาณการดำเนินงาน" },
+      { title: "จัดการตัวอย่าง", description: "ประสานงานตัวอย่าง เปรียบเทียบคุณภาพ เก็บ feedback และปรับ requirement ก่อนสั่งผลิต" },
+      { title: "Private Label & Packaging", description: "พัฒนา logo placement ตัวเลือกแพ็กเกจ insert barcode และ presentation สำหรับ e-commerce" },
+      { title: "ตรวจคุณภาพ", description: "ตั้ง checkpoint สำหรับวัสดุ งานผลิต แพ็กเกจ กล่อง และความพร้อมก่อนส่ง" },
+      { title: "ประสานงานขนส่ง", description: "ประสานงานรับสินค้า รวมสินค้า เอกสาร และตัวเลือก freight กับ forwarder" },
+    ],
+    categories: en.categories,
+    processSteps: [
+      { title: "ส่งคำขอ", description: "แชร์ไอเดียสินค้า ตลาดเป้าหมาย จำนวน ช่วงราคา แพลตฟอร์ม และรูปอ้างอิง" },
+      { title: "review ตัวเลือกที่เหมาะสม", description: "เราค้นหาซัพพลายเออร์ เปรียบเทียบความเหมาะสม และเตรียม shortlist หรือ report" },
+      { title: "ตรวจตัวอย่างและแพ็กเกจ", description: "เราประสานงานตัวอย่าง ข้อกำหนด logo รายละเอียดแพ็กเกจ และคุณภาพ" },
+      { title: "เข้าสู่การผลิตและขนส่ง", description: "เราช่วยติดตามการผลิต ตรวจสินค้า กล่อง เอกสาร และการขนส่ง" },
+    ],
+    pages: { ...en.pages, servicesTitle: "บริการ sourcing จากจีนสำหรับผู้ขายอีคอมเมิร์ซจริงจัง", categoriesSectionTitle: "หมวดหมู่ที่รองรับ", adminTitle: "แดชบอร์ดคำขอ sourcing", requestTitle: "ส่ง requirement สินค้าแบบส่วนตัว", contactTitle: "คุยกับ SodaPost เรื่องโปรเจกต์ sourcing ถัดไป" },
+    form: { ...en.form, success: "ขอบคุณ ทีม sourcing ของเราจะ review คำขอและติดต่อคุณภายใน 24 ชั่วโมง", name: "ชื่อ", companyName: "ชื่อบริษัท", countryMarket: "ประเทศ / ตลาด", sellingPlatform: "แพลตฟอร์มขาย", productCategory: "หมวดหมู่สินค้า", targetQuantity: "จำนวนเป้าหมาย", targetPrice: "ราคาเป้าหมาย", needCustomLogo: "ต้องการโลโก้ custom", needCustomPackaging: "ต้องการแพ็กเกจ custom", needSamples: "ต้องการตัวอย่าง", productDescription: "รายละเอียดสินค้า", uploadReferenceImage: "อัปโหลดรูปอ้างอิง", message: "ข้อความ", selectOption: "เลือกตัวเลือก" },
+    admin: { ...en.admin, searchPlaceholder: "ค้นหา lead ตลาด platform หรือหมวดหมู่", allStatuses: "ทุกสถานะ", exportCsv: "Export CSV", lead: "Lead", market: "ตลาด", category: "หมวดหมู่", status: "สถานะ", notes: "โน้ต", details: "รายละเอียด", view: "ดู", noLeads: "ไม่มี lead ที่ตรงกับ filter", yes: "ใช่", no: "ไม่ใช่" },
+    categoryLabels: {
+      "Apparel & Fashion": "เสื้อผ้าและแฟชั่น",
+      "Sun Protection Clothing": "เสื้อผ้ากันแดด",
+      "Beauty Tools": "อุปกรณ์ความงาม",
+      "Pet Supplies": "อุปกรณ์สัตว์เลี้ยง",
+      "Home & Kitchen": "บ้านและครัว",
+      "Outdoor & Travel": "กลางแจ้งและท่องเที่ยว",
+      "Car Accessories": "อุปกรณ์รถยนต์",
+      "Phone Accessories": "อุปกรณ์โทรศัพท์",
+      "Fitness Products": "สินค้า fitness",
+      "TikTok Viral Products": "สินค้าไวรัล TikTok",
+    },
+    platformLabels: { ...en.platformLabels, Other: "อื่นๆ" },
+    statusLabels: { New: "ใหม่", Contacted: "ติดต่อแล้ว", Quoting: "กำลังเสนอราคา", "Sample Stage": "ขั้นตอนตัวอย่าง", "In Production": "กำลังผลิต", Completed: "เสร็จสิ้น", Lost: "เสียโอกาส" },
+  },
+};
+
+type LanguageContextValue = {
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
+  t: Dictionary;
+  labelCategory: (value: string) => string;
+  labelPlatform: (value: string) => string;
+  labelStatus: (value: string) => string;
+};
+
+const LanguageContext = createContext<LanguageContextValue | null>(null);
+
+function isLocale(value: string | null): value is Locale {
+  return Boolean(value && locales.includes(value as Locale));
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [locale, setLocaleState] = useState<Locale>("en");
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (isLocale(stored)) {
+        setLocaleState(stored);
+        document.documentElement.lang = stored;
+      }
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  function setLocale(nextLocale: Locale) {
+    setLocaleState(nextLocale);
+    window.localStorage.setItem(STORAGE_KEY, nextLocale);
+    document.documentElement.lang = nextLocale;
+  }
+
+  const value = useMemo<LanguageContextValue>(() => {
+    const t = dictionaries[locale] ?? dictionaries.en;
+
+    return {
+      locale,
+      setLocale,
+      t,
+      labelCategory: (category) => t.categoryLabels[category as keyof typeof t.categoryLabels] ?? category,
+      labelPlatform: (platform) => t.platformLabels[platform as keyof typeof t.platformLabels] ?? platform,
+      labelStatus: (status) => t.statusLabels[status as keyof typeof t.statusLabels] ?? status,
+    };
+  }, [locale]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+}
+
+export function useI18n() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error("useI18n must be used inside LanguageProvider");
+  }
+  return context;
+}
