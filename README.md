@@ -1,6 +1,6 @@
 # SodaPost
 
-SodaPost is a multilingual B2B sourcing website for global retailers, wholesalers, brands, and online sellers. Buyers can submit private sourcing requests, including reference images, while an authenticated admin dashboard supports review, filtering, status updates, internal notes, and CSV export.
+SodaPost is a multilingual B2B sourcing website for global retailers, wholesalers, brands, and online sellers. Buyers can submit private sourcing requests, including reference images, while an authenticated admin dashboard supports review, filtering, status updates, internal notes, bulk deletion, and CSV/Excel/Word/PDF export.
 
 ## Stack
 
@@ -51,7 +51,10 @@ The public content pages can build without live storage access. Submitting a req
 
 - Visit `/admin/login` and sign in with `ADMIN_PASSWORD`.
 - Successful login creates the signed `sodapost_admin_session` cookie for seven days.
-- `/admin` reads live requests dynamically; status and note mutations re-check the signed session on the server.
+- `/admin` reads live requests dynamically; status, note, and bulk-delete mutations re-check the signed session on the server.
+- The export API re-checks the admin session and generates the current filtered results as CSV, styled Excel, structured Word, or multilingual PDF files.
+- Bulk deletion removes the selected database rows and attempts to delete their uploaded reference-image Blobs as well.
+- Changing `ADMIN_PASSWORD` in Vercel only affects new deployments. Update it for Production, Preview, and Development as needed, then redeploy Production.
 - Reference-image Blob URLs are public. Anyone with the original URL can access an uploaded image.
 
 The project does not currently include email/CRM notifications, multiple admin accounts, audit history, a supplier portal, rate limiting, or a formal migration system.

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
+import { del } from "@vercel/blob";
 
 import type { LeadStatus, SourcingLead } from "@/lib/leads";
 
@@ -176,4 +177,30 @@ export async function updateSourcingRequestNotes(id: string, notes: string) {
   `;
 
   return rows[0] ? mapRow(rows[0] as DatabaseRow) : null;
+}
+
+export async function deleteSourcingRequests(ids: string[]) {
+  await ensureSchema();
+  const sql = getSql();
+  const rows = await sql`
+    DELETE FROM sourcing_requests
+    WHERE id IN (
+      SELECT jsonb_array_elements_text(${JSON.stringify(ids)}::jsonb)
+    )
+    RETURNING id, reference_image_url
+  `;
+
+  const referenceImageUrls = rows
+    .map((row) => (row.reference_image_url ? String(row.reference_image_url) : ""))
+    .filter(Boolean);
+
+  if (referenceImageUrls.length > 0) {
+    try {
+      await del(referenceImageUrls);
+    } catch (error) {
+      console.error("Unable to clean up deleted sourcing request blobs:", error);
+    }
+  }
+
+  return rows.map((row) => String(row.id));
 }

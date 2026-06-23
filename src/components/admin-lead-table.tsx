@@ -1,9 +1,18 @@
 "use client";
 
 import { useMemo, useRef, useState, useTransition } from "react";
-import { AlertCircle, Download, ExternalLink, LoaderCircle, Eye, Search } from "lucide-react";
+import { AlertCircle, Download, ExternalLink, LoaderCircle, Eye, Search, Trash2 } from "lucide-react";
 
-import { updateLeadNotes, updateLeadStatus } from "@/app/admin/actions";
+import { deleteLeads, updateLeadNotes, updateLeadStatus } from "@/app/admin/actions";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +23,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
@@ -30,15 +46,24 @@ const statusTone: Record<LeadStatus, string> = {
   Lost: "bg-slate-100 text-slate-700",
 };
 
+type ExportFormat = "csv" | "xlsx" | "docx" | "pdf";
+
 export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] }) {
   const [leads, setLeads] = useState(initialLeads);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"All" | LeadStatus>("All");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("xlsx");
+  const [isExporting, setIsExporting] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
+  const [exportError, setExportError] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isDeleting, startDeleteTransition] = useTransition();
   const savedNotes = useRef(new Map(initialLeads.map((lead) => [lead.id, lead.notes])));
-  const { labelCategory, labelPlatform, labelStatus, t } = useI18n();
+  const { labelCategory, labelPlatform, labelStatus, locale, t } = useI18n();
 
   function labelServicePlan(value: string) {
     const index = pricingPlans.findIndex((plan) => plan.value === value);
@@ -70,6 +95,50 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
   }, [leads, query, status]);
 
   const selected = selectedId ? leads.find((lead) => lead.id === selectedId) ?? null : null;
+  const allVisibleSelected = filtered.length > 0 && filtered.every((lead) => selectedIds.has(lead.id));
+  const someVisibleSelected = filtered.some((lead) => selectedIds.has(lead.id));
+
+  function toggleLeadSelection(id: string) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAllVisible() {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (allVisibleSelected) {
+        filtered.forEach((lead) => next.delete(lead.id));
+      } else {
+        filtered.forEach((lead) => next.add(lead.id));
+      }
+      return next;
+    });
+  }
+
+  function confirmDelete() {
+    const ids = [...selectedIds];
+    if (ids.length === 0 || isDeleting) return;
+
+    setDeleteError(false);
+    startDeleteTransition(async () => {
+      const result = await deleteLeads(ids);
+      if (!result.ok) {
+        setDeleteError(true);
+        return;
+      }
+
+      const deletedIds = new Set(ids);
+      setLeads((current) => current.filter((lead) => !deletedIds.has(lead.id)));
+      ids.forEach((id) => savedNotes.current.delete(id));
+      if (selectedId && deletedIds.has(selectedId)) setSelectedId(null);
+      setSelectedIds(new Set());
+      setDeleteDialogOpen(false);
+    });
+  }
 
   function applyLocalPatch(id: string, patch: Partial<SourcingLead>) {
     setLeads((current) => current.map((lead) => (lead.id === id ? { ...lead, ...patch } : lead)));
@@ -106,7 +175,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
     });
   }
 
-  function exportCsv() {
+  function getExportData() {
     const headers = [
       "ID",
       t.admin.created,
@@ -151,16 +220,46 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
       labelStatus(lead.status),
       lead.notes,
     ]);
-    const csv = [headers, ...rows]
-      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
-      .join("\n");
-    const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "sodapost-leads.csv";
-    anchor.click();
-    URL.revokeObjectURL(url);
+
+    return { headers, rows };
+  }
+
+  async function exportRequests() {
+    if (filtered.length === 0 || isExporting) return;
+
+    setExportError(false);
+    setIsExporting(true);
+    try {
+      const { headers, rows } = getExportData();
+      const response = await fetch("/api/admin/exports", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          format: exportFormat,
+          title: t.pages.adminTitle,
+          generatedAt: new Date().toLocaleString(locale),
+          columns: headers,
+          rows,
+        }),
+      });
+      if (!response.ok) throw new Error("Export failed");
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      const disposition = response.headers.get("Content-Disposition") ?? "";
+      const filename = disposition.match(/filename="([^"]+)"/)?.[1] ?? `sodapost-leads.${exportFormat}`;
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setExportError(true);
+    } finally {
+      setIsExporting(false);
+    }
   }
 
   return (
@@ -169,6 +268,18 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
         <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
           <AlertCircle className="mt-0.5 size-5 shrink-0" />
           <p>{t.admin.saveError}</p>
+        </div>
+      ) : null}
+      {deleteError ? (
+        <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
+          <AlertCircle className="mt-0.5 size-5 shrink-0" />
+          <p>{t.admin.deleteError}</p>
+        </div>
+      ) : null}
+      {exportError ? (
+        <div className="flex gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert">
+          <AlertCircle className="mt-0.5 size-5 shrink-0" />
+          <p>{t.admin.exportError}</p>
         </div>
       ) : null}
       <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_220px_auto]">
@@ -193,10 +304,46 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
             </option>
           ))}
         </select>
-        <Button onClick={exportCsv} className="bg-slate-950 text-white hover:bg-slate-800">
-          <Download />
-          {t.admin.exportCsv}
-        </Button>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {selectedIds.size > 0 ? (
+            <span className="mr-1 text-xs font-medium text-slate-500">
+              {t.admin.selectedCount.replace("{count}", String(selectedIds.size))}
+            </span>
+          ) : null}
+          <Select
+            value={exportFormat}
+            onValueChange={(value) => value && setExportFormat(value as ExportFormat)}
+          >
+            <SelectTrigger
+              aria-label={t.admin.exportFormat}
+              className="h-10 min-w-32 border-slate-200 bg-white px-3"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent align="end" className="min-w-44 p-1">
+              <SelectItem value="xlsx" className="py-2">{t.admin.exportExcel}</SelectItem>
+              <SelectItem value="docx" className="py-2">{t.admin.exportWord}</SelectItem>
+              <SelectItem value="pdf" className="py-2">{t.admin.exportPdf}</SelectItem>
+              <SelectItem value="csv" className="py-2">{t.admin.exportCsv}</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={exportRequests}
+            disabled={filtered.length === 0 || isExporting}
+            className="bg-slate-950 text-white hover:bg-slate-800"
+          >
+            {isExporting ? <LoaderCircle className="animate-spin" /> : <Download />}
+            {isExporting ? t.admin.exporting : t.admin.exportFile}
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => setDeleteDialogOpen(true)}
+            disabled={selectedIds.size === 0 || isDeleting}
+          >
+            <Trash2 />
+            {t.admin.deleteSelected}
+          </Button>
+        </div>
       </div>
       {isPending ? (
         <div className="flex items-center gap-2 text-xs text-slate-500" aria-live="polite">
@@ -209,6 +356,18 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12 pl-4">
+                  <input
+                    ref={(element) => {
+                      if (element) element.indeterminate = someVisibleSelected && !allVisibleSelected;
+                    }}
+                    type="checkbox"
+                    checked={allVisibleSelected}
+                    onChange={toggleAllVisible}
+                    aria-label={t.admin.selectAllVisible}
+                    className="size-4 rounded border-slate-300 accent-[#f26f21]"
+                  />
+                </TableHead>
                 <TableHead>{t.admin.lead}</TableHead>
                 <TableHead>{t.admin.market}</TableHead>
                 <TableHead>{t.admin.category}</TableHead>
@@ -220,6 +379,15 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
             <TableBody>
               {filtered.map((lead) => (
                 <TableRow key={lead.id}>
+                  <TableCell className="pl-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(lead.id)}
+                      onChange={() => toggleLeadSelection(lead.id)}
+                      aria-label={t.admin.selectLead.replace("{id}", lead.id)}
+                      className="size-4 rounded border-slate-300 accent-[#f26f21]"
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="font-medium text-slate-950">{lead.companyName}</div>
                     <div className="text-xs text-slate-500">
@@ -331,6 +499,34 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
           ) : null}
         </DialogContent>
       </Dialog>
+      <AlertDialog
+        open={deleteDialogOpen}
+        onOpenChange={(open) => {
+          if (!isDeleting) setDeleteDialogOpen(open);
+        }}
+      >
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t.admin.deleteConfirmTitle}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t.admin.deleteConfirmDescription.replace("{count}", String(selectedIds.size))}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>
+              {t.admin.cancelDelete}
+            </AlertDialogCancel>
+            <Button
+              onClick={confirmDelete}
+              disabled={isDeleting || selectedIds.size === 0}
+              className="bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-200"
+            >
+              {isDeleting ? <LoaderCircle className="animate-spin" /> : <Trash2 />}
+              {isDeleting ? t.admin.deleting : t.admin.confirmDelete}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
