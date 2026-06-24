@@ -155,6 +155,10 @@ export const categories: Category[] = [
     title: "TikTok Viral Products",
     description: "Fast-moving trend products with packaging, sample, and shipping coordination.",
   },
+  {
+    title: "Other",
+    description: "Products outside the listed categories, subject to sourcing feasibility and legal compliance review.",
+  },
 ];
 
 export const processSteps = [

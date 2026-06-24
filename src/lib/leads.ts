@@ -13,6 +13,7 @@ export type SourcingLead = {
   countryMarket: string;
   sellingPlatform: string;
   productCategory: string;
+  productCategoryDetail: string;
   productDescription: string;
   targetQuantity: string;
   targetPrice: string;

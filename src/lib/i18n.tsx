@@ -142,14 +142,64 @@ const en = {
       },
     ],
     agencyEyebrow: "Why work with SodaPost",
-    agencyTitle: "Your on-the-ground trade partner—not just a supplier directory",
+    agencyTitle: "Make China sourcing clearer, more manageable, and easier to move forward",
     agencyDescription:
-      "We translate commercial goals into clear supplier requirements, coordinate the work between parties, and keep the details visible from the first shortlist through shipment.",
+      "We do more than forward supplier contacts. SodaPost starts with your market, price position, quantity, and product goals—then turns them into a practical sourcing path with clear options and visible next steps.",
+    agencyCommitment: {
+      title: "Dedicated project coordination, with attention at every step",
+      description:
+        "Your request is reviewed in context and followed through with a consistent coordination process. Product requirements, supplier feedback, decisions, and next actions stay connected, clear, and accountable.",
+    },
+    agencySignals: ["Start with one product", "Private, requirement-led process", "Initial response within 24 hours"],
+    agencyCta: "Tell us what you want to source",
+    agencySecondaryCta: "See how it works",
+    agencyVisualEyebrow: "Sourcing support in action",
+    agencyVisualTitle: "From product economics to samples and delivery coordination",
+    agencyVisualDescription:
+      "These service scenarios show how SodaPost can help buyers compare sourcing economics, shorten sample communication, and coordinate domestic logistics before international shipment.",
+    agencyVisuals: [
+      {
+        shortTitle: "Source value",
+        title: "Build a clearer view of source price and commercial potential",
+        description:
+          "Compare supplier pricing with your target-market position, while considering specifications, quality expectations, order quantity, and the complete landed-cost picture.",
+      },
+      {
+        shortTitle: "Fast sampling",
+        title: "Move samples and product decisions forward more efficiently",
+        description:
+          "Coordinate sample requests, consolidate feedback, and clarify revisions so buyers can evaluate product direction before committing to bulk production.",
+      },
+      {
+        shortTitle: "Logistics",
+        title: "Coordinate domestic pickup, consolidation, and freight handoff",
+        description:
+          "Connect supplier dispatch, domestic movement, consolidation, documents, and the international freight handoff through a more organized workflow.",
+      },
+    ],
+    agencyVisualNote:
+      "Service illustrations only. Actual prices, savings, lead times, freight arrangements, and service availability depend on the product and project assessment.",
     reasons: [
-      "Private supplier research based on your market, quantity, and product requirements",
-      "Clear comparison of supplier fit, samples, pricing context, and production risks",
-      "One point of coordination for packaging, inspection, documents, and freight handoff",
-      "Buyer-side communication that reduces language, time-zone, and follow-up friction",
+      {
+        title: "We understand the business before searching",
+        description:
+          "Supplier research begins with your target market, sales channel, budget, MOQ, and quality expectations—not a generic product keyword.",
+      },
+      {
+        title: "You receive options you can actually compare",
+        description:
+          "We organize supplier fit, pricing context, sample differences, customization possibilities, and key trade-offs into a clearer decision.",
+      },
+      {
+        title: "One point of contact keeps the project moving",
+        description:
+          "From supplier questions to samples, packaging, inspection, documents, and shipping handoff, you have one buyer-side coordination window.",
+      },
+      {
+        title: "We make risks and next steps visible",
+        description:
+          "When a target price, timeline, or specification needs adjustment, we explain it early and help you choose the most practical next move.",
+      },
     ],
   },
   categories: [
@@ -335,6 +385,10 @@ const en = {
     countryMarket: "Country / Market",
     sellingPlatform: "Sales Channel / Business Type",
     productCategory: "Product Category",
+    productCategoryDetail: "Product Classification",
+    productCategoryDetailPlaceholder: "Enter the product's specific category",
+    legalComplianceNotice:
+      "Please ensure the product complies with Chinese laws and the import laws and requirements of the destination country.",
     targetQuantity: "Target Quantity",
     targetPrice: "Target Price",
     servicePlan: "Service Plan / Price Option",
@@ -395,6 +449,7 @@ const en = {
     countryMarket: "Country / Market",
     sellingPlatform: "Sales Channel / Business Type",
     productCategory: "Product Category",
+    productCategoryDetail: "Product Classification",
     targetQuantity: "Target Quantity",
     targetPrice: "Target Price",
     servicePlan: "Service Plan / Price Option",
@@ -422,6 +477,7 @@ const en = {
     "Phone Accessories": "Phone Accessories",
     "Fitness Products": "Fitness Products",
     "TikTok Viral Products": "TikTok Viral Products",
+    Other: "Other",
   },
   platformLabels: {
     "Retail Store": "Retail Store",
@@ -530,14 +586,64 @@ export const dictionaries: Record<Locale, Dictionary> = {
         },
       ],
       agencyEyebrow: "为什么选择 SodaPost",
-      agencyTitle: "你在中国的贸易合作伙伴，而不只是一份供应商名单",
+      agencyTitle: "把复杂的中国采购，变成你能看懂、能推进、能掌控的项目",
       agencyDescription:
-        "我们把你的商业目标转化为清晰的供应商要求，协调各方推进工作，并让从初步筛选到出货交接的每个关键细节保持透明。",
+        "我们不会只转发一份供应商名单。SodaPost 从你的目标市场、售价定位、采购数量和产品目标出发，把模糊想法整理成清晰的采购路径、可比较的选项和明确的下一步。",
+      agencyCommitment: {
+        title: "专属项目协作，让每个关键细节都有人持续跟进",
+        description:
+          "我们会结合项目背景理解你的需求，并通过一致的协作流程持续推进。产品要求、供应商反馈、关键决策和下一步行动始终保持清晰、有序、可追踪。",
+      },
+      agencySignals: ["可从一个产品开始", "采购需求默认私密", "24 小时内初步响应"],
+      agencyCta: "说说你想采购什么",
+      agencySecondaryCta: "查看合作流程",
+      agencyVisualEyebrow: "服务能力展示",
+      agencyVisualTitle: "从成本判断、快速打样到物流协调",
+      agencyVisualDescription:
+        "通过三个典型采购场景，了解 SodaPost 如何协助买家判断采购价值、缩短样品沟通，并在国际运输前协调国内物流环节。",
+      agencyVisuals: [
+        {
+          shortTitle: "采购价值",
+          title: "更清晰地判断采购价格与商业空间",
+          description:
+            "结合目标市场定位、产品规格、品质要求、采购数量和完整落地成本，帮助你更全面地比较供应商报价，而不只看单一出厂价。",
+        },
+        {
+          shortTitle: "快速打样",
+          title: "让样品确认与产品决策推进得更高效",
+          description:
+            "统一协调样品申请、反馈汇总和修改要求，帮助买家在大货生产前更快确认产品方向与关键细节。",
+        },
+        {
+          shortTitle: "物流协调",
+          title: "衔接国内提货、集运与国际运输交接",
+          description:
+            "把供应商出货、国内运输、集货、单证和国际货运交接整理成更清晰、更便于跟进的协作流程。",
+        },
+      ],
+      agencyVisualNote:
+        "图片用于展示服务场景。实际价格、节省比例、打样时效、运输方案及可提供范围，以具体产品和项目评估为准。",
       reasons: [
-        "根据目标市场、采购数量和产品要求进行私密供应商调研",
-        "清晰比较供应商适配度、样品、价格背景与生产风险",
-        "统一协调包装、质检、单证和货运交接",
-        "站在买家一侧沟通，减少语言、时差与跟进成本",
+        {
+          title: "先理解生意，再开始找产品",
+          description:
+            "供应商调研会结合你的目标市场、销售渠道、预算、MOQ 和品质预期，而不是只用一个产品关键词盲目搜索。",
+        },
+        {
+          title: "给你真正可比较的选项",
+          description:
+            "我们会整理供应商适配度、价格背景、样品差异、定制空间和关键取舍，让决策不再依赖零散聊天记录。",
+        },
+        {
+          title: "一个窗口，持续推进全流程",
+          description:
+            "从供应商沟通到样品、包装、质检、单证和运输交接，你都有一个站在买家一侧的统一协调窗口。",
+        },
+        {
+          title: "坦诚说明风险，也给出下一步",
+          description:
+            "当目标价格、交期或规格需要调整时，我们会尽早说明原因，并帮助你选择更实际、更容易落地的方案。",
+        },
       ],
     },
     categories: [
@@ -637,6 +743,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "国家 / 市场",
       sellingPlatform: "销售渠道 / 业务类型",
       productCategory: "产品品类",
+      productCategoryDetail: "产品所属分类",
+      productCategoryDetailPlaceholder: "请输入产品的具体所属分类",
+      legalComplianceNotice: "请确保该产品遵守中国法律法规及目标进口国的相关法律和进口要求。",
       targetQuantity: "目标数量",
       targetPrice: "目标价格",
       servicePlan: "服务方案 / 价格选项",
@@ -696,6 +805,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "国家 / 市场",
       sellingPlatform: "销售渠道 / 业务类型",
       productCategory: "产品品类",
+      productCategoryDetail: "产品所属分类",
       targetQuantity: "目标数量",
       targetPrice: "目标价格",
       servicePlan: "服务方案 / 价格选项",
@@ -723,6 +833,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       "Phone Accessories": "手机配件",
       "Fitness Products": "健身产品",
       "TikTok Viral Products": "TikTok 爆品",
+      Other: "其他",
     },
     platformLabels: {
       ...en.platformLabels,
@@ -868,6 +979,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "Quốc gia / thị trường",
       sellingPlatform: "Nền tảng bán hàng",
       productCategory: "Danh mục sản phẩm",
+      productCategoryDetail: "Phân loại cụ thể của sản phẩm",
+      productCategoryDetailPlaceholder: "Nhập phân loại cụ thể của sản phẩm",
+      legalComplianceNotice:
+        "Vui lòng đảm bảo sản phẩm tuân thủ pháp luật Trung Quốc và các quy định nhập khẩu của quốc gia đích.",
       targetQuantity: "Số lượng mục tiêu",
       targetPrice: "Giá mục tiêu",
       servicePlan: "Gói dịch vụ / Mức giá",
@@ -916,6 +1031,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "Quốc gia / thị trường",
       sellingPlatform: "Nền tảng bán hàng",
       productCategory: "Danh mục sản phẩm",
+      productCategoryDetail: "Phân loại cụ thể",
       targetQuantity: "Số lượng mục tiêu",
       targetPrice: "Giá mục tiêu",
       servicePlan: "Gói dịch vụ / Mức giá",
@@ -942,6 +1058,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       "Phone Accessories": "Phụ kiện điện thoại",
       "Fitness Products": "Sản phẩm fitness",
       "TikTok Viral Products": "Sản phẩm viral TikTok",
+      Other: "Khác",
     },
     platformLabels: { ...en.platformLabels, Other: "Khác" },
     statusLabels: {
@@ -1057,6 +1174,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       "Phone Accessories": "อุปกรณ์โทรศัพท์",
       "Fitness Products": "สินค้า fitness",
       "TikTok Viral Products": "สินค้าไวรัล TikTok",
+      Other: "อื่นๆ",
     },
     platformLabels: { ...en.platformLabels, Other: "อื่นๆ" },
     statusLabels: { New: "ใหม่", Contacted: "ติดต่อแล้ว", Quoting: "กำลังเสนอราคา", "Sample Stage": "ขั้นตอนตัวอย่าง", "In Production": "กำลังผลิต", Completed: "เสร็จสิ้น", Lost: "เสียโอกาส" },
@@ -1130,13 +1248,57 @@ export const dictionaries: Record<Locale, Dictionary> = {
         { title: "効率的なグローバル配送", description: "港湾、輸送、混載サービスが、小売・卸売・オンライン販売への安定した納品を支えます。" },
       ],
       agencyEyebrow: "SodaPostを選ぶ理由",
-      agencyTitle: "単なる名簿ではなく、中国現地の貿易パートナー",
-      agencyDescription: "事業目標を明確な仕入れ要件に変換し、候補選定から出荷まで各社との実務を調整します。",
+      agencyTitle: "複雑な中国仕入れを、見通しよく進められるプロジェクトへ",
+      agencyDescription:
+        "連絡先リストを渡すだけではありません。市場、価格帯、数量、商品目標を理解し、比較しやすい選択肢と明確な次のステップに整理します。",
+      agencyCommitment: {
+        title: "専任のプロジェクト連携で、重要な細部まで継続してフォロー",
+        description:
+          "案件の背景を踏まえて要件を理解し、一貫した連携プロセスで進行します。商品要件、サプライヤー回答、判断事項、次の対応を明確に管理します。",
+      },
+      agencySignals: ["1商品から相談可能", "要件は非公開で管理", "24時間以内に初期回答"],
+      agencyCta: "仕入れたい商品を相談する",
+      agencySecondaryCta: "進め方を見る",
+      agencyVisualEyebrow: "サポート事例イメージ",
+      agencyVisualTitle: "採算確認からサンプル、物流調整まで",
+      agencyVisualDescription:
+        "SodaPostが仕入れ価格の検討、サンプル確認、国際輸送前の中国国内物流調整をどのように支援するか、代表的な場面で紹介します。",
+      agencyVisuals: [
+        {
+          shortTitle: "仕入れ価値",
+          title: "仕入れ価格と事業性をより明確に確認",
+          description: "市場価格、仕様、品質、数量、着地コストを踏まえ、単純な工場価格だけではない比較を支援します。",
+        },
+        {
+          shortTitle: "迅速なサンプル",
+          title: "サンプル確認と商品判断を効率化",
+          description: "サンプル依頼、フィードバック、修正点を整理し、量産前の商品判断を進めやすくします。",
+        },
+        {
+          shortTitle: "物流調整",
+          title: "中国国内の集荷・集約・輸送引き渡しを調整",
+          description: "サプライヤー出荷、国内輸送、集約、書類、国際輸送への引き渡しを一つの流れで管理します。",
+        },
+      ],
+      agencyVisualNote:
+        "画像はサービス場面のイメージです。価格、削減率、納期、輸送方法、対応範囲は商品と案件の確認結果により異なります。",
       reasons: [
-        "市場、数量、商品要件に基づく非公開のサプライヤー調査",
-        "適合性、サンプル、価格背景、生産リスクの明確な比較",
-        "包装、検品、書類、輸送引き渡しの一元調整",
-        "言語、時差、フォローアップ負担を減らすバイヤー側の連絡窓口",
+        {
+          title: "商品検索の前に、事業条件を理解",
+          description: "対象市場、販売チャネル、予算、MOQ、品質基準を整理してからサプライヤーを調査します。",
+        },
+        {
+          title: "比較して判断できる選択肢",
+          description: "適合性、価格背景、サンプル差、カスタマイズ性、重要なトレードオフを分かりやすく整理します。",
+        },
+        {
+          title: "一つの窓口で実務を前進",
+          description: "問い合わせ、サンプル、包装、検品、書類、輸送引き渡しまでバイヤー側で一元調整します。",
+        },
+        {
+          title: "リスクと次の一手を明確に",
+          description: "価格、納期、仕様の調整が必要な場合は早めに共有し、実行可能な代替案を提案します。",
+        },
       ],
     },
     categories: [
@@ -1237,6 +1399,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "国・市場",
       sellingPlatform: "販売チャネル・事業形態",
       productCategory: "商品カテゴリー",
+      productCategoryDetail: "商品の分類",
+      productCategoryDetailPlaceholder: "商品の具体的な分類を入力してください",
+      legalComplianceNotice: "商品が中国法および輸入先国の法律・輸入要件に適合していることをご確認ください。",
       targetQuantity: "希望数量",
       targetPrice: "希望価格",
       servicePlan: "サービスプラン / 料金オプション",
@@ -1290,6 +1455,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "国・市場",
       sellingPlatform: "販売チャネル・事業形態",
       productCategory: "商品カテゴリー",
+      productCategoryDetail: "商品の分類",
       targetQuantity: "希望数量",
       targetPrice: "希望価格",
       servicePlan: "サービスプラン / 料金オプション",
@@ -1317,6 +1483,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       "Phone Accessories": "スマートフォン用品",
       "Fitness Products": "フィットネス用品",
       "TikTok Viral Products": "TikTokトレンド商品",
+      Other: "その他",
     },
     platformLabels: {
       ...en.platformLabels,
@@ -1397,13 +1564,57 @@ export const dictionaries: Record<Locale, Dictionary> = {
         { title: "효율적인 글로벌 배송", description: "성숙한 항만, 운송 및 합배송 서비스가 소매·도매·온라인 채널의 안정적인 납품을 지원합니다." },
       ],
       agencyEyebrow: "SodaPost를 선택하는 이유",
-      agencyTitle: "공급업체 목록이 아닌, 중국 현지 무역 파트너",
-      agencyDescription: "사업 목표를 명확한 공급업체 요구사항으로 전환하고 후보 선정부터 출하까지 각 단계의 실무를 조율합니다.",
+      agencyTitle: "복잡한 중국 소싱을 이해하고 추진하기 쉬운 프로젝트로",
+      agencyDescription:
+        "공급업체 연락처만 전달하지 않습니다. 목표 시장, 가격 포지션, 수량과 제품 목표를 이해한 뒤 비교 가능한 옵션과 명확한 다음 단계로 정리합니다.",
+      agencyCommitment: {
+        title: "전담 프로젝트 조율로 중요한 세부사항까지 지속 관리",
+        description:
+          "프로젝트 배경을 바탕으로 요구사항을 이해하고 일관된 협업 절차로 진행합니다. 제품 조건, 공급업체 피드백, 주요 결정과 다음 조치를 명확하게 연결하고 관리합니다.",
+      },
+      agencySignals: ["제품 하나부터 시작 가능", "비공개 요구사항 중심 진행", "24시간 이내 초기 응답"],
+      agencyCta: "소싱할 제품을 알려주세요",
+      agencySecondaryCta: "진행 방식 보기",
+      agencyVisualEyebrow: "소싱 지원 장면",
+      agencyVisualTitle: "수익성 검토부터 샘플과 물류 조율까지",
+      agencyVisualDescription:
+        "SodaPost가 소싱 가격 검토, 샘플 확인, 국제 운송 전 중국 내 물류 조율을 어떻게 지원하는지 대표적인 장면으로 보여드립니다.",
+      agencyVisuals: [
+        {
+          shortTitle: "소싱 가치",
+          title: "소싱 가격과 사업 가능성을 더 명확하게 검토",
+          description: "목표 시장, 제품 사양, 품질, 수량과 총 도착 비용을 함께 고려하여 공급업체 견적을 비교합니다.",
+        },
+        {
+          shortTitle: "빠른 샘플",
+          title: "샘플 확인과 제품 결정을 효율적으로 진행",
+          description: "샘플 요청, 피드백과 수정 사항을 정리하여 대량 생산 전 제품 방향을 더 빠르게 판단하도록 지원합니다.",
+        },
+        {
+          shortTitle: "물류 조율",
+          title: "중국 내 픽업, 합배송과 국제 운송 인계를 조율",
+          description: "공급업체 출고, 중국 내 운송, 합배송, 서류와 국제 운송 인계를 하나의 체계적인 흐름으로 연결합니다.",
+        },
+      ],
+      agencyVisualNote:
+        "이미지는 서비스 상황을 설명하기 위한 예시입니다. 실제 가격, 절감률, 기간, 운송 방식과 지원 범위는 제품 및 프로젝트 검토에 따라 달라집니다.",
       reasons: [
-        "시장, 수량 및 제품 요구사항을 기반으로 한 비공개 공급업체 조사",
-        "적합성, 샘플, 가격 배경 및 생산 위험의 명확한 비교",
-        "포장, 검사, 서류 및 운송 인계의 단일 창구 조율",
-        "언어, 시차 및 후속 커뮤니케이션 부담을 줄이는 구매자 측 지원",
+        {
+          title: "제품 검색 전에 비즈니스부터 이해",
+          description: "목표 시장, 판매 채널, 예산, MOQ와 품질 기대치를 기준으로 공급업체 조사를 시작합니다.",
+        },
+        {
+          title: "실제로 비교할 수 있는 옵션",
+          description: "공급업체 적합성, 가격 배경, 샘플 차이, 맞춤 가능성과 핵심 선택 요소를 명확하게 정리합니다.",
+        },
+        {
+          title: "하나의 창구로 전 과정을 추진",
+          description: "공급업체 문의부터 샘플, 포장, 검사, 서류와 배송 인계까지 구매자 측에서 일관되게 조율합니다.",
+        },
+        {
+          title: "위험과 다음 단계를 투명하게",
+          description: "가격, 일정 또는 사양 조정이 필요하면 일찍 설명하고 가장 현실적인 다음 선택을 함께 찾습니다.",
+        },
       ],
     },
     categories: [
@@ -1504,6 +1715,9 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "국가·시장",
       sellingPlatform: "판매 채널·사업 유형",
       productCategory: "제품 카테고리",
+      productCategoryDetail: "제품 세부 분류",
+      productCategoryDetailPlaceholder: "제품의 구체적인 분류를 입력해주세요",
+      legalComplianceNotice: "제품이 중국 법률 및 목적지 국가의 수입 법률과 요건을 준수하는지 확인해주세요.",
       targetQuantity: "목표 수량",
       targetPrice: "목표 가격",
       servicePlan: "서비스 플랜 / 가격 옵션",
@@ -1557,6 +1771,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       countryMarket: "국가·시장",
       sellingPlatform: "판매 채널·사업 유형",
       productCategory: "제품 카테고리",
+      productCategoryDetail: "제품 세부 분류",
       targetQuantity: "목표 수량",
       targetPrice: "목표 가격",
       servicePlan: "서비스 플랜 / 가격 옵션",
@@ -1584,6 +1799,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       "Phone Accessories": "휴대폰 액세서리",
       "Fitness Products": "피트니스 제품",
       "TikTok Viral Products": "TikTok 트렌드 제품",
+      Other: "기타",
     },
     platformLabels: {
       ...en.platformLabels,

@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   CircleDollarSign,
   LoaderCircle,
+  ShieldCheck,
   Store,
   Upload,
   type LucideIcon,
@@ -39,6 +40,7 @@ export function SourcingRequestForm({ initialServicePlan = "" }: { initialServic
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sellingPlatform, setSellingPlatform] = useState("");
+  const [productCategory, setProductCategory] = useState("");
   const [servicePlan, setServicePlan] = useState<string>(initialServicePlan);
   const { labelCategory, labelPlatform, t } = useI18n();
 
@@ -91,6 +93,7 @@ export function SourcingRequestForm({ initialServicePlan = "" }: { initialServic
 
       form.reset();
       setSellingPlatform("");
+      setProductCategory("");
       setServicePlan("");
       setSuccess(true);
     } catch (submitError) {
@@ -149,8 +152,19 @@ export function SourcingRequestForm({ initialServicePlan = "" }: { initialServic
           label={t.form.productCategory}
           options={categories.map((category) => ({ value: category.title, label: labelCategory(category.title) }))}
           placeholder={t.form.selectOption}
+          value={productCategory}
+          onValueChange={setProductCategory}
           required
         />
+        {productCategory === "Other" ? (
+          <Field
+            id="productCategoryDetail"
+            label={t.form.productCategoryDetail}
+            placeholder={t.form.productCategoryDetailPlaceholder}
+            maxLength={200}
+            required
+          />
+        ) : null}
         <Field id="targetQuantity" label={t.form.targetQuantity} required />
         <Field id="targetPrice" label={t.form.targetPrice} required />
         <label className="flex min-h-12 items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700">
@@ -165,6 +179,10 @@ export function SourcingRequestForm({ initialServicePlan = "" }: { initialServic
           <input name="needSamples" type="checkbox" className="size-4 accent-[#f26f21]" />
           {t.form.needSamples}
         </label>
+        <div className="flex gap-3 rounded-lg border border-amber-200 bg-amber-50/80 p-4 text-sm leading-6 text-amber-950 md:col-span-2">
+          <ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#d95e17]" />
+          <p>{t.form.legalComplianceNotice}</p>
+        </div>
         </div>
         <div className="mt-5 grid gap-5">
         <div className="grid gap-2">
@@ -228,17 +246,28 @@ function Field({
   id,
   label,
   type = "text",
+  placeholder,
+  maxLength,
   required = false,
 }: {
   id: string;
   label: string;
   type?: string;
+  placeholder?: string;
+  maxLength?: number;
   required?: boolean;
 }) {
   return (
     <div className="grid gap-2">
       <Label htmlFor={id}>{label}</Label>
-      <Input id={id} name={id} type={type} required={required} />
+      <Input
+        id={id}
+        name={id}
+        type={type}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        required={required}
+      />
     </div>
   );
 }

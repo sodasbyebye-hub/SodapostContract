@@ -99,6 +99,11 @@ export async function POST(request: Request) {
       throw new RequestValidationError("Invalid product category.");
     }
 
+    const productCategoryDetail = getText(formData, "productCategoryDetail");
+    if (values.productCategory === "Other" && !productCategoryDetail) {
+      throw new RequestValidationError("Product category detail is required.");
+    }
+
     if (!isPricingPlanValue(values.servicePlan)) {
       throw new RequestValidationError("Invalid service plan.");
     }
@@ -106,6 +111,7 @@ export async function POST(request: Request) {
     await createSourcingRequest({
       id,
       ...values,
+      productCategoryDetail: values.productCategory === "Other" ? productCategoryDetail.slice(0, 200) : "",
       needCustomLogo: getBoolean(formData, "needCustomLogo"),
       needCustomPackaging: getBoolean(formData, "needCustomPackaging"),
       needSamples: getBoolean(formData, "needSamples"),

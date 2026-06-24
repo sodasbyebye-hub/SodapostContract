@@ -44,6 +44,7 @@ async function ensureSchema() {
           country_market TEXT NOT NULL,
           selling_platform TEXT NOT NULL,
           product_category TEXT NOT NULL,
+          product_category_detail TEXT NOT NULL DEFAULT '',
           product_description TEXT NOT NULL,
           target_quantity TEXT NOT NULL,
           target_price TEXT NOT NULL,
@@ -59,6 +60,7 @@ async function ensureSchema() {
         )
       `;
       await sql`ALTER TABLE sourcing_requests ADD COLUMN IF NOT EXISTS service_plan TEXT NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE sourcing_requests ADD COLUMN IF NOT EXISTS product_category_detail TEXT NOT NULL DEFAULT ''`;
       await sql`CREATE INDEX IF NOT EXISTS sourcing_requests_created_at_idx ON sourcing_requests (created_at DESC)`;
       await sql`CREATE INDEX IF NOT EXISTS sourcing_requests_status_idx ON sourcing_requests (status)`;
     })().catch((error) => {
@@ -82,6 +84,7 @@ function mapRow(row: DatabaseRow): SourcingLead {
     countryMarket: String(row.country_market),
     sellingPlatform: String(row.selling_platform),
     productCategory: String(row.product_category),
+    productCategoryDetail: String(row.product_category_detail ?? ""),
     productDescription: String(row.product_description),
     targetQuantity: String(row.target_quantity),
     targetPrice: String(row.target_price),
@@ -110,6 +113,7 @@ export async function createSourcingRequest(input: CreateSourcingRequestInput) {
       country_market,
       selling_platform,
       product_category,
+      product_category_detail,
       product_description,
       target_quantity,
       target_price,
@@ -129,6 +133,7 @@ export async function createSourcingRequest(input: CreateSourcingRequestInput) {
       ${input.countryMarket},
       ${input.sellingPlatform},
       ${input.productCategory},
+      ${input.productCategoryDetail},
       ${input.productDescription},
       ${input.targetQuantity},
       ${input.targetPrice},

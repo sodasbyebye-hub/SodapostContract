@@ -84,6 +84,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
           lead.countryMarket,
           lead.sellingPlatform,
           lead.productCategory,
+          lead.productCategoryDetail,
           lead.productDescription,
           lead.servicePlan,
         ]
@@ -186,6 +187,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
       t.admin.market,
       t.admin.sellingPlatform,
       t.admin.category,
+      t.admin.productCategoryDetail,
       t.admin.productDescription,
       t.admin.targetQuantity,
       t.admin.targetPrice,
@@ -208,6 +210,7 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
       lead.countryMarket,
       labelPlatform(lead.sellingPlatform),
       labelCategory(lead.productCategory),
+      lead.productCategoryDetail,
       lead.productDescription,
       lead.targetQuantity,
       lead.targetPrice,
@@ -398,7 +401,12 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
                     <div className="text-sm text-slate-700">{lead.countryMarket}</div>
                     <div className="text-xs text-slate-500">{labelPlatform(lead.sellingPlatform)}</div>
                   </TableCell>
-                  <TableCell className="text-sm text-slate-700">{labelCategory(lead.productCategory)}</TableCell>
+                  <TableCell className="text-sm text-slate-700">
+                    <div>{labelCategory(lead.productCategory)}</div>
+                    {lead.productCategoryDetail ? (
+                      <div className="mt-0.5 text-xs text-slate-500">{lead.productCategoryDetail}</div>
+                    ) : null}
+                  </TableCell>
                   <TableCell>
                     <select
                       value={lead.status}
@@ -454,6 +462,9 @@ export function AdminLeadTable({ initialLeads }: { initialLeads: SourcingLead[] 
                 <Detail label={t.admin.countryMarket} value={selected.countryMarket} />
                 <Detail label={t.admin.sellingPlatform} value={labelPlatform(selected.sellingPlatform)} />
                 <Detail label={t.admin.productCategory} value={labelCategory(selected.productCategory)} />
+                {selected.productCategoryDetail ? (
+                  <Detail label={t.admin.productCategoryDetail} value={selected.productCategoryDetail} />
+                ) : null}
                 <Detail label={t.admin.targetQuantity} value={selected.targetQuantity} />
                 <Detail label={t.admin.targetPrice} value={selected.targetPrice} />
                 <Detail label={t.admin.servicePlan} value={labelServicePlan(selected.servicePlan)} />
