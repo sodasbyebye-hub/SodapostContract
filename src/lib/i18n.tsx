@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export const locales = ["en", "zh", "vi", "ms", "fil", "th", "ja", "ko"] as const;
+export const locales = ["en", "zh", "es", "fr", "de", "pt", "ar", "vi", "ms", "fil", "th", "ja", "ko"] as const;
 export type Locale = (typeof locales)[number];
 
 const STORAGE_KEY = "sodapost_locale";
@@ -10,6 +10,11 @@ const STORAGE_KEY = "sodapost_locale";
 export const localeLabels: Record<Locale, string> = {
   en: "English",
   zh: "中文",
+  es: "Español",
+  fr: "Français",
+  de: "Deutsch",
+  pt: "Português",
+  ar: "العربية",
   vi: "Tiếng Việt",
   ms: "Bahasa Melayu",
   fil: "Filipino",
@@ -21,6 +26,11 @@ export const localeLabels: Record<Locale, string> = {
 export const localeFlags: Record<Locale, string> = {
   en: "/flags/gb.svg",
   zh: "/flags/cn.svg",
+  es: "/flags/es.svg",
+  fr: "/flags/fr.svg",
+  de: "/flags/de.svg",
+  pt: "/flags/pt.svg",
+  ar: "/flags/sa.svg",
   vi: "/flags/vn.svg",
   ms: "/flags/my.svg",
   fil: "/flags/ph.svg",
@@ -36,7 +46,7 @@ const en = {
     howItWorks: "How It Works",
     categories: "Categories",
     pricing: "Pricing",
-    caseStudies: "Case Studies",
+    caseStudies: "Sourcing Scenarios",
     about: "About",
     contact: "Contact",
     submitRequest: "Submit Request",
@@ -58,7 +68,7 @@ const en = {
     services: "Services",
     productCategories: "Product Categories",
     howItWorks: "How It Works",
-    caseStudies: "Case Studies",
+    caseStudies: "Sourcing Scenarios",
     submitSourcingRequest: "Submit Sourcing Request",
     getQuote: "Get a Free Quote",
     exploreCategories: "Explore categories",
@@ -328,9 +338,9 @@ const en = {
       "A first request is free. Paid options help cover deeper supplier matching, reports, and custom project coordination.",
     pricingContactNote:
       "Please contact us to discuss your sourcing needs before confirming the most suitable service plan.",
-    caseTitle: "Representative sourcing outcomes for retail and wholesale buyers",
+    caseTitle: "Representative sourcing scenarios for retail and wholesale buyers",
     caseDescription:
-      "These mock case studies show the kinds of operational problems SodaPost helps solve without exposing supplier contacts.",
+      "Transparent workflow examples that explain how common sourcing challenges can be structured—without inventing customer results.",
     caseSectionTitle: "Sample, packaging, inspection, and freight coordination",
     caseSectionDescription:
       "SodaPost focuses on the middle work between idea and delivery, where most sourcing projects either get organized or fall apart.",
@@ -505,6 +515,259 @@ const en = {
 
 type Dictionary = typeof en;
 
+type AddedLanguagePack = {
+  brandSubtitle: string;
+  nav: Partial<Dictionary["nav"]>;
+  footer: Partial<Dictionary["footer"]>;
+  common: Partial<Dictionary["common"]>;
+  hero: Dictionary["hero"];
+  trustHighlights: string[];
+  metrics: Dictionary["metrics"];
+  services: Array<{ title: string; description: string }>;
+  categories: Array<{ title: string; description: string }>;
+  processSteps: Dictionary["processSteps"];
+  pricingPlans: Dictionary["pricingPlans"];
+  pages: Partial<Dictionary["pages"]>;
+  form: Partial<Dictionary["form"]>;
+  categoryLabels: Dictionary["categoryLabels"];
+  platformLabels: Partial<Dictionary["platformLabels"]>;
+  manufacturing: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    advantages: Dictionary["manufacturingIntro"]["advantages"];
+    agencyEyebrow: string;
+    agencyTitle: string;
+    agencyDescription: string;
+    commitmentTitle: string;
+    commitmentDescription: string;
+    signals: string[];
+    cta: string;
+    secondaryCta: string;
+  };
+};
+
+function createAddedLanguage(pack: AddedLanguagePack): Dictionary {
+  return {
+    ...en,
+    brandSubtitle: pack.brandSubtitle,
+    nav: { ...en.nav, ...pack.nav },
+    footer: { ...en.footer, ...pack.footer },
+    common: { ...en.common, ...pack.common },
+    hero: pack.hero,
+    trustHighlights: pack.trustHighlights,
+    metrics: pack.metrics,
+    services: pack.services,
+    manufacturingIntro: {
+      ...en.manufacturingIntro,
+      eyebrow: pack.manufacturing.eyebrow,
+      title: pack.manufacturing.title,
+      description: pack.manufacturing.description,
+      advantages: pack.manufacturing.advantages,
+      agencyEyebrow: pack.manufacturing.agencyEyebrow,
+      agencyTitle: pack.manufacturing.agencyTitle,
+      agencyDescription: pack.manufacturing.agencyDescription,
+      agencyCommitment: {
+        title: pack.manufacturing.commitmentTitle,
+        description: pack.manufacturing.commitmentDescription,
+      },
+      agencySignals: pack.manufacturing.signals,
+      agencyCta: pack.manufacturing.cta,
+      agencySecondaryCta: pack.manufacturing.secondaryCta,
+    },
+    categories: pack.categories,
+    processSteps: pack.processSteps,
+    pricingPlans: pack.pricingPlans,
+    pages: { ...en.pages, ...pack.pages },
+    form: { ...en.form, ...pack.form },
+    categoryLabels: pack.categoryLabels,
+    platformLabels: { ...en.platformLabels, ...pack.platformLabels },
+  };
+}
+
+const addedServices = {
+  es: [
+    ["Búsqueda de productos", "Convertimos ideas, imágenes o referencias en opciones de compra cualificadas en China."],
+    ["Selección de proveedores", "Buscamos fábricas y socios comerciales adecuados para su categoría, volumen y mercado."],
+    ["Verificación de proveedores", "Revisamos alcance comercial, experiencia exportadora, capacidad y adecuación del producto."],
+    ["Gestión de muestras", "Coordinamos muestras, comparaciones y revisiones antes del pedido a granel."],
+    ["Marca privada y embalaje", "Coordinamos logotipo, embalaje minorista, insertos, códigos de barras y presentación."],
+    ["Inspección de calidad", "Definimos controles para materiales, acabado, embalaje, cajas y preparación del envío."],
+    ["Coordinación logística", "Coordinamos recogida, consolidación, documentación y entrega al transporte internacional."],
+  ],
+  fr: [
+    ["Recherche de produits", "Nous transformons idées, images ou références en options d’achat qualifiées en Chine."],
+    ["Sélection de fournisseurs", "Nous recherchons des usines et partenaires adaptés à votre catégorie, volume et marché."],
+    ["Vérification des fournisseurs", "Nous examinons activité, expérience export, capacité et adéquation produit."],
+    ["Gestion des échantillons", "Nous coordonnons échantillons, comparaisons et révisions avant la commande en série."],
+    ["Marque privée et emballage", "Nous coordonnons logo, emballage retail, inserts, codes-barres et présentation."],
+    ["Contrôle qualité", "Nous définissons les points de contrôle des matériaux, finitions, emballages et cartons."],
+    ["Coordination logistique", "Nous coordonnons enlèvement, consolidation, documents et transfert au transport international."],
+  ],
+  de: [
+    ["Produktsuche", "Wir machen aus Ideen, Bildern oder Referenzen qualifizierte Beschaffungsoptionen in China."],
+    ["Lieferantenauswahl", "Wir suchen passende Fabriken und Handelspartner für Kategorie, Menge und Zielmarkt."],
+    ["Lieferantenprüfung", "Wir prüfen Geschäftsfeld, Exporterfahrung, Kapazität und Produkteignung."],
+    ["Musterkoordination", "Wir koordinieren Muster, Vergleiche und Überarbeitungen vor der Serienbestellung."],
+    ["Private Label und Verpackung", "Wir koordinieren Logo, Verkaufsverpackung, Beileger, Barcodes und Präsentation."],
+    ["Qualitätsprüfung", "Wir definieren Prüfpunkte für Material, Verarbeitung, Verpackung und Versandbereitschaft."],
+    ["Logistikkoordination", "Wir koordinieren Abholung, Konsolidierung, Dokumente und Übergabe an den internationalen Versand."],
+  ],
+  pt: [
+    ["Pesquisa de produtos", "Transformamos ideias, imagens ou referências em opções qualificadas de compra na China."],
+    ["Seleção de fornecedores", "Buscamos fábricas e parceiros adequados à categoria, quantidade e mercado."],
+    ["Verificação de fornecedores", "Analisamos escopo comercial, experiência de exportação, capacidade e adequação."],
+    ["Gestão de amostras", "Coordenamos amostras, comparações e revisões antes do pedido em escala."],
+    ["Marca própria e embalagem", "Coordenamos logotipo, embalagem de varejo, encartes, códigos de barras e apresentação."],
+    ["Inspeção de qualidade", "Definimos pontos de controle para materiais, acabamento, embalagem e caixas."],
+    ["Coordenação logística", "Coordenamos coleta, consolidação, documentos e entrega ao transporte internacional."],
+  ],
+  ar: [
+    ["البحث عن المنتجات", "نحوّل الأفكار والصور والمراجع إلى خيارات توريد مؤهلة من الصين."],
+    ["اختيار الموردين", "نبحث عن مصانع وشركاء مناسبين للفئة والكمية والسوق المستهدف."],
+    ["التحقق من الموردين", "نراجع نطاق العمل وخبرة التصدير والقدرة وملاءمة المنتج."],
+    ["تنسيق العينات", "ننسق العينات والمقارنات والتعديلات قبل طلب الإنتاج الكمي."],
+    ["العلامة الخاصة والتغليف", "ننسق الشعار وتغليف التجزئة والملحقات والباركود والعرض."],
+    ["فحص الجودة", "نحدد نقاط فحص المواد والتشطيب والتغليف والكرتون والاستعداد للشحن."],
+    ["تنسيق الخدمات اللوجستية", "ننسق الاستلام والتجميع والمستندات والتسليم للشحن الدولي."],
+  ],
+} as const;
+
+const es = createAddedLanguage({
+  brandSubtitle: "Socio de compras en China",
+  nav: { services: "Servicios", howItWorks: "Proceso", categories: "Categorías", pricing: "Precios", caseStudies: "Escenarios", about: "Nosotros", contact: "Contacto", submitRequest: "Enviar solicitud", submitSourcingRequest: "Enviar solicitud de compra", mobileDescription: "Apoyo de compras desde la solicitud hasta el envío.", openNavigation: "Abrir navegación", language: "Idioma" },
+  footer: { intro: "SodaPost ayuda a minoristas, mayoristas, marcas y vendedores online a comprar productos fiables en China mediante un proceso privado basado en requisitos.", pages: "Páginas", buyerActions: "Acciones", getQuote: "Solicitar presupuesto", adminDemo: "Acceso administrador" },
+  common: { services: "Servicios", productCategories: "Categorías de productos", howItWorks: "Proceso", caseStudies: "Escenarios de compra", submitSourcingRequest: "Enviar solicitud de compra", getQuote: "Solicitar presupuesto", exploreCategories: "Ver categorías", startOption: "Empezar con esta opción", popular: "Opción recomendada", readyTitle: "¿Listo para comprar su próximo producto en China?", readyDescription: "Envíenos los requisitos y nuestro equipo revisará la oportunidad en 24 horas." },
+  hero: { eyebrow: "Apoyo privado para compradores internacionales", title: "Compre productos fiables en China para su negocio minorista o mayorista", subtitle: "SodaPost ayuda a minoristas, mayoristas, marcas y vendedores online a seleccionar proveedores, gestionar muestras, personalizar embalajes, controlar calidad y coordinar envíos." },
+  trustHighlights: ["Selección de proveedores", "Coordinación de muestras y embalaje", "Apoyo de inspección", "Documentación para envío"],
+  metrics: [{ label: "Etapas principales", value: "7" }, { label: "Mercados atendidos", value: "Global" }, { label: "Respuesta inicial", value: "24 h" }],
+  services: addedServices.es.map(([title, description]) => ({ title, description })),
+  manufacturing: {
+    eyebrow: "Por qué comprar en China", title: "Una base industrial profunda para crecer en retail y distribución", description: "China combina clústeres especializados, capacidad flexible, proveedores auxiliares y redes logísticas globales.",
+    advantages: [{ title: "Ecosistemas industriales completos", description: "Componentes, moldes, materiales y experiencia productiva se concentran en clústeres maduros." }, { title: "Personalización y control de calidad", description: "Desde validación en lotes pequeños hasta embalaje de marca propia y controles definidos." }, { title: "Conexión eficiente con mercados globales", description: "Puertos, redes de carga y consolidación facilitan la entrega internacional." }],
+    agencyEyebrow: "Por qué SodaPost", agencyTitle: "Convierta una compra compleja en un proyecto claro y gestionable", agencyDescription: "Partimos de su mercado, precio, cantidad y objetivo para crear una ruta de compra con opciones comparables.",
+    commitmentTitle: "Coordinación dedicada en cada etapa", commitmentDescription: "Requisitos, comentarios del proveedor, decisiones y próximas acciones permanecen conectados y trazables.",
+    signals: ["Empiece con un producto", "Proceso privado", "Respuesta inicial en 24 horas"], cta: "Cuéntenos qué necesita comprar", secondaryCta: "Ver el proceso",
+  },
+  categories: [
+    { title: "Moda y confección", description: "Básicos, ropa deportiva, accesorios y programas personalizados." }, { title: "Ropa de protección solar", description: "Prendas UPF, capas ligeras, sombreros y mangas." }, { title: "Accesorios de belleza", description: "Brochas, organizadores, herramientas de cuidado y espejos." }, { title: "Productos para mascotas", description: "Viaje, aseo, juguetes, comederos y accesorios." }, { title: "Hogar y cocina", description: "Utensilios, almacenamiento, decoración y limpieza." }, { title: "Outdoor y viaje", description: "Organizadores, camping, bolsas, botellas y equipo portátil." }, { title: "Accesorios de automóvil", description: "Organización, limpieza, soportes y comodidad." }, { title: "Accesorios para teléfonos", description: "Fundas, soportes, cargadores, cables y kits." }, { title: "Productos fitness", description: "Bandas, recuperación y accesorios de entrenamiento." }, { title: "Productos de tendencia", description: "Productos de rápida rotación con apoyo de muestras y envío." }, { title: "Otros", description: "Productos fuera de la lista, sujetos a evaluación de viabilidad y cumplimiento." },
+  ],
+  processSteps: [{ title: "Envíe su solicitud", description: "Comparta producto, mercado, cantidad, precio, canal e imágenes." }, { title: "Compare opciones", description: "Investigamos proveedores y organizamos opciones cualificadas." }, { title: "Valide muestras y embalaje", description: "Coordinamos muestras, logotipo, embalaje y calidad." }, { title: "Producción y envío", description: "Apoyamos el seguimiento de producción, inspección y entrega logística." }],
+  pricingPlans: [{ name: "Solicitud gratuita", price: "$0", description: "Para una primera conversación y revisión de viabilidad.", features: ["Información del producto", "Revisión inicial", "Siguiente paso recomendado"] }, { name: "Selección de proveedores", price: "desde $49", description: "Para compradores que necesitan opciones filtradas.", features: ["Lista corta", "Ajuste de requisitos", "Resumen para comprador"], highlighted: true }, { name: "Informe de compra", price: "desde $99", description: "Para comparar opciones antes de muestras o negociación.", features: ["Investigación de categoría", "Comparación", "Notas de precio y MOQ"] }, { name: "Proyecto personalizado", price: "precio personalizado", description: "Para marca propia, embalaje complejo o varios SKU.", features: ["Flujo dedicado", "Apoyo de muestras", "Inspección y logística"] }],
+  pages: { servicesTitle: "Servicios de compra en China para minoristas, mayoristas y marcas", servicesDescription: "Apoyo en selección, verificación, muestras, embalaje, inspección y logística.", howTitle: "Del brief de producto a las muestras y la entrega logística", howDescription: "Un proceso estructurado para comparar opciones y reducir riesgos.", categoriesTitle: "Apoyo para categorías de consumo de rápida rotación", categoriesDescription: "Comparta producto, cantidad y mercado; revisaremos la viabilidad de forma privada.", pricingTitle: "Empiece gratis y elija la profundidad adecuada", pricingDescription: "El precio depende de la investigación, comparación, muestras y coordinación.", caseTitle: "Escenarios representativos de compra", caseDescription: "Ejemplos transparentes del proceso, sin inventar resultados de clientes.", aboutTitle: "Un socio de compras para minoristas, mayoristas y marcas internacionales", aboutDescription: "Un proceso privado y basado en requisitos para comprar en China.", contactTitle: "Hable con SodaPost sobre su próximo proyecto", contactDescription: "Envíe producto, mercado, cantidad y necesidades de embalaje.", openFullRequest: "Abrir solicitud completa", requestTitle: "Envíe sus requisitos de forma privada", requestDescription: "Indique qué necesita, dónde vende y qué apoyo busca. Revisaremos la solicitud en 24 horas." },
+  form: { successTitle: "Solicitud enviada", success: "Responderemos lo antes posible.", submitting: "Enviando...", invalidImageType: "Seleccione un archivo de imagen.", imageTooLarge: "La imagen de referencia debe pesar 8 MB o menos.", submitError: "No se pudo enviar la solicitud. Inténtelo de nuevo.", name: "Nombre", companyName: "Empresa", countryMarket: "País / mercado", sellingPlatform: "Canal de venta / negocio", productCategory: "Categoría del producto", productCategoryDetail: "Clasificación del producto", productCategoryDetailPlaceholder: "Indique la categoría específica", legalComplianceNotice: "Asegúrese de que el producto cumple la legislación china y las normas de importación del país de destino.", targetQuantity: "Cantidad objetivo", targetPrice: "Precio objetivo", servicePlan: "Servicio / opción de precio", needCustomLogo: "Necesita logotipo", needCustomPackaging: "Necesita embalaje personalizado", needSamples: "Necesita muestras", productDescription: "Descripción del producto", productDescriptionPlaceholder: "Describa el producto, materiales, tamaño, enlaces, nivel de calidad o competidores.", uploadReferenceImage: "Subir imagen de referencia", message: "Mensaje", messagePlaceholder: "¿Hay algo más que deba saber nuestro equipo de compras?", selectOption: "Seleccione una opción" },
+  categoryLabels: { "Apparel & Fashion": "Moda y confección", "Sun Protection Clothing": "Ropa de protección solar", "Beauty Tools": "Accesorios de belleza", "Pet Supplies": "Productos para mascotas", "Home & Kitchen": "Hogar y cocina", "Outdoor & Travel": "Outdoor y viaje", "Car Accessories": "Accesorios de automóvil", "Phone Accessories": "Accesorios para teléfonos", "Fitness Products": "Productos fitness", "TikTok Viral Products": "Productos de tendencia", Other: "Otros" },
+  platformLabels: { "Retail Store": "Tienda minorista", "Wholesale Distribution": "Distribución mayorista", "Chain Store": "Cadena de tiendas", "Brand / Private Label": "Marca / marca privada", Other: "Otro" },
+});
+
+const fr = createAddedLanguage({
+  brandSubtitle: "Partenaire sourcing en Chine",
+  nav: { services: "Services", howItWorks: "Processus", categories: "Catégories", pricing: "Tarifs", caseStudies: "Scénarios", about: "À propos", contact: "Contact", submitRequest: "Envoyer une demande", submitSourcingRequest: "Envoyer une demande sourcing", mobileDescription: "Accompagnement de la demande à l’expédition.", openNavigation: "Ouvrir la navigation", language: "Langue" },
+  footer: { intro: "SodaPost accompagne détaillants, grossistes, marques et vendeurs en ligne dans leurs achats en Chine grâce à un processus privé fondé sur les besoins.", pages: "Pages", buyerActions: "Actions acheteur", getQuote: "Demander un devis", adminDemo: "Connexion admin" },
+  common: { services: "Services", productCategories: "Catégories de produits", howItWorks: "Processus", caseStudies: "Scénarios sourcing", submitSourcingRequest: "Envoyer une demande sourcing", getQuote: "Demander un devis", exploreCategories: "Voir les catégories", startOption: "Choisir cette option", popular: "Point de départ recommandé", readyTitle: "Prêt à sourcer votre prochain produit en Chine ?", readyDescription: "Envoyez vos besoins ; notre équipe examinera l’opportunité sous 24 heures." },
+  hero: { eyebrow: "Accompagnement privé pour acheteurs internationaux", title: "Sourcez des produits fiables en Chine pour votre activité retail ou wholesale", subtitle: "SodaPost aide détaillants, grossistes, marques et vendeurs en ligne à sélectionner des fournisseurs, gérer les échantillons, personnaliser l’emballage, contrôler la qualité et coordonner l’expédition." },
+  trustHighlights: ["Fournisseurs présélectionnés", "Échantillons et emballage", "Support inspection", "Documents d’expédition"],
+  metrics: [{ label: "Étapes clés", value: "7" }, { label: "Marchés couverts", value: "Global" }, { label: "Première réponse", value: "24 h" }],
+  services: addedServices.fr.map(([title, description]) => ({ title, description })),
+  manufacturing: {
+    eyebrow: "Pourquoi sourcer en Chine", title: "Une base industrielle profonde pour développer votre activité", description: "La Chine réunit clusters spécialisés, capacité flexible, fournisseurs complémentaires et logistique mondiale.",
+    advantages: [{ title: "Écosystèmes industriels complets", description: "Composants, moules, matériaux et savoir-faire sont regroupés dans des clusters matures." }, { title: "Personnalisation et qualité", description: "Du petit lot test à l’emballage de marque privée avec des contrôles définis." }, { title: "Connexion aux marchés mondiaux", description: "Ports, fret et consolidation facilitent les livraisons internationales." }],
+    agencyEyebrow: "Pourquoi SodaPost", agencyTitle: "Transformez un sourcing complexe en projet clair et maîtrisable", agencyDescription: "Nous partons du marché, du prix, de la quantité et de l’objectif pour construire une voie d’achat comparable.",
+    commitmentTitle: "Coordination dédiée à chaque étape", commitmentDescription: "Besoins, retours fournisseurs, décisions et prochaines actions restent reliés et traçables.",
+    signals: ["Commencez par un produit", "Processus privé", "Réponse initiale sous 24 h"], cta: "Parlez-nous du produit", secondaryCta: "Voir le processus",
+  },
+  categories: [
+    { title: "Mode et habillement", description: "Basiques, sportswear, accessoires et programmes personnalisés." }, { title: "Vêtements anti-UV", description: "Articles UPF, couches légères, chapeaux et manches." }, { title: "Accessoires beauté", description: "Pinceaux, rangement, outils de soin et miroirs." }, { title: "Produits pour animaux", description: "Voyage, toilettage, jouets, gamelles et accessoires." }, { title: "Maison et cuisine", description: "Ustensiles, rangement, décoration et nettoyage." }, { title: "Outdoor et voyage", description: "Organisation, camping, sacs, bouteilles et équipement portable." }, { title: "Accessoires auto", description: "Rangement, nettoyage, supports et confort." }, { title: "Accessoires téléphone", description: "Coques, supports, chargeurs, câbles et kits." }, { title: "Produits fitness", description: "Bandes, récupération et accessoires d’entraînement." }, { title: "Produits tendance", description: "Produits à rotation rapide avec support échantillons et livraison." }, { title: "Autres", description: "Produits hors liste, sous réserve d’étude de faisabilité et conformité." },
+  ],
+  processSteps: [{ title: "Envoyez votre demande", description: "Partagez produit, marché, quantité, prix, canal et images." }, { title: "Comparez les options", description: "Nous recherchons et organisons des fournisseurs qualifiés." }, { title: "Validez échantillons et emballage", description: "Nous coordonnons échantillons, logo, emballage et qualité." }, { title: "Production et expédition", description: "Nous suivons production, inspection et transfert logistique." }],
+  pricingPlans: [{ name: "Demande gratuite", price: "$0", description: "Pour un premier échange et une vérification de faisabilité.", features: ["Informations produit", "Revue initiale", "Étape suivante"] }, { name: "Sélection fournisseurs", price: "à partir de $49", description: "Pour obtenir rapidement des options filtrées.", features: ["Liste courte", "Adéquation des besoins", "Résumé acheteur"], highlighted: true }, { name: "Rapport sourcing", price: "à partir de $99", description: "Pour comparer avant échantillons ou négociation.", features: ["Recherche catégorie", "Comparaison", "Prix et MOQ"] }, { name: "Projet sur mesure", price: "sur devis", description: "Pour marque privée, emballage complexe ou multi-SKU.", features: ["Processus dédié", "Support échantillons", "Inspection et logistique"] }],
+  pages: { servicesTitle: "Services de sourcing en Chine pour détaillants, grossistes et marques", servicesDescription: "Sélection, vérification, échantillons, emballage, inspection et logistique.", howTitle: "Du brief produit aux échantillons et au transfert logistique", howDescription: "Un processus structuré pour comparer et réduire les risques.", categoriesTitle: "Sourcing pour les catégories de produits grand public", categoriesDescription: "Partagez produit, quantité et marché ; nous étudierons la faisabilité en privé.", pricingTitle: "Commencez gratuitement puis choisissez le bon niveau d’accompagnement", pricingDescription: "Le tarif dépend de la recherche, des comparaisons, des échantillons et de la coordination.", caseTitle: "Scénarios sourcing représentatifs", caseDescription: "Des exemples transparents de processus, sans inventer de résultats clients.", aboutTitle: "Un partenaire sourcing pour détaillants, grossistes et marques internationales", aboutDescription: "Un processus privé et structuré pour sourcer en Chine.", contactTitle: "Parlez à SodaPost de votre prochain projet", contactDescription: "Envoyez le produit, le marché, la quantité et les besoins d’emballage.", openFullRequest: "Ouvrir la demande complète", requestTitle: "Envoyez vos besoins en toute confidentialité", requestDescription: "Indiquez le produit, votre canal de vente et le support souhaité. Réponse sous 24 heures." },
+  form: { successTitle: "Demande envoyée", success: "Nous répondrons rapidement.", submitting: "Envoi en cours...", invalidImageType: "Veuillez sélectionner un fichier image.", imageTooLarge: "L’image de référence ne doit pas dépasser 8 Mo.", submitError: "La demande n’a pas pu être envoyée. Veuillez réessayer.", name: "Nom", companyName: "Entreprise", countryMarket: "Pays / marché", sellingPlatform: "Canal de vente / activité", productCategory: "Catégorie produit", productCategoryDetail: "Classification du produit", productCategoryDetailPlaceholder: "Précisez la catégorie", legalComplianceNotice: "Assurez-vous que le produit respecte la législation chinoise et les règles d’importation du pays de destination.", targetQuantity: "Quantité cible", targetPrice: "Prix cible", servicePlan: "Service / option tarifaire", needCustomLogo: "Logo personnalisé", needCustomPackaging: "Emballage personnalisé", needSamples: "Échantillons nécessaires", productDescription: "Description du produit", productDescriptionPlaceholder: "Décrivez le produit, les matériaux, dimensions, liens, niveau de qualité ou concurrents.", uploadReferenceImage: "Importer une image", message: "Message", messagePlaceholder: "Autre information utile pour notre équipe sourcing ?", selectOption: "Sélectionnez une option" },
+  categoryLabels: { "Apparel & Fashion": "Mode et habillement", "Sun Protection Clothing": "Vêtements anti-UV", "Beauty Tools": "Accessoires beauté", "Pet Supplies": "Produits pour animaux", "Home & Kitchen": "Maison et cuisine", "Outdoor & Travel": "Outdoor et voyage", "Car Accessories": "Accessoires auto", "Phone Accessories": "Accessoires téléphone", "Fitness Products": "Produits fitness", "TikTok Viral Products": "Produits tendance", Other: "Autres" },
+  platformLabels: { "Retail Store": "Magasin de détail", "Wholesale Distribution": "Distribution en gros", "Chain Store": "Chaîne de magasins", "Brand / Private Label": "Marque / marque privée", Other: "Autre" },
+});
+
+const de = createAddedLanguage({
+  brandSubtitle: "China-Sourcing-Partner",
+  nav: { services: "Leistungen", howItWorks: "Ablauf", categories: "Kategorien", pricing: "Preise", caseStudies: "Szenarien", about: "Über uns", contact: "Kontakt", submitRequest: "Anfrage senden", submitSourcingRequest: "Sourcing-Anfrage senden", mobileDescription: "Beschaffungsunterstützung von der Anfrage bis zum Versand.", openNavigation: "Navigation öffnen", language: "Sprache" },
+  footer: { intro: "SodaPost unterstützt Einzelhändler, Großhändler, Marken und Online-Verkäufer mit einem privaten, anforderungsbasierten China-Sourcing-Prozess.", pages: "Seiten", buyerActions: "Aktionen", getQuote: "Angebot anfragen", adminDemo: "Admin-Anmeldung" },
+  common: { services: "Leistungen", productCategories: "Produktkategorien", howItWorks: "Ablauf", caseStudies: "Sourcing-Szenarien", submitSourcingRequest: "Sourcing-Anfrage senden", getQuote: "Angebot anfragen", exploreCategories: "Kategorien ansehen", startOption: "Diese Option wählen", popular: "Empfohlener Einstieg", readyTitle: "Bereit für Ihr nächstes Produkt aus China?", readyDescription: "Senden Sie Ihre Anforderungen; unser Team prüft die Anfrage innerhalb von 24 Stunden." },
+  hero: { eyebrow: "Private Beschaffungsunterstützung für internationale Käufer", title: "Zuverlässige Produkte aus China für Einzelhandel und Großhandel", subtitle: "SodaPost unterstützt bei Lieferantenauswahl, Mustern, Verpackung, Qualitätskontrolle und Versandkoordination." },
+  trustHighlights: ["Geprüfte Lieferantenauswahl", "Muster und Verpackung", "Inspektionsunterstützung", "Versanddokumente"],
+  metrics: [{ label: "Kernphasen", value: "7" }, { label: "Unterstützte Märkte", value: "Global" }, { label: "Erste Antwort", value: "24 Std." }],
+  services: addedServices.de.map(([title, description]) => ({ title, description })),
+  manufacturing: {
+    eyebrow: "Warum China-Sourcing", title: "Eine starke industrielle Basis für nachhaltiges Wachstum", description: "China verbindet spezialisierte Cluster, flexible Kapazitäten, Zulieferer und globale Logistik.",
+    advantages: [{ title: "Vollständige Industrieökosysteme", description: "Komponenten, Formen, Materialien und Know-how liegen in reifen Clustern nah beieinander." }, { title: "Flexible Anpassung und Qualität", description: "Von Kleinserientests bis Private Label mit definierten Prüfpunkten." }, { title: "Effiziente globale Lieferung", description: "Häfen, Fracht- und Konsolidierungsnetze unterstützen internationale Lieferungen." }],
+    agencyEyebrow: "Warum SodaPost", agencyTitle: "Machen Sie komplexes China-Sourcing klar und steuerbar", agencyDescription: "Wir übersetzen Markt, Zielpreis, Menge und Produktziel in einen vergleichbaren Beschaffungsweg.",
+    commitmentTitle: "Dedizierte Koordination in jeder Phase", commitmentDescription: "Anforderungen, Lieferantenfeedback, Entscheidungen und nächste Schritte bleiben verbunden und nachvollziehbar.",
+    signals: ["Mit einem Produkt starten", "Privater Prozess", "Erste Antwort in 24 Stunden"], cta: "Produktanfrage senden", secondaryCta: "Ablauf ansehen",
+  },
+  categories: [
+    { title: "Mode und Bekleidung", description: "Basics, Sportbekleidung, Accessoires und kundenspezifische Programme." }, { title: "UV-Schutzbekleidung", description: "UPF-Artikel, leichte Schichten, Hüte und Ärmel." }, { title: "Beauty-Zubehör", description: "Pinsel, Organizer, Pflegewerkzeuge und Spiegel." }, { title: "Haustierbedarf", description: "Reise, Pflege, Spielzeug, Fütterung und Zubehör." }, { title: "Haus und Küche", description: "Küchenhelfer, Aufbewahrung, Dekoration und Reinigung." }, { title: "Outdoor und Reise", description: "Organizer, Camping, Taschen, Flaschen und mobile Ausrüstung." }, { title: "Autozubehör", description: "Organisation, Reinigung, Halterungen und Komfort." }, { title: "Handyzubehör", description: "Hüllen, Halterungen, Ladegeräte, Kabel und Sets." }, { title: "Fitnessprodukte", description: "Bänder, Regeneration und Trainingszubehör." }, { title: "Trendprodukte", description: "Schnelldrehende Produkte mit Muster- und Versandunterstützung." }, { title: "Sonstige", description: "Andere Produkte nach Prüfung von Machbarkeit und Compliance." },
+  ],
+  processSteps: [{ title: "Anfrage senden", description: "Produkt, Markt, Menge, Preis, Kanal und Bilder teilen." }, { title: "Optionen vergleichen", description: "Wir recherchieren und strukturieren passende Lieferanten." }, { title: "Muster und Verpackung prüfen", description: "Wir koordinieren Muster, Logo, Verpackung und Qualität." }, { title: "Produktion und Versand", description: "Wir unterstützen Produktions-, Inspektions- und Logistikübergaben." }],
+  pricingPlans: [{ name: "Kostenlose Anfrage", price: "$0", description: "Für Erstgespräch und Machbarkeitsprüfung.", features: ["Produktinformationen", "Erstprüfung", "Empfohlener nächster Schritt"] }, { name: "Lieferantenauswahl", price: "ab $49", description: "Für schnell gefilterte Lieferantenoptionen.", features: ["Shortlist", "Anforderungsabgleich", "Käuferzusammenfassung"], highlighted: true }, { name: "Sourcing-Bericht", price: "ab $99", description: "Zum Vergleich vor Mustern oder Verhandlung.", features: ["Kategorienrecherche", "Vergleich", "Preis- und MOQ-Hinweise"] }, { name: "Individuelles Projekt", price: "individueller Preis", description: "Für Private Label, komplexe Verpackung oder mehrere SKUs.", features: ["Dedizierter Ablauf", "Musterunterstützung", "Inspektion und Logistik"] }],
+  pages: { servicesTitle: "China-Sourcing-Leistungen für Händler, Großhändler und Marken", servicesDescription: "Auswahl, Prüfung, Muster, Verpackung, Inspektion und Logistik.", howTitle: "Vom Produktbriefing bis zu Musterprüfung und Versandübergabe", howDescription: "Ein strukturierter Ablauf für bessere Vergleiche und weniger Risiko.", categoriesTitle: "Sourcing-Unterstützung für schnelllebige Konsumgüter", categoriesDescription: "Teilen Sie Produkt, Menge und Markt; wir prüfen die Machbarkeit vertraulich.", pricingTitle: "Kostenlos starten und die passende Sourcing-Tiefe wählen", pricingDescription: "Der Preis hängt von Recherche, Vergleich, Mustern und Koordination ab.", caseTitle: "Repräsentative Sourcing-Szenarien", caseDescription: "Transparente Prozessbeispiele ohne erfundene Kundenergebnisse.", aboutTitle: "Ein Sourcing-Partner für internationale Händler, Großhändler und Marken", aboutDescription: "Ein privater, anforderungsbasierter Weg zum China-Sourcing.", contactTitle: "Sprechen Sie mit SodaPost über Ihr nächstes Projekt", contactDescription: "Senden Sie Produkt, Markt, Menge und Verpackungsanforderungen.", openFullRequest: "Vollständige Anfrage öffnen", requestTitle: "Produktanforderungen vertraulich senden", requestDescription: "Teilen Sie Produkt, Vertrieb und gewünschten Support. Prüfung innerhalb von 24 Stunden." },
+  form: { successTitle: "Anfrage gesendet", success: "Wir antworten so schnell wie möglich.", submitting: "Wird gesendet...", invalidImageType: "Bitte wählen Sie eine Bilddatei aus.", imageTooLarge: "Das Referenzbild darf höchstens 8 MB groß sein.", submitError: "Die Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut.", name: "Name", companyName: "Unternehmen", countryMarket: "Land / Markt", sellingPlatform: "Vertriebskanal / Geschäftsart", productCategory: "Produktkategorie", productCategoryDetail: "Produktklassifizierung", productCategoryDetailPlaceholder: "Genaue Kategorie eingeben", legalComplianceNotice: "Stellen Sie sicher, dass das Produkt chinesischem Recht und den Einfuhrvorschriften des Ziellandes entspricht.", targetQuantity: "Zielmenge", targetPrice: "Zielpreis", servicePlan: "Service / Preisoption", needCustomLogo: "Eigenes Logo", needCustomPackaging: "Individuelle Verpackung", needSamples: "Muster benötigt", productDescription: "Produktbeschreibung", productDescriptionPlaceholder: "Beschreiben Sie Produkt, Materialien, Größe, Referenzlinks, Qualitätsniveau oder Wettbewerber.", uploadReferenceImage: "Referenzbild hochladen", message: "Nachricht", messagePlaceholder: "Was sollte unser Sourcing-Team noch wissen?", selectOption: "Option auswählen" },
+  categoryLabels: { "Apparel & Fashion": "Mode und Bekleidung", "Sun Protection Clothing": "UV-Schutzbekleidung", "Beauty Tools": "Beauty-Zubehör", "Pet Supplies": "Haustierbedarf", "Home & Kitchen": "Haus und Küche", "Outdoor & Travel": "Outdoor und Reise", "Car Accessories": "Autozubehör", "Phone Accessories": "Handyzubehör", "Fitness Products": "Fitnessprodukte", "TikTok Viral Products": "Trendprodukte", Other: "Sonstige" },
+  platformLabels: { "Retail Store": "Einzelhandelsgeschäft", "Wholesale Distribution": "Großhandelsvertrieb", "Chain Store": "Filialkette", "Brand / Private Label": "Marke / Private Label", Other: "Sonstige" },
+});
+
+const pt = createAddedLanguage({
+  brandSubtitle: "Parceiro de sourcing na China",
+  nav: { services: "Serviços", howItWorks: "Processo", categories: "Categorias", pricing: "Preços", caseStudies: "Cenários", about: "Sobre", contact: "Contato", submitRequest: "Enviar pedido", submitSourcingRequest: "Enviar pedido de sourcing", mobileDescription: "Suporte da solicitação ao envio.", openNavigation: "Abrir navegação", language: "Idioma" },
+  footer: { intro: "A SodaPost ajuda varejistas, atacadistas, marcas e vendedores online a comprar produtos confiáveis na China por meio de um processo privado e orientado por requisitos.", pages: "Páginas", buyerActions: "Ações", getQuote: "Solicitar orçamento", adminDemo: "Login administrativo" },
+  common: { services: "Serviços", productCategories: "Categorias de produtos", howItWorks: "Processo", caseStudies: "Cenários de sourcing", submitSourcingRequest: "Enviar pedido de sourcing", getQuote: "Solicitar orçamento", exploreCategories: "Ver categorias", startOption: "Escolher esta opção", popular: "Opção recomendada", readyTitle: "Pronto para comprar seu próximo produto na China?", readyDescription: "Envie seus requisitos; nossa equipe analisará a oportunidade em até 24 horas." },
+  hero: { eyebrow: "Suporte privado para compradores internacionais", title: "Compre produtos confiáveis na China para varejo ou atacado", subtitle: "A SodaPost ajuda na seleção de fornecedores, amostras, embalagem, controle de qualidade e coordenação de envio." },
+  trustHighlights: ["Fornecedores selecionados", "Amostras e embalagem", "Suporte de inspeção", "Documentos de envio"],
+  metrics: [{ label: "Etapas principais", value: "7" }, { label: "Mercados atendidos", value: "Global" }, { label: "Resposta inicial", value: "24 h" }],
+  services: addedServices.pt.map(([title, description]) => ({ title, description })),
+  manufacturing: {
+    eyebrow: "Por que comprar na China", title: "Uma base industrial profunda para o crescimento do varejo e atacado", description: "A China combina clusters especializados, capacidade flexível, fornecedores complementares e logística global.",
+    advantages: [{ title: "Ecossistemas industriais completos", description: "Componentes, moldes, materiais e conhecimento ficam próximos em clusters maduros." }, { title: "Personalização e qualidade", description: "De pequenos testes a embalagem de marca própria com controles definidos." }, { title: "Entrega global eficiente", description: "Portos, frete e consolidação apoiam entregas internacionais." }],
+    agencyEyebrow: "Por que SodaPost", agencyTitle: "Transforme sourcing complexo em um projeto claro e controlável", agencyDescription: "Partimos do mercado, preço, quantidade e objetivo para criar uma rota de compra comparável.",
+    commitmentTitle: "Coordenação dedicada em cada etapa", commitmentDescription: "Requisitos, feedback, decisões e próximas ações permanecem conectados e rastreáveis.",
+    signals: ["Comece com um produto", "Processo privado", "Resposta inicial em 24 horas"], cta: "Conte o que deseja comprar", secondaryCta: "Ver o processo",
+  },
+  categories: [
+    { title: "Moda e vestuário", description: "Básicos, moda esportiva, acessórios e programas personalizados." }, { title: "Roupas com proteção solar", description: "Peças UPF, camadas leves, chapéus e mangas." }, { title: "Acessórios de beleza", description: "Pincéis, organizadores, ferramentas de cuidado e espelhos." }, { title: "Produtos para pets", description: "Viagem, higiene, brinquedos, alimentação e acessórios." }, { title: "Casa e cozinha", description: "Utensílios, organização, decoração e limpeza." }, { title: "Outdoor e viagem", description: "Organizadores, camping, bolsas, garrafas e equipamentos." }, { title: "Acessórios automotivos", description: "Organização, limpeza, suportes e conforto." }, { title: "Acessórios para celular", description: "Capas, suportes, carregadores, cabos e kits." }, { title: "Produtos fitness", description: "Faixas, recuperação e acessórios de treino." }, { title: "Produtos de tendência", description: "Produtos de giro rápido com suporte de amostras e envio." }, { title: "Outros", description: "Produtos fora da lista, sujeitos a análise de viabilidade e conformidade." },
+  ],
+  processSteps: [{ title: "Envie sua solicitação", description: "Compartilhe produto, mercado, quantidade, preço, canal e imagens." }, { title: "Compare opções", description: "Pesquisamos e organizamos fornecedores qualificados." }, { title: "Valide amostras e embalagem", description: "Coordenamos amostras, logotipo, embalagem e qualidade." }, { title: "Produção e envio", description: "Apoiamos produção, inspeção e entrega logística." }],
+  pricingPlans: [{ name: "Solicitação gratuita", price: "$0", description: "Para conversa inicial e análise de viabilidade.", features: ["Dados do produto", "Análise inicial", "Próximo passo"] }, { name: "Seleção de fornecedores", price: "a partir de $49", description: "Para obter opções filtradas rapidamente.", features: ["Lista curta", "Adequação", "Resumo para comprador"], highlighted: true }, { name: "Relatório de sourcing", price: "a partir de $99", description: "Para comparar antes de amostras ou negociação.", features: ["Pesquisa de categoria", "Comparação", "Preço e MOQ"] }, { name: "Projeto personalizado", price: "sob consulta", description: "Para marca própria, embalagem complexa ou múltiplos SKUs.", features: ["Fluxo dedicado", "Suporte de amostras", "Inspeção e logística"] }],
+  pages: { servicesTitle: "Serviços de sourcing na China para varejistas, atacadistas e marcas", servicesDescription: "Seleção, verificação, amostras, embalagem, inspeção e logística.", howTitle: "Do briefing do produto às amostras e entrega logística", howDescription: "Um processo estruturado para comparar opções e reduzir riscos.", categoriesTitle: "Suporte para categorias de produtos de consumo", categoriesDescription: "Compartilhe produto, quantidade e mercado; analisaremos a viabilidade em privado.", pricingTitle: "Comece gratuitamente e escolha a profundidade certa", pricingDescription: "O preço depende de pesquisa, comparação, amostras e coordenação.", caseTitle: "Cenários representativos de sourcing", caseDescription: "Exemplos transparentes sem inventar resultados de clientes.", aboutTitle: "Um parceiro de sourcing para varejistas, atacadistas e marcas internacionais", aboutDescription: "Um processo privado e orientado por requisitos para comprar na China.", contactTitle: "Fale com a SodaPost sobre seu próximo projeto", contactDescription: "Envie produto, mercado, quantidade e necessidades de embalagem.", openFullRequest: "Abrir solicitação completa", requestTitle: "Envie seus requisitos com privacidade", requestDescription: "Informe o produto, como vende e o suporte necessário. Análise em 24 horas." },
+  form: { successTitle: "Solicitação enviada", success: "Responderemos o mais rápido possível.", submitting: "Enviando...", invalidImageType: "Selecione um arquivo de imagem.", imageTooLarge: "A imagem de referência deve ter no máximo 8 MB.", submitError: "Não foi possível enviar a solicitação. Tente novamente.", name: "Nome", companyName: "Empresa", countryMarket: "País / mercado", sellingPlatform: "Canal de venda / negócio", productCategory: "Categoria do produto", productCategoryDetail: "Classificação do produto", productCategoryDetailPlaceholder: "Informe a categoria específica", legalComplianceNotice: "Garanta que o produto cumpra as leis chinesas e as regras de importação do país de destino.", targetQuantity: "Quantidade desejada", targetPrice: "Preço desejado", servicePlan: "Serviço / opção de preço", needCustomLogo: "Precisa de logotipo", needCustomPackaging: "Precisa de embalagem personalizada", needSamples: "Precisa de amostras", productDescription: "Descrição do produto", productDescriptionPlaceholder: "Descreva o produto, materiais, tamanho, links, nível de qualidade ou concorrentes.", uploadReferenceImage: "Enviar imagem de referência", message: "Mensagem", messagePlaceholder: "Há mais alguma informação para nossa equipe de sourcing?", selectOption: "Selecione uma opção" },
+  categoryLabels: { "Apparel & Fashion": "Moda e vestuário", "Sun Protection Clothing": "Roupas com proteção solar", "Beauty Tools": "Acessórios de beleza", "Pet Supplies": "Produtos para pets", "Home & Kitchen": "Casa e cozinha", "Outdoor & Travel": "Outdoor e viagem", "Car Accessories": "Acessórios automotivos", "Phone Accessories": "Acessórios para celular", "Fitness Products": "Produtos fitness", "TikTok Viral Products": "Produtos de tendência", Other: "Outros" },
+  platformLabels: { "Retail Store": "Loja de varejo", "Wholesale Distribution": "Distribuição atacadista", "Chain Store": "Rede de lojas", "Brand / Private Label": "Marca / marca própria", Other: "Outro" },
+});
+
+const ar = createAddedLanguage({
+  brandSubtitle: "شريك التوريد من الصين",
+  nav: { services: "الخدمات", howItWorks: "آلية العمل", categories: "الفئات", pricing: "الأسعار", caseStudies: "السيناريوهات", about: "من نحن", contact: "تواصل", submitRequest: "إرسال طلب", submitSourcingRequest: "إرسال طلب توريد", mobileDescription: "دعم التوريد من الطلب حتى الشحن.", openNavigation: "فتح القائمة", language: "اللغة" },
+  footer: { intro: "تساعد SodaPost تجار التجزئة والجملة والعلامات والبائعين عبر الإنترنت على توريد منتجات موثوقة من الصين عبر عملية خاصة قائمة على المتطلبات.", pages: "الصفحات", buyerActions: "إجراءات المشتري", getQuote: "طلب عرض سعر", adminDemo: "دخول الإدارة" },
+  common: { services: "الخدمات", productCategories: "فئات المنتجات", howItWorks: "آلية العمل", caseStudies: "سيناريوهات التوريد", submitSourcingRequest: "إرسال طلب توريد", getQuote: "طلب عرض سعر", exploreCategories: "عرض الفئات", startOption: "ابدأ بهذا الخيار", popular: "خيار موصى به", readyTitle: "هل أنت مستعد لتوريد منتجك التالي من الصين؟", readyDescription: "أرسل متطلباتك وسيراجع فريقنا الفرصة خلال 24 ساعة." },
+  hero: { eyebrow: "دعم توريد خاص للمشترين الدوليين", title: "توريد منتجات موثوقة من الصين لأعمال التجزئة أو الجملة", subtitle: "تساعد SodaPost في اختيار الموردين والعينات والتغليف وفحص الجودة وتنسيق الشحن." },
+  trustHighlights: ["قائمة موردين مختارة", "تنسيق العينات والتغليف", "دعم الفحص", "مستندات الشحن"],
+  metrics: [{ label: "المراحل الرئيسية", value: "7" }, { label: "الأسواق المدعومة", value: "عالمي" }, { label: "الرد الأولي", value: "24 ساعة" }],
+  services: addedServices.ar.map(([title, description]) => ({ title, description })),
+  manufacturing: {
+    eyebrow: "لماذا التوريد من الصين", title: "قاعدة صناعية عميقة لنمو تجارة التجزئة والجملة", description: "تجمع الصين بين التجمعات الصناعية المتخصصة والقدرة المرنة والموردين المساندين والخدمات اللوجستية العالمية.",
+    advantages: [{ title: "منظومات صناعية متكاملة", description: "تتجمع المكونات والقوالب والمواد والخبرة في مراكز صناعية ناضجة." }, { title: "تخصيص مرن وضبط جودة", description: "من اختبار الكميات الصغيرة إلى التغليف الخاص ونقاط الفحص المحددة." }, { title: "وصول فعال للأسواق العالمية", description: "تدعم الموانئ والشحن والتجميع عمليات التسليم الدولية." }],
+    agencyEyebrow: "لماذا SodaPost", agencyTitle: "حوّل التوريد المعقد إلى مشروع واضح وقابل للإدارة", agencyDescription: "نبدأ من السوق والسعر والكمية والهدف لبناء مسار توريد وخيارات قابلة للمقارنة.",
+    commitmentTitle: "تنسيق مخصص في كل مرحلة", commitmentDescription: "تبقى المتطلبات وردود الموردين والقرارات والخطوات التالية مترابطة وقابلة للتتبع.",
+    signals: ["ابدأ بمنتج واحد", "عملية خاصة", "رد أولي خلال 24 ساعة"], cta: "أخبرنا بما تريد توريده", secondaryCta: "عرض آلية العمل",
+  },
+  categories: [
+    { title: "الأزياء والملابس", description: "أساسيات وملابس رياضية وإكسسوارات وبرامج مخصصة." }, { title: "ملابس الحماية من الشمس", description: "ملابس UPF وطبقات خفيفة وقبعات وأكمام." }, { title: "أدوات التجميل", description: "فُرش ومنظمات وأدوات عناية ومرايا." }, { title: "مستلزمات الحيوانات", description: "السفر والعناية والألعاب والتغذية والإكسسوارات." }, { title: "المنزل والمطبخ", description: "أدوات وتنظيم وديكور وتنظيف." }, { title: "السفر والهواء الطلق", description: "منظمات وتخييم وحقائب وزجاجات ومعدات محمولة." }, { title: "إكسسوارات السيارات", description: "تنظيم وتنظيف وحوامل وراحة." }, { title: "إكسسوارات الهواتف", description: "أغطية وحوامل وشواحن وكابلات ومجموعات." }, { title: "منتجات اللياقة", description: "أشرطة وأدوات تعافٍ وإكسسوارات تدريب." }, { title: "منتجات رائجة", description: "منتجات سريعة الحركة مع دعم العينات والشحن." }, { title: "أخرى", description: "منتجات خارج القائمة تخضع لمراجعة الجدوى والامتثال." },
+  ],
+  processSteps: [{ title: "أرسل طلبك", description: "شارك المنتج والسوق والكمية والسعر والقناة والصور." }, { title: "قارن الخيارات", description: "نبحث عن الموردين وننظم الخيارات المؤهلة." }, { title: "تحقق من العينات والتغليف", description: "ننسق العينات والشعار والتغليف والجودة." }, { title: "الإنتاج والشحن", description: "ندعم متابعة الإنتاج والفحص والتسليم اللوجستي." }],
+  pricingPlans: [{ name: "طلب مجاني", price: "$0", description: "للمحادثة الأولى ومراجعة الجدوى.", features: ["بيانات المنتج", "مراجعة أولية", "الخطوة التالية"] }, { name: "اختيار الموردين", price: "ابتداءً من $49", description: "للحصول على خيارات موردين مصفاة.", features: ["قائمة مختصرة", "مطابقة المتطلبات", "ملخص للمشتري"], highlighted: true }, { name: "تقرير توريد", price: "ابتداءً من $99", description: "للمقارنة قبل العينات أو التفاوض.", features: ["بحث الفئة", "المقارنة", "السعر والحد الأدنى"] }, { name: "مشروع مخصص", price: "سعر مخصص", description: "للعلامة الخاصة أو التغليف المعقد أو عدة منتجات.", features: ["مسار مخصص", "دعم العينات", "الفحص والخدمات اللوجستية"] }],
+  pages: { servicesTitle: "خدمات التوريد من الصين لتجار التجزئة والجملة والعلامات", servicesDescription: "اختيار الموردين والتحقق والعينات والتغليف والفحص والخدمات اللوجستية.", howTitle: "من موجز المنتج إلى العينات وتسليم الشحنة", howDescription: "عملية منظمة للمقارنة وتقليل المخاطر.", categoriesTitle: "دعم توريد فئات المنتجات الاستهلاكية", categoriesDescription: "شارك المنتج والكمية والسوق وسنراجع الجدوى بشكل خاص.", pricingTitle: "ابدأ مجانًا واختر مستوى التوريد المناسب", pricingDescription: "يعتمد السعر على البحث والمقارنة والعينات والتنسيق.", caseTitle: "سيناريوهات توريد تمثيلية", caseDescription: "أمثلة شفافة للعملية دون اختلاق نتائج عملاء.", aboutTitle: "شريك توريد لتجار التجزئة والجملة والعلامات الدولية", aboutDescription: "عملية خاصة قائمة على المتطلبات للتوريد من الصين.", contactTitle: "تحدث مع SodaPost عن مشروعك التالي", contactDescription: "أرسل المنتج والسوق والكمية واحتياجات التغليف.", openFullRequest: "فتح الطلب الكامل", requestTitle: "أرسل متطلبات المنتج بخصوصية", requestDescription: "أخبرنا بالمنتج وطريقة البيع والدعم المطلوب. نراجع الطلب خلال 24 ساعة." },
+  form: { successTitle: "تم إرسال الطلب", success: "سنرد في أقرب وقت.", submitting: "جارٍ الإرسال...", invalidImageType: "يرجى اختيار ملف صورة.", imageTooLarge: "يجب ألا يتجاوز حجم الصورة المرجعية 8 ميجابايت.", submitError: "تعذر إرسال الطلب. يرجى المحاولة مرة أخرى.", name: "الاسم", companyName: "اسم الشركة", countryMarket: "الدولة / السوق", sellingPlatform: "قناة البيع / نوع العمل", productCategory: "فئة المنتج", productCategoryDetail: "تصنيف المنتج", productCategoryDetailPlaceholder: "أدخل التصنيف المحدد", legalComplianceNotice: "يرجى التأكد من التزام المنتج بالقوانين الصينية ومتطلبات الاستيراد في بلد الوجهة.", targetQuantity: "الكمية المستهدفة", targetPrice: "السعر المستهدف", servicePlan: "الخدمة / خيار السعر", needCustomLogo: "شعار مخصص", needCustomPackaging: "تغليف مخصص", needSamples: "عينات مطلوبة", productDescription: "وصف المنتج", productDescriptionPlaceholder: "صف المنتج والمواد والحجم والروابط المرجعية ومستوى الجودة أو المنافسين.", uploadReferenceImage: "رفع صورة مرجعية", message: "رسالة", messagePlaceholder: "هل توجد معلومات أخرى يحتاج فريق التوريد إلى معرفتها؟", selectOption: "اختر خيارًا" },
+  categoryLabels: { "Apparel & Fashion": "الأزياء والملابس", "Sun Protection Clothing": "ملابس الحماية من الشمس", "Beauty Tools": "أدوات التجميل", "Pet Supplies": "مستلزمات الحيوانات", "Home & Kitchen": "المنزل والمطبخ", "Outdoor & Travel": "السفر والهواء الطلق", "Car Accessories": "إكسسوارات السيارات", "Phone Accessories": "إكسسوارات الهواتف", "Fitness Products": "منتجات اللياقة", "TikTok Viral Products": "منتجات رائجة", Other: "أخرى" },
+  platformLabels: { "Retail Store": "متجر تجزئة", "Wholesale Distribution": "توزيع بالجملة", "Chain Store": "سلسلة متاجر", "Brand / Private Label": "علامة / علامة خاصة", Other: "أخرى" },
+});
+
 export const dictionaries: Record<Locale, Dictionary> = {
   en,
   zh: {
@@ -515,7 +778,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       howItWorks: "流程",
       categories: "产品品类",
       pricing: "价格",
-      caseStudies: "案例",
+      caseStudies: "采购场景",
       about: "关于",
       contact: "联系",
       submitRequest: "提交需求",
@@ -536,7 +799,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       services: "服务",
       productCategories: "产品品类",
       howItWorks: "流程",
-      caseStudies: "案例",
+      caseStudies: "采购场景",
       submitSourcingRequest: "提交采购需求",
       getQuote: "获取免费报价",
       exploreCategories: "查看品类",
@@ -704,8 +967,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       pricingSectionTitle: "简单清晰的采购入口",
       pricingSectionDescription: "首次需求免费。付费选项覆盖更深入的供应商匹配、报告和定制项目协调。",
       pricingContactNote: "建议先与我们沟通具体采购需求，再确认最适合您的服务方案。",
-      caseTitle: "零售与批发采购方的代表性采购结果",
-      caseDescription: "这些演示案例展示 SodaPost 帮助解决的运营问题，同时不暴露供应商联系方式。",
+      caseTitle: "面向零售与批发采购方的代表性采购场景",
+      caseDescription: "通过透明的流程示例说明常见采购问题如何被结构化处理，不虚构客户结果。",
       caseSectionTitle: "样品、包装、质检和货运协调",
       caseSectionDescription: "SodaPost 专注于从想法到交付之间最容易失控的中间环节。",
       aboutTitle: "为海外零售商、批发商和品牌方打造的采购代理",
@@ -853,6 +1116,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       Lost: "丢失",
     },
   },
+  es,
+  fr,
+  de,
+  pt,
+  ar,
   vi: {
     ...en,
     brandSubtitle: "Đối tác sourcing tại Trung Quốc",
@@ -1187,7 +1455,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       howItWorks: "ご利用の流れ",
       categories: "商品カテゴリー",
       pricing: "料金",
-      caseStudies: "事例",
+      caseStudies: "仕入れシナリオ",
       about: "私たちについて",
       contact: "お問い合わせ",
       submitRequest: "仕入れを依頼",
@@ -1208,7 +1476,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       services: "サービス",
       productCategories: "商品カテゴリー",
       howItWorks: "ご利用の流れ",
-      caseStudies: "事例",
+      caseStudies: "仕入れシナリオ",
       submitSourcingRequest: "仕入れ依頼を送信",
       getQuote: "無料見積もり",
       exploreCategories: "カテゴリーを見る",
@@ -1321,8 +1589,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
     ],
     pricingPlans: [
       { name: "無料相談", price: "$0", description: "初回相談や簡易的な実現可能性の確認に適しています。", features: ["商品情報の送信", "初期確認", "次のステップの提案"] },
-      { name: "サプライヤーマッチング", price: "from $49", description: "審査済みの仕入れ候補を早く必要とするバイヤー向けです。", features: ["候補リスト", "基本要件との照合", "バイヤー向け概要"], highlighted: true },
-      { name: "仕入れレポート", price: "from $99", description: "サンプルや交渉前に商品候補を比較したい場合に適しています。", features: ["カテゴリー調査", "サプライヤー比較", "価格・MOQ情報"] },
+      { name: "サプライヤーマッチング", price: "$49〜", description: "審査済みの仕入れ候補を早く必要とするバイヤー向けです。", features: ["候補リスト", "基本要件との照合", "バイヤー向け概要"], highlighted: true },
+      { name: "仕入れレポート", price: "$99〜", description: "サンプルや交渉前に商品候補を比較したい場合に適しています。", features: ["カテゴリー調査", "サプライヤー比較", "価格・MOQ情報"] },
       { name: "カスタム仕入れプロジェクト", price: "個別見積もり", description: "PB、複雑な包装、複数SKUの仕入れ向けです。", features: ["専用仕入れフロー", "サンプル支援", "検品・輸送調整"] },
     ],
     caseStudies: [
@@ -1359,8 +1627,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       pricingSectionTitle: "分かりやすい仕入れプラン",
       pricingSectionDescription: "初回依頼は無料です。有料プランではより深い調査とプロジェクト支援を提供します。",
       pricingContactNote: "ご希望に最適なプランを決める前に、まず仕入れ要件をご相談ください。",
-      caseTitle: "小売・卸売バイヤーの仕入れ成果",
-      caseDescription: "サプライヤー情報を公開せずに解決する代表的な実務課題をご紹介します。",
+      caseTitle: "小売・卸売バイヤー向けの代表的な仕入れシナリオ",
+      caseDescription: "顧客実績を作り上げることなく、一般的な仕入れ課題の進め方を透明に説明します。",
       caseSectionTitle: "サンプル、包装、検品、輸送調整",
       caseSectionDescription: "アイデアから納品までの、管理が難しい中間工程を支援します。",
       aboutTitle: "海外の小売業者、卸売業者、ブランド向け仕入れエージェンシー",
@@ -1503,7 +1771,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       howItWorks: "진행 절차",
       categories: "제품 카테고리",
       pricing: "가격",
-      caseStudies: "사례",
+      caseStudies: "소싱 시나리오",
       about: "회사 소개",
       contact: "문의",
       submitRequest: "소싱 요청",
@@ -1524,7 +1792,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       services: "서비스",
       productCategories: "제품 카테고리",
       howItWorks: "진행 절차",
-      caseStudies: "사례",
+      caseStudies: "소싱 시나리오",
       submitSourcingRequest: "소싱 요청 제출",
       getQuote: "무료 견적 받기",
       exploreCategories: "카테고리 보기",
@@ -1675,8 +1943,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       pricingSectionTitle: "간단하고 명확한 소싱 옵션",
       pricingSectionDescription: "첫 요청은 무료이며 유료 옵션은 더 깊은 조사와 프로젝트 조율을 제공합니다.",
       pricingContactNote: "가장 적합한 서비스 플랜을 결정하기 전에 먼저 소싱 요구사항을 상담해 주세요.",
-      caseTitle: "소매·도매 구매자의 대표적인 소싱 성과",
-      caseDescription: "공급업체 연락처를 공개하지 않고 해결하는 운영 문제를 보여줍니다.",
+      caseTitle: "소매·도매 구매자를 위한 대표적인 소싱 시나리오",
+      caseDescription: "고객 성과를 꾸며내지 않고 일반적인 소싱 과제를 구조화하는 방식을 투명하게 설명합니다.",
       caseSectionTitle: "샘플, 포장, 검사 및 운송 조율",
       caseSectionDescription: "아이디어와 납품 사이에서 관리하기 어려운 중간 업무에 집중합니다.",
       aboutTitle: "해외 소매업체, 도매업체 및 브랜드를 위한 소싱 에이전시",
@@ -1837,6 +2105,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (isLocale(stored)) {
         setLocaleState(stored);
         document.documentElement.lang = stored;
+        document.documentElement.dir = stored === "ar" ? "rtl" : "ltr";
       }
     }, 0);
 
@@ -1847,6 +2116,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     setLocaleState(nextLocale);
     window.localStorage.setItem(STORAGE_KEY, nextLocale);
     document.documentElement.lang = nextLocale;
+    document.documentElement.dir = nextLocale === "ar" ? "rtl" : "ltr";
   }
 
   const value = useMemo<LanguageContextValue>(() => {

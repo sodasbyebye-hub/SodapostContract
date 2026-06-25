@@ -33,12 +33,12 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
           aria-label={t.nav.language}
           className={cn(
             "h-10 border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 focus-visible:border-orange-300 focus-visible:ring-orange-200/60",
-            compact ? "w-full" : "w-40"
+            compact ? "w-full" : "w-44"
           )}
         >
           <FlagLabel locale={locale} />
         </SelectTrigger>
-        <SelectContent align="end" className="min-w-48 p-1">
+        <SelectContent align="end" className="max-h-80 min-w-52 p-1">
           {locales.map((item) => (
             <SelectItem key={item} value={item} className="py-2">
               <FlagLabel locale={item} />
@@ -53,13 +53,13 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
 function FlagLabel({ locale }: { locale: Locale }) {
   return (
     <span className="flex min-w-0 items-center gap-2">
-      <span className="relative size-5 shrink-0 overflow-hidden rounded-full bg-slate-100 ring-1 ring-slate-950/10">
+      <span className="relative h-4 w-6 shrink-0 overflow-hidden rounded-[3px] bg-white shadow-sm ring-1 ring-slate-950/15">
         <Image
           src={localeFlags[locale]}
           alt=""
           fill
-          sizes="20px"
-          className="scale-[1.45] object-cover"
+          sizes="24px"
+          className="object-cover"
         />
       </span>
       <span className="truncate">{localeLabels[locale]}</span>

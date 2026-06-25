@@ -23,6 +23,7 @@ const navLinks = [
   { href: "/how-it-works", key: "howItWorks" },
   { href: "/product-categories", key: "categories" },
   { href: "/pricing", key: "pricing" },
+  { href: "/case-studies", key: "caseStudies" },
   { href: "/about", key: "about" },
   { href: "/contact", key: "contact" },
 ] as const;
@@ -34,7 +35,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-white/70 bg-white/78 backdrop-blur-xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Brand />
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
+        <nav className="hidden items-center gap-6 xl:flex" aria-label="Main navigation">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -45,7 +46,7 @@ export function Navbar() {
             </Link>
           ))}
         </nav>
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-3 xl:flex">
           <LanguageSwitcher />
           <Link
             href="/sourcing-request"
@@ -58,7 +59,7 @@ export function Navbar() {
           </Link>
         </div>
         <Sheet>
-          <SheetTrigger render={<Button variant="outline" size="icon-lg" className="lg:hidden" />}>
+          <SheetTrigger render={<Button variant="outline" size="icon-lg" className="xl:hidden" />}>
             <Menu />
             <span className="sr-only">{t.nav.openNavigation}</span>
           </SheetTrigger>
@@ -71,7 +72,7 @@ export function Navbar() {
             </SheetHeader>
             <nav className="flex flex-col gap-1 px-4" aria-label="Mobile navigation">
               {navLinks.map((link) => (
-                <SheetClose key={link.href} render={<Link href={link.href} />}>
+                <SheetClose key={link.href} nativeButton={false} render={<Link href={link.href} />}>
                   <span className="block rounded-lg px-3 py-3 text-sm font-medium text-slate-700 hover:bg-slate-100">
                     {t.nav[link.key]}
                   </span>
@@ -80,7 +81,7 @@ export function Navbar() {
             </nav>
             <div className="space-y-4 px-4">
               <LanguageSwitcher compact />
-              <SheetClose render={<Link href="/sourcing-request" />}>
+              <SheetClose nativeButton={false} render={<Link href="/sourcing-request" />}>
                 <span className="flex h-11 items-center justify-center rounded-lg bg-[#f26f21] px-4 text-sm font-semibold text-white">
                   {t.nav.submitSourcingRequest}
                 </span>
