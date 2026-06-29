@@ -34,40 +34,40 @@ export function MarketingHero({
   primaryHref?: string;
 }) {
   return (
-    <section className="relative overflow-hidden bg-slate-950 px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(242,111,33,0.28),transparent_26rem),radial-gradient(circle_at_88%_74%,rgba(20,132,145,0.2),transparent_30rem)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:72px_72px]" />
+    <section className="relative overflow-hidden bg-[#fbfaf7] px-4 py-10 text-slate-950 sm:px-6 lg:px-8 lg:py-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(242,111,33,0.16),transparent_24rem),radial-gradient(circle_at_88%_34%,rgba(148,163,184,0.22),transparent_28rem)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-55 [background-image:linear-gradient(rgba(15,23,42,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.055)_1px,transparent_1px)] [background-size:72px_72px]" />
       <motion.div
         aria-hidden="true"
-        className="pointer-events-none absolute right-[8%] top-10 size-64 rounded-full border border-orange-300/15"
+        className="pointer-events-none absolute right-[8%] top-8 size-48 rounded-full border border-orange-300/25"
         animate={{ rotate: 360 }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
       >
-        <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-orange-300" />
+        <span className="absolute left-1/2 top-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f26f21]" />
       </motion.div>
 
-      <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+      <div className="relative mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-orange-300/20 bg-orange-300/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-orange-200">
+          <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/75 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#d95e17] shadow-sm backdrop-blur">
             <Icon className="size-3.5" />
             {eyebrow}
           </div>
-          <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.06] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 max-w-4xl text-3xl font-semibold leading-[1.08] tracking-[-0.04em] text-slate-950 sm:text-4xl lg:text-[2.85rem]">
             {title}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">{description}</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">{description}</p>
 
-          <div className="mt-7 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             {highlights.map((highlight) => (
               <span
                 key={highlight}
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.055] px-3 py-2 text-xs font-medium text-slate-200"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-xs font-medium text-slate-700 shadow-sm"
               >
-                <Check className="size-3.5 text-orange-300" />
+                <Check className="size-3.5 text-[#f26f21]" />
                 {highlight}
               </span>
             ))}
@@ -77,7 +77,7 @@ export function MarketingHero({
             href={primaryHref}
             className={cn(
               buttonVariants({ size: "lg" }),
-              "mt-8 bg-[#f26f21] px-5 text-white shadow-lg shadow-orange-950/30 hover:bg-[#d95e17]"
+              "mt-5 bg-[#f26f21] px-5 text-white shadow-lg shadow-orange-500/20 hover:bg-[#d95e17]"
             )}
           >
             {primaryLabel}
@@ -89,27 +89,27 @@ export function MarketingHero({
           initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.75, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[1.75rem] border border-white/12 bg-white/[0.07] p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8"
+          className="relative overflow-hidden rounded-[1.5rem] border border-white/85 bg-white/78 p-4 shadow-2xl shadow-slate-950/10 ring-1 ring-slate-950/5 backdrop-blur-xl sm:p-5"
         >
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300/80 to-transparent" />
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-300">{panelLabel}</p>
-          <h2 className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.025em] text-white sm:text-3xl">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#f26f21]/70 to-transparent" />
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#d95e17]">{panelLabel}</p>
+          <h2 className="mt-3 text-lg font-semibold leading-tight tracking-[-0.025em] text-slate-950 sm:text-xl">
             {panelTitle}
           </h2>
-          <p className="mt-4 text-sm leading-7 text-slate-300">{panelDescription}</p>
-          <div className="mt-7 space-y-3">
+          {panelDescription ? <p className="mt-3 text-sm leading-7 text-slate-600">{panelDescription}</p> : null}
+          <div className="mt-4 space-y-2.5">
             {panelItems.map((item, index) => (
               <motion.div
                 key={item}
                 initial={{ opacity: 0, x: 14 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.28 + index * 0.09 }}
-                className="flex items-center gap-3 rounded-xl border border-white/10 bg-slate-950/35 p-4"
+                className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50/80 p-2.5 shadow-sm transition hover:border-orange-200 hover:bg-orange-50/60"
               >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-orange-300/10 text-xs font-semibold text-orange-200">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-xs font-semibold text-[#d95e17]">
                   0{index + 1}
                 </span>
-                <p className="text-sm font-medium leading-6 text-slate-100">{item}</p>
+                <p className="text-sm font-medium leading-6 text-slate-700">{item}</p>
               </motion.div>
             ))}
           </div>
@@ -161,21 +161,19 @@ export function InsightCard({
       className={cn(
         "group relative h-full overflow-hidden rounded-2xl border p-6 transition duration-300 hover:-translate-y-1",
         dark
-          ? "border-white/10 bg-white/[0.055] text-white hover:border-orange-300/35 hover:bg-white/[0.08]"
+          ? "border-white/80 bg-white/75 text-slate-950 shadow-sm shadow-slate-950/5 hover:border-orange-200 hover:bg-white/90 hover:shadow-xl hover:shadow-orange-500/10"
           : "border-slate-200 bg-white/80 shadow-sm shadow-slate-950/5 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/10"
       )}
     >
       {index !== undefined ? (
-        <span className={cn("text-xs font-semibold tracking-[0.18em]", dark ? "text-orange-300" : "text-[#f26f21]")}>
+        <span className={cn("text-xs font-semibold tracking-[0.18em]", dark ? "text-[#d95e17]" : "text-[#f26f21]")}>
           0{index + 1}
         </span>
       ) : null}
-      <h3 className={cn("mt-5 text-lg font-semibold leading-snug", dark ? "text-white" : "text-slate-950")}>
-        {title}
-      </h3>
-      <p className={cn("mt-3 text-sm leading-7", dark ? "text-slate-300" : "text-slate-600")}>{description}</p>
+      <h3 className="mt-5 text-lg font-semibold leading-snug text-slate-950">{title}</h3>
+      <p className="mt-3 text-sm leading-7 text-slate-600">{description}</p>
       {meta ? (
-        <p className={cn("mt-5 border-t pt-4 text-xs font-semibold", dark ? "border-white/10 text-orange-200" : "border-slate-200 text-[#d95e17]")}>
+        <p className="mt-5 border-t border-slate-200 pt-4 text-xs font-semibold text-[#d95e17]">
           {meta}
         </p>
       ) : null}
@@ -195,8 +193,9 @@ export function DarkEditorialBand({
 }) {
   return (
     <section className="px-4 py-20 sm:px-6 lg:px-8">
-      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl shadow-slate-950/15 sm:p-10 lg:p-12">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_20%,rgba(242,111,33,0.2),transparent_24rem)]" />
+      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/80 bg-[#fbfaf7] p-6 text-slate-950 shadow-2xl shadow-slate-950/8 ring-1 ring-slate-950/5 sm:p-10 lg:p-12">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_20%,rgba(242,111,33,0.14),transparent_24rem),radial-gradient(circle_at_8%_80%,rgba(148,163,184,0.2),transparent_24rem)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:linear-gradient(rgba(15,23,42,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.045)_1px,transparent_1px)] [background-size:64px_64px]" />
         <div className="relative">
           <EditorialHeading title={title} description={description} />
           <div className="mt-10">{children}</div>

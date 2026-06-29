@@ -22,6 +22,8 @@ export type Service = {
 export type Category = {
   title: string;
   description: string;
+  image?: string;
+  subcategories?: string[];
 };
 
 export type PricingPlan = {
@@ -116,49 +118,106 @@ export const services: Service[] = [
 
 export const categories: Category[] = [
   {
-    title: "Apparel & Fashion",
-    description: "Seasonal basics, activewear, accessories, and custom apparel programs.",
+    title: "Packaging Machines",
+    description:
+      "Filling, sealing, capping, coding, labeling, and compact production-line equipment for small and medium manufacturing teams.",
+    image: "/images/category-packaging-machines.png",
+    subcategories: [
+      "Liquid Filling Machine",
+      "Paste Filling Machine",
+      "Powder Filling Machine",
+      "Liquid Mixing Machine",
+      "Capping Machine",
+      "Induction Foil Sealing Machine",
+      "Band Sealer",
+      "Cup Sealer Machine",
+      "Vacuum Sealer",
+      "Nitrogen Sealing Machine",
+      "Date Coding Machine",
+      "Inkjet Printer Machine",
+      "Labeling Machine",
+      "Complete Small Production Line",
+    ],
   },
   {
-    title: "Sun Protection Clothing",
-    description: "UPF styles, lightweight outdoor layers, hats, sleeves, and beach-market products.",
+    title: "Packaging Materials",
+    description:
+      "Primary packaging, sealing materials, logistics cartons, labels, and consumables that support packaging and fulfillment operations.",
+    image: "/images/category-packaging-materials.png",
+    subcategories: [
+      "Bottles & Jars",
+      "Bottle Caps",
+      "Foil Seals",
+      "Sealing Film",
+      "Packaging Bags",
+      "Stand-up Pouches",
+      "Labels & Stickers",
+      "Cartons & Boxes",
+      "Thermal Paper",
+      "Barcode Labels",
+      "Shrink Film",
+    ],
   },
   {
-    title: "Beauty Tools",
-    description: "Brushes, organizers, skincare tools, mirrors, and salon-ready accessories.",
+    title: "Machine Parts & Consumables",
+    description:
+      "Replacement parts, wear parts, consumables, and accessories for maintaining filling, sealing, capping, coding, and conveyor equipment.",
+    image: "/images/category-machine-parts-consumables.png",
+    subcategories: [
+      "Filling Machine Parts",
+      "Sealing Machine Parts",
+      "Capping Machine Parts",
+      "Coding Ink & Cartridge",
+      "Heating Elements",
+      "Silicone Rings",
+      "Nozzles & Tubes",
+      "Conveyor Accessories",
+      "Replacement Parts",
+    ],
   },
   {
-    title: "Pet Supplies",
-    description: "Pet travel, grooming, toys, feeders, carriers, and private label accessories.",
+    title: "E-commerce Products",
+    description:
+      "Fast-moving online retail products and accessories for marketplace sellers, social commerce teams, and wholesale buyers.",
+    image: "/images/category-ecommerce-products.png",
+    subcategories: [
+      "Phone Accessories",
+      "3C Digital Accessories",
+      "Home & Kitchen Products",
+      "Storage & Organization",
+      "Outdoor Gadgets",
+      "Motorcycle & E-bike Accessories",
+      "Pet Supplies",
+      "Small Household Tools",
+      "Trending TikTok Products",
+    ],
   },
   {
-    title: "Home & Kitchen",
-    description: "Kitchen gadgets, storage, decor, cleaning tools, and lifestyle essentials.",
+    title: "Custom Packaging Products",
+    description:
+      "Branded packaging items for private label, gifting, product presentation, fulfillment inserts, and repeatable brand systems.",
+    image: "/images/category-custom-packaging-products.png",
+    subcategories: [
+      "Custom Boxes",
+      "Custom Bags",
+      "Logo Stickers",
+      "Product Labels",
+      "Thank You Cards",
+      "Hang Tags",
+      "Brand Packaging Sets",
+      "Private Label Packaging",
+    ],
   },
-  {
-    title: "Outdoor & Travel",
-    description: "Travel organizers, camping accessories, bags, bottles, and portable gear.",
-  },
-  {
-    title: "Car Accessories",
-    description: "Interior organizers, cleaning tools, phone mounts, and comfort accessories.",
-  },
-  {
-    title: "Phone Accessories",
-    description: "Cases, stands, chargers, lens kits, cables, and social commerce bundles.",
-  },
-  {
-    title: "Fitness Products",
-    description: "Resistance bands, recovery tools, home workout accessories, and gym add-ons.",
-  },
-  {
-    title: "TikTok Viral Products",
-    description: "Fast-moving trend products with packaging, sample, and shipping coordination.",
-  },
-  {
-    title: "Other",
-    description: "Products outside the listed categories, subject to sourcing feasibility and legal compliance review.",
-  },
+];
+
+export const sourcingProductCategoryOptions = [
+  "Packaging Machines",
+  "Packaging Materials",
+  "Machine Parts & Consumables",
+  "E-commerce Products",
+  "Custom Packaging Products",
+  "Complete Production Line",
+  "Other",
 ];
 
 export const processSteps = [

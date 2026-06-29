@@ -3,7 +3,6 @@
 import { Boxes, SearchCheck } from "lucide-react";
 
 import { CategoryCard } from "@/components/category-card";
-import { CategoryImageGallery } from "@/components/category-image-gallery";
 import {
   DarkEditorialBand,
   EditorialHeading,
@@ -41,16 +40,17 @@ export default function ProductCategoriesPage() {
             title={content.sectionTitle}
             description={content.sectionDescription}
           />
-          <div className="mt-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-            <Reveal>
-              <div className="sticky top-28 rounded-[1.5rem] border border-white/80 bg-white/70 p-3 shadow-xl shadow-slate-950/8 backdrop-blur-xl">
-                <CategoryImageGallery categories={t.categories} />
-              </div>
-            </Reveal>
-            <div className="grid gap-5 sm:grid-cols-2">
+          <div className="relative mt-10">
+            <div className="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-full bg-orange-200/30 blur-3xl" />
+            <div className="pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-slate-300/35 blur-3xl" />
+            <div className="relative grid gap-6 lg:grid-cols-6">
               {t.categories.map((category, index) => (
-                <Reveal key={category.title} delay={index * 0.03}>
-                  <CategoryCard category={category} />
+                <Reveal
+                  key={category.title}
+                  delay={index * 0.04}
+                  className={index < 2 ? "lg:col-span-3" : "lg:col-span-2"}
+                >
+                  <CategoryCard category={category} index={index + 1} featured={index < 2} />
                 </Reveal>
               ))}
             </div>

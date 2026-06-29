@@ -209,29 +209,27 @@ const en: InnerPageContent = {
   },
   categories: {
     hero: {
-      highlights: ["Consumer products", "Private-label potential", "Requirement-based assessment"],
-      panelLabel: "Category coverage",
-      panelTitle: "We assess the product behind the category name",
-      panelDescription:
-        "Two products in the same category can have very different compliance, quality and supply-chain requirements.",
-      panelItems: ["Materials and construction", "Customization and packaging", "Destination-market requirements"],
+      highlights: ["Packaging machines", "Packaging materials", "E-commerce products"],
+      panelLabel: "Product category coverage",
+      panelTitle: "Product categories stay separate from sourcing services",
+      panelDescription: "",
+      panelItems: ["Machines and production lines", "Packaging materials and parts", "E-commerce and custom packaging products"],
     },
-    sectionEyebrow: "Where we can help",
-    sectionTitle: "A practical starting point for retail, wholesale and private-label sourcing",
-    sectionDescription:
-      "The category list is not a public supplier directory. It shows the kinds of consumer-product briefs our workflow is designed to evaluate.",
-    assessmentTitle: "How we assess a new product request",
+    sectionEyebrow: "Product category focus",
+    sectionTitle: "Product categories SodaPost can help source",
+    sectionDescription: "",
+    assessmentTitle: "How we assess a new product-category request",
     assessmentDescription:
-      "Before recommending a sourcing route, we look at the factors that determine whether a product is straightforward, complex or unsuitable.",
+      "Before recommending a sourcing route, we look at specifications, category fit, required accessories, packaging needs and supplier feasibility.",
     assessmentItems: [
-      { title: "Product definition", description: "Are the materials, dimensions, functions and reference standard clear enough to quote?" },
-      { title: "Commercial fit", description: "Do the target price, quantity and market position support a realistic sourcing route?" },
-      { title: "Customization load", description: "How much development is needed for molds, colors, logo, packaging or bundled components?" },
-      { title: "Compliance sensitivity", description: "Does the product involve claims, testing, restricted materials or destination-market controls?" },
+      { title: "Product fit", description: "Does the request match packaging machines, materials, parts, e-commerce products or custom packaging?" },
+      { title: "Specification clarity", description: "Are model, capacity, material, size, print requirements, or technical parameters clear enough to quote?" },
+      { title: "Production context", description: "Does the buyer need one machine, a complete line, matching consumables, or replacement parts?" },
+      { title: "Compliance sensitivity", description: "Does the product involve food contact, labeling rules, electrical standards, testing or destination-market controls?" },
     ],
-    noteTitle: "Your product is not listed?",
+    noteTitle: "Need a more specific product subcategory?",
     noteDescription:
-      "Select “Other” in the request form and describe the exact classification. We will review sourcing feasibility and legal-compliance considerations before recommending a next step.",
+      "Choose the closest category in the request form. If the product is not listed, choose Other and describe the exact product, specification, quantity and destination market.",
   },
   pricing: {
     hero: {
@@ -461,27 +459,26 @@ const zh: InnerPageContent = {
   },
   categories: {
     hero: {
-      highlights: ["消费品采购", "支持私标开发", "按具体需求评估"],
-      panelLabel: "品类覆盖",
-      panelTitle: "我们评估的是品类名称背后的具体产品",
-      panelDescription: "同一品类中的两个产品，可能拥有完全不同的合规、品质和供应链要求。",
-      panelItems: ["材料与产品结构", "定制与包装要求", "目标市场进口要求"],
+      highlights: ["包装机械", "包装材料", "电商产品"],
+      panelLabel: "产品品类覆盖",
+      panelTitle: "产品品类与采购服务分开管理",
+      panelDescription: "",
+      panelItems: ["机器与生产线", "包装材料与机器配件", "电商产品与定制包装"],
     },
-    sectionEyebrow: "我们可以协助的方向",
-    sectionTitle: "适用于零售、批发和私标采购的实用品类起点",
-    sectionDescription:
-      "这里不是公开供应商目录，而是展示我们的工作流程适合评估哪些消费品采购需求。",
-    assessmentTitle: "我们如何评估一个新的产品需求",
-    assessmentDescription: "在推荐采购路径前，我们会判断产品属于常规、复杂还是暂不适合推进。",
+    sectionEyebrow: "产品品类方向",
+    sectionTitle: "SodaPost可以协助采购的产品类目",
+    sectionDescription: "",
+    assessmentTitle: "我们如何评估一个新的产品品类需求",
+    assessmentDescription: "在推荐采购路径前，我们会判断规格、品类适配、配套耗材、包装需求和供应商可行性。",
     assessmentItems: [
-      { title: "产品定义", description: "材料、尺寸、功能和参考标准是否足够清晰，可以获得有效报价？" },
-      { title: "商业适配", description: "目标价格、数量和市场定位是否支持现实的采购方案？" },
-      { title: "定制工作量", description: "模具、颜色、Logo、包装和组合配件需要多少开发工作？" },
-      { title: "合规敏感度", description: "产品是否涉及宣传声明、测试、限制材料或目标市场监管？" },
+      { title: "产品适配", description: "需求是否属于包装机械、包装材料、机器配件、电商产品或定制包装？" },
+      { title: "规格清晰度", description: "型号、产能、材料、尺寸、印刷要求或技术参数是否足够清晰，可以获得有效报价？" },
+      { title: "生产场景", description: "买家需要单台机器、完整生产线、配套耗材，还是替换零件？" },
+      { title: "合规敏感度", description: "产品是否涉及食品接触、标签规则、电气标准、测试或目标市场监管？" },
     ],
-    noteTitle: "没有找到你的产品品类？",
+    noteTitle: "需要更具体的产品子类？",
     noteDescription:
-      "在需求表单中选择“其他”，并填写具体产品所属分类。我们会先 review 采购可行性与合规注意事项，再推荐下一步。",
+      "在需求表单中选择最接近的品类。如果产品不在列表中，选择 Other 并写清产品名称、规格、数量和目标市场。",
   },
   pricing: {
     hero: {

@@ -32,7 +32,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n";
 import { createSourcingRequestId } from "@/lib/leads";
-import { categories, platformOptions, pricingPlans, type PricingPlanValue } from "@/lib/site-data";
+import { platformOptions, pricingPlans, sourcingProductCategoryOptions, type PricingPlanValue } from "@/lib/site-data";
 import { getReferenceImagePath, MAX_REFERENCE_IMAGE_SIZE } from "@/lib/sourcing-upload";
 
 export function SourcingRequestForm({ initialServicePlan = "" }: { initialServicePlan?: PricingPlanValue | "" }) {
@@ -150,7 +150,7 @@ export function SourcingRequestForm({ initialServicePlan = "" }: { initialServic
         <NativeSelectField
           id="productCategory"
           label={t.form.productCategory}
-          options={categories.map((category) => ({ value: category.title, label: labelCategory(category.title) }))}
+          options={sourcingProductCategoryOptions.map((category) => ({ value: category, label: labelCategory(category) }))}
           placeholder={t.form.selectOption}
           value={productCategory}
           onValueChange={setProductCategory}

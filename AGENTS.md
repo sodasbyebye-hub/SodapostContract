@@ -79,6 +79,8 @@ README.md                        产品与部署概述
 5. 编号格式为 `SP-<timestamp>-<8位UUID片段>`。
 6. 提交期间禁用重复提交；成功后重置表单并显示本地化弹窗“提交成功，我们会尽快答复您”。
 
+产品品类与采购服务必须分开维护：`/product-categories` 展示 Packaging Machines、Packaging Materials、Machine Parts & Consumables、E-commerce Products、Custom Packaging Products 五个产品组及其子类；采购需求表单的稳定下拉值来自 `sourcingProductCategoryOptions`，包含上述五类、Complete Production Line 和 Other。Sourcing Service 属于 Services 页面，不要放入 Product Categories 或产品品类下拉。
+
 修改表单字段时必须同步检查：表单控件、API 必填字段、`SourcingLead` 类型、建表 SQL、INSERT、行映射、后台详情和全部导出格式。当前实现没有正式 migration 系统；新增列必须像 `service_plan` 一样显式执行幂等 `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`，不能只修改 `CREATE TABLE IF NOT EXISTS`。
 
 ### 后台与鉴权

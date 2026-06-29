@@ -1,7 +1,7 @@
 import { del, head, type HeadBlobResult } from "@vercel/blob";
 
 import { isSourcingRequestId } from "@/lib/leads";
-import { categories, isPricingPlanValue, platformOptions } from "@/lib/site-data";
+import { isPricingPlanValue, platformOptions, sourcingProductCategoryOptions } from "@/lib/site-data";
 import { createSourcingRequest } from "@/lib/sourcing-requests";
 import {
   isReferenceImagePath,
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       throw new RequestValidationError("Invalid selling platform.");
     }
 
-    if (!categories.some((category) => category.title === values.productCategory)) {
+    if (!sourcingProductCategoryOptions.includes(values.productCategory)) {
       throw new RequestValidationError("Invalid product category.");
     }
 

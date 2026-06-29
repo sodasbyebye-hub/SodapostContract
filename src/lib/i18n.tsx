@@ -7,6 +7,13 @@ export type Locale = (typeof locales)[number];
 
 const STORAGE_KEY = "sodapost_locale";
 
+type CategoryCopy = {
+  title: string;
+  description: string;
+  image?: string;
+  subcategories?: string[];
+};
+
 export const localeLabels: Record<Locale, string> = {
   en: "English",
   zh: "中文",
@@ -213,23 +220,98 @@ const en = {
     ],
   },
   categories: [
-    { title: "Apparel & Fashion", description: "Seasonal basics, activewear, accessories, and custom apparel programs." },
     {
-      title: "Sun Protection Clothing",
-      description: "UPF styles, lightweight outdoor layers, hats, sleeves, and beach-market products.",
+      title: "Packaging Machines",
+      description:
+        "Filling, sealing, capping, coding, labeling, and compact production-line equipment for small and medium manufacturing teams.",
+      image: "/images/category-packaging-machines.png",
+      subcategories: [
+        "Liquid Filling Machine",
+        "Paste Filling Machine",
+        "Powder Filling Machine",
+        "Liquid Mixing Machine",
+        "Capping Machine",
+        "Induction Foil Sealing Machine",
+        "Band Sealer",
+        "Cup Sealer Machine",
+        "Vacuum Sealer",
+        "Nitrogen Sealing Machine",
+        "Date Coding Machine",
+        "Inkjet Printer Machine",
+        "Labeling Machine",
+        "Complete Small Production Line",
+      ],
     },
-    { title: "Beauty Tools", description: "Brushes, organizers, skincare tools, mirrors, and salon-ready accessories." },
-    { title: "Pet Supplies", description: "Pet travel, grooming, toys, feeders, carriers, and private label accessories." },
-    { title: "Home & Kitchen", description: "Kitchen gadgets, storage, decor, cleaning tools, and lifestyle essentials." },
-    { title: "Outdoor & Travel", description: "Travel organizers, camping accessories, bags, bottles, and portable gear." },
-    { title: "Car Accessories", description: "Interior organizers, cleaning tools, phone mounts, and comfort accessories." },
-    { title: "Phone Accessories", description: "Cases, stands, chargers, lens kits, cables, and social commerce bundles." },
-    { title: "Fitness Products", description: "Resistance bands, recovery tools, home workout accessories, and gym add-ons." },
     {
-      title: "TikTok Viral Products",
-      description: "Fast-moving trend products with packaging, sample, and shipping coordination.",
+      title: "Packaging Materials",
+      description:
+        "Primary packaging, sealing materials, logistics cartons, labels, and consumables that support packaging and fulfillment operations.",
+      image: "/images/category-packaging-materials.png",
+      subcategories: [
+        "Bottles & Jars",
+        "Bottle Caps",
+        "Foil Seals",
+        "Sealing Film",
+        "Packaging Bags",
+        "Stand-up Pouches",
+        "Labels & Stickers",
+        "Cartons & Boxes",
+        "Thermal Paper",
+        "Barcode Labels",
+        "Shrink Film",
+      ],
     },
-  ],
+    {
+      title: "Machine Parts & Consumables",
+      description:
+        "Replacement parts, wear parts, consumables, and accessories for maintaining filling, sealing, capping, coding, and conveyor equipment.",
+      image: "/images/category-machine-parts-consumables.png",
+      subcategories: [
+        "Filling Machine Parts",
+        "Sealing Machine Parts",
+        "Capping Machine Parts",
+        "Coding Ink & Cartridge",
+        "Heating Elements",
+        "Silicone Rings",
+        "Nozzles & Tubes",
+        "Conveyor Accessories",
+        "Replacement Parts",
+      ],
+    },
+    {
+      title: "E-commerce Products",
+      description:
+        "Fast-moving online retail products and accessories for marketplace sellers, social commerce teams, and wholesale buyers.",
+      image: "/images/category-ecommerce-products.png",
+      subcategories: [
+        "Phone Accessories",
+        "3C Digital Accessories",
+        "Home & Kitchen Products",
+        "Storage & Organization",
+        "Outdoor Gadgets",
+        "Motorcycle & E-bike Accessories",
+        "Pet Supplies",
+        "Small Household Tools",
+        "Trending TikTok Products",
+      ],
+    },
+    {
+      title: "Custom Packaging Products",
+      description:
+        "Branded packaging items for private label, gifting, product presentation, fulfillment inserts, and repeatable brand systems.",
+      image: "/images/category-custom-packaging-products.png",
+      subcategories: [
+        "Custom Boxes",
+        "Custom Bags",
+        "Logo Stickers",
+        "Product Labels",
+        "Thank You Cards",
+        "Hang Tags",
+        "Brand Packaging Sets",
+        "Private Label Packaging",
+      ],
+    },
+  ] as CategoryCopy[],
   processSteps: [
     {
       title: "Submit your request",
@@ -304,9 +386,9 @@ const en = {
     homeServicesTitle: "A sourcing team between your product idea and your China supply chain",
     homeServicesDescription:
       "SodaPost coordinates the details that matter to retail and wholesale buyers: supplier fit, samples, private label packaging, inspection checkpoints, and shipping handoff.",
-    homeCategoriesTitle: "Built for fast-moving retail and wholesale product categories",
+    homeCategoriesTitle: "Built for packaging equipment, packaging materials, parts, and e-commerce products",
     homeCategoriesDescription:
-      "From apparel and beauty tools to pet supplies and TikTok viral products, SodaPost focuses on buyer requirements rather than publishing supplier lists.",
+      "From filling machines and sealing materials to machine parts, branded packaging, and online retail products, SodaPost focuses on buyer requirements rather than publishing supplier lists.",
     homeProcessTitle: "A clear 4-step process from request to shipment",
     homeProcessDescription: "Every project starts with buyer requirements, not a public supplier directory.",
     homeCaseTitle: "Representative sourcing wins for growing businesses",
@@ -324,12 +406,12 @@ const en = {
     howSectionTitle: "The SodaPost sourcing process",
     howSectionDescription:
       "Each step keeps the buyer in control while SodaPost coordinates the supplier-side details.",
-    categoriesTitle: "Sourcing support for fast-moving consumer product categories",
+    categoriesTitle: "Product categories for packaging, production, and e-commerce sourcing",
     categoriesDescription:
-      "Share the product you want to source, your target quantity, and your market. SodaPost will review supplier fit privately.",
+      "Browse the product categories SodaPost can help source, then submit your specifications, target quantity, and destination market for private supplier-fit review.",
     categoriesSectionTitle: "Category coverage",
     categoriesSectionDescription:
-      "These are common starting points. If your product is outside this list, submit a request and we will review feasibility.",
+      "Product categories stay separate from sourcing services. Services remain under the Services page; this page focuses on products buyers can request.",
     pricingTitle: "Start with a free request, then choose the right sourcing depth",
     pricingDescription:
       "Pricing depends on how much research, comparison, sampling, packaging, and coordination your product needs.",
@@ -477,6 +559,12 @@ const en = {
     no: "No",
   },
   categoryLabels: {
+    "Packaging Machines": "Packaging Machines",
+    "Packaging Materials": "Packaging Materials",
+    "Machine Parts & Consumables": "Machine Parts & Consumables",
+    "E-commerce Products": "E-commerce Products",
+    "Custom Packaging Products": "Custom Packaging Products",
+    "Complete Production Line": "Complete Production Line",
     "Apparel & Fashion": "Apparel & Fashion",
     "Sun Protection Clothing": "Sun Protection Clothing",
     "Beauty Tools": "Beauty Tools",
@@ -488,7 +576,7 @@ const en = {
     "Fitness Products": "Fitness Products",
     "TikTok Viral Products": "TikTok Viral Products",
     Other: "Other",
-  },
+  } as Record<string, string>,
   platformLabels: {
     "Retail Store": "Retail Store",
     "Wholesale Distribution": "Wholesale Distribution",
@@ -524,12 +612,12 @@ type AddedLanguagePack = {
   trustHighlights: string[];
   metrics: Dictionary["metrics"];
   services: Array<{ title: string; description: string }>;
-  categories: Array<{ title: string; description: string }>;
+  categories: CategoryCopy[];
   processSteps: Dictionary["processSteps"];
   pricingPlans: Dictionary["pricingPlans"];
   pages: Partial<Dictionary["pages"]>;
   form: Partial<Dictionary["form"]>;
-  categoryLabels: Dictionary["categoryLabels"];
+  categoryLabels: Record<string, string>;
   platformLabels: Partial<Dictionary["platformLabels"]>;
   manufacturing: {
     eyebrow: string;
@@ -548,6 +636,8 @@ type AddedLanguagePack = {
 };
 
 function createAddedLanguage(pack: AddedLanguagePack): Dictionary {
+  const usesCurrentCategories = pack.categories.length === en.categories.length;
+
   return {
     ...en,
     brandSubtitle: pack.brandSubtitle,
@@ -575,12 +665,25 @@ function createAddedLanguage(pack: AddedLanguagePack): Dictionary {
       agencyCta: pack.manufacturing.cta,
       agencySecondaryCta: pack.manufacturing.secondaryCta,
     },
-    categories: pack.categories,
+    categories: en.categories,
     processSteps: pack.processSteps,
     pricingPlans: pack.pricingPlans,
-    pages: { ...en.pages, ...pack.pages },
+    pages: {
+      ...en.pages,
+      ...pack.pages,
+      ...(usesCurrentCategories
+        ? {}
+        : {
+            homeCategoriesTitle: en.pages.homeCategoriesTitle,
+            homeCategoriesDescription: en.pages.homeCategoriesDescription,
+            categoriesTitle: en.pages.categoriesTitle,
+            categoriesDescription: en.pages.categoriesDescription,
+            categoriesSectionTitle: en.pages.categoriesSectionTitle,
+            categoriesSectionDescription: en.pages.categoriesSectionDescription,
+          }),
+    },
     form: { ...en.form, ...pack.form },
-    categoryLabels: pack.categoryLabels,
+    categoryLabels: { ...en.categoryLabels, ...pack.categoryLabels },
     platformLabels: { ...en.platformLabels, ...pack.platformLabels },
   };
 }
@@ -910,16 +1013,92 @@ export const dictionaries: Record<Locale, Dictionary> = {
       ],
     },
     categories: [
-      { title: "服装与时尚", description: "季节基础款、运动服、配饰和定制服装项目。" },
-      { title: "防晒服饰", description: "UPF 款式、轻量户外层、帽子、袖套和海滩市场产品。" },
-      { title: "美妆工具", description: "刷具、收纳、护肤工具、镜子和沙龙配件。" },
-      { title: "宠物用品", description: "宠物出行、美容、玩具、喂食器、背包和私标配件。" },
-      { title: "家居厨房", description: "厨房小工具、收纳、装饰、清洁工具和生活用品。" },
-      { title: "户外旅行", description: "旅行收纳、露营配件、包袋、水杯和便携装备。" },
-      { title: "汽车配件", description: "车内收纳、清洁工具、手机支架和舒适配件。" },
-      { title: "手机配件", description: "手机壳、支架、充电器、镜头套件、线材和社媒套装。" },
-      { title: "健身产品", description: "弹力带、恢复工具、居家健身配件和健身房小件。" },
-      { title: "TikTok 爆品", description: "快速变化的趋势产品，支持包装、样品和运输协调。" },
+      {
+        title: "包装机械",
+        description: "用于灌装、封口、旋盖、打码、贴标和小型生产线搭建的包装设备。",
+        image: "/images/category-packaging-machines.png",
+        subcategories: [
+          "液体灌装机",
+          "膏体灌装机",
+          "粉末灌装机",
+          "液体搅拌机",
+          "旋盖机",
+          "电磁感应铝箔封口机",
+          "连续封口机",
+          "杯口封口机",
+          "真空封口机",
+          "充氮封口机",
+          "日期打码机",
+          "喷码机",
+          "贴标机",
+          "小型完整生产线",
+        ],
+      },
+      {
+        title: "包装材料",
+        description: "瓶罐、盖子、封口膜、袋类、标签、纸箱及电商履约所需的包装耗材。",
+        image: "/images/category-packaging-materials.png",
+        subcategories: [
+          "瓶子与罐子",
+          "瓶盖",
+          "铝箔封口垫片",
+          "封口膜",
+          "包装袋",
+          "自立袋",
+          "标签与贴纸",
+          "纸箱与包装盒",
+          "热敏纸",
+          "条码标签",
+          "收缩膜",
+        ],
+      },
+      {
+        title: "机器配件与耗材",
+        description: "用于维护灌装、封口、旋盖、打码和输送设备的易损件、替换件和耗材。",
+        image: "/images/category-machine-parts-consumables.png",
+        subcategories: [
+          "灌装机配件",
+          "封口机配件",
+          "旋盖机配件",
+          "打码油墨与墨盒",
+          "加热元件",
+          "硅胶圈",
+          "喷嘴与管路",
+          "输送线配件",
+          "替换零件",
+        ],
+      },
+      {
+        title: "电商产品",
+        description: "面向平台卖家、社交电商团队和批发采购方的在线零售产品与配件。",
+        image: "/images/category-ecommerce-products.png",
+        subcategories: [
+          "手机配件",
+          "3C 数码配件",
+          "家居厨房产品",
+          "收纳整理",
+          "户外小工具",
+          "摩托车与电动车配件",
+          "宠物用品",
+          "小型家用工具",
+          "TikTok 趋势产品",
+        ],
+      },
+      {
+        title: "定制包装产品",
+        description: "用于私标、礼品、产品展示、履约插卡和品牌体系的定制包装物料。",
+        image: "/images/category-custom-packaging-products.png",
+        subcategories: [
+          "定制盒",
+          "定制袋",
+          "Logo 贴纸",
+          "产品标签",
+          "感谢卡",
+          "吊牌",
+          "品牌包装套装",
+          "私标包装",
+        ],
+      },
     ],
     processSteps: [
       { title: "提交需求", description: "分享产品想法、目标市场、数量、价格区间、销售渠道和参考图片。" },
@@ -944,8 +1123,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       homeServicesEyebrow: "服务：我们可以为你做什么",
       homeServicesTitle: "连接产品想法与中国供应链的采购团队",
       homeServicesDescription: "SodaPost 协调零售与批发采购方真正关心的细节：供应商匹配、样品、私标包装、质检节点和运输交接。",
-      homeCategoriesTitle: "面向快速流动的零售与批发品类",
-      homeCategoriesDescription: "从服装、美妆工具到宠物用品和趋势产品，SodaPost 关注买家需求，而不是公开供应商名单。",
+      homeCategoriesTitle: "面向包装设备、包装材料、机器配件和电商产品的采购",
+      homeCategoriesDescription: "从灌装封口设备、包装耗材到机器配件、定制包装和电商产品，SodaPost 关注买家的具体采购需求，而不是公开供应商名单。",
       homeProcessTitle: "从需求到出货的清晰 4 步流程",
       homeProcessDescription: "每个项目都从买家需求开始，而不是从公开供应商目录开始。",
       homeCaseTitle: "零售商与批发商的代表性采购成果",
@@ -958,10 +1137,10 @@ export const dictionaries: Record<Locale, Dictionary> = {
       howDescription: "结构化流程帮助海外采购方比较选项、降低供应商风险，并保持产品要求清晰。",
       howSectionTitle: "SodaPost 采购流程",
       howSectionDescription: "每一步都让买家保持控制，同时由 SodaPost 协调供应商侧细节。",
-      categoriesTitle: "为快速变化的消费品类提供采购支持",
-      categoriesDescription: "告诉我们你要采购的产品、目标数量和市场，SodaPost 将私下 review 供应商匹配度。",
+      categoriesTitle: "面向包装、生产和电商采购的产品品类",
+      categoriesDescription: "查看 SodaPost 可协助采购的产品品类，并提交规格、目标数量和市场信息，我们会私下 review 供应商匹配度。",
       categoriesSectionTitle: "品类覆盖",
-      categoriesSectionDescription: "这些是常见起点。即使产品不在列表中，也可以提交需求让我们 review 可行性。",
+      categoriesSectionDescription: "产品品类与采购服务分开管理。采购服务保留在 Services 页面，这里只展示买家可以提交需求的产品方向。",
       pricingTitle: "从免费需求开始，再选择合适的采购深度",
       pricingDescription: "价格取决于你的产品需要多少调研、比较、打样、包装和协调工作。",
       pricingSectionTitle: "简单清晰的采购入口",
@@ -1086,6 +1265,12 @@ export const dictionaries: Record<Locale, Dictionary> = {
       no: "否",
     },
     categoryLabels: {
+      "Packaging Machines": "包装机械",
+      "Packaging Materials": "包装材料",
+      "Machine Parts & Consumables": "机器配件与耗材",
+      "E-commerce Products": "电商产品",
+      "Custom Packaging Products": "定制包装产品",
+      "Complete Production Line": "完整生产线",
       "Apparel & Fashion": "服装与时尚",
       "Sun Protection Clothing": "防晒服饰",
       "Beauty Tools": "美妆工具",
@@ -2080,6 +2265,25 @@ export const dictionaries: Record<Locale, Dictionary> = {
     statusLabels: { New: "신규", Contacted: "연락 완료", Quoting: "견적 중", "Sample Stage": "샘플 단계", "In Production": "생산 중", Completed: "완료", Lost: "종료" },
   },
 };
+
+const categoryPageCopy = {
+  homeCategoriesTitle: en.pages.homeCategoriesTitle,
+  homeCategoriesDescription: en.pages.homeCategoriesDescription,
+  categoriesTitle: en.pages.categoriesTitle,
+  categoriesDescription: en.pages.categoriesDescription,
+  categoriesSectionTitle: en.pages.categoriesSectionTitle,
+  categoriesSectionDescription: en.pages.categoriesSectionDescription,
+};
+
+for (const locale of locales) {
+  if (locale === "en" || locale === "zh") continue;
+
+  dictionaries[locale].categories = en.categories;
+  dictionaries[locale].pages = {
+    ...dictionaries[locale].pages,
+    ...categoryPageCopy,
+  };
+}
 
 type LanguageContextValue = {
   locale: Locale;

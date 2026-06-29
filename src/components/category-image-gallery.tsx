@@ -6,10 +6,11 @@ import { motion } from "framer-motion";
 import type { Category } from "@/lib/site-data";
 
 const galleryItems = [
-  { image: "/images/category-apparel.png", categoryIndex: 0, className: "sm:col-span-2 sm:row-span-2" },
-  { image: "/images/category-beauty.png", categoryIndex: 2, className: "" },
-  { image: "/images/category-home.png", categoryIndex: 4, className: "" },
-  { image: "/images/category-outdoor-pet.png", categoryIndex: 5, className: "sm:col-span-2" },
+  { categoryIndex: 0, className: "sm:col-span-2 sm:row-span-2" },
+  { categoryIndex: 1, className: "" },
+  { categoryIndex: 2, className: "" },
+  { categoryIndex: 3, className: "" },
+  { categoryIndex: 4, className: "" },
 ] as const;
 
 export function CategoryImageGallery({ categories }: { categories: Category[] }) {
@@ -17,9 +18,11 @@ export function CategoryImageGallery({ categories }: { categories: Category[] })
     <div className="grid auto-rows-[11rem] gap-3 sm:grid-cols-4">
       {galleryItems.map((item, index) => {
         const category = categories[item.categoryIndex];
+        if (!category?.image) return null;
+
         return (
           <motion.figure
-            key={item.image}
+            key={category.title}
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -27,7 +30,7 @@ export function CategoryImageGallery({ categories }: { categories: Category[] })
             className={`group relative overflow-hidden rounded-xl bg-slate-200 ${item.className}`}
           >
             <Image
-              src={item.image}
+              src={category.image}
               alt={category.title}
               fill
               sizes="(min-width: 1024px) 28vw, (min-width: 640px) 50vw, 100vw"
